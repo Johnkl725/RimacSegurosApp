@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Entidades
 {
-    public class Class1
+    public class Beneficiario : Usuario
     {
+        public int IdUsuario { get; set; }
+        public int IdVehiculo { get; set; }
     }
 }
