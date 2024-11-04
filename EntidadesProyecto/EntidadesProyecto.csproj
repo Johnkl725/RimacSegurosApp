@@ -6,9 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\AccesoDatos\AccesoDatos.csproj" />
-    <ProjectReference Include="..\DbContext\MiAplicacion.Data.csproj" />
-  </ItemGroup>
-
 </Project>

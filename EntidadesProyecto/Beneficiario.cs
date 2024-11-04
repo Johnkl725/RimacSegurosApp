@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entidades
+namespace EntidadesProyecto
 {
-    public class Personal : Usuario
+    public class Beneficiario : Usuario
     {
-        public int IdUsuario { get; set; }
+        public int IdVehiculo { get; set; }
         public string Contraseña { get; set; }
     }
 }

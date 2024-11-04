@@ -18,6 +18,19 @@ namespace AplicaciónWeb.Controllers
             return View();
         }
 
+        public IActionResult Login()
+        {
+            // Lógica para mostrar la vista de inicio de sesión.
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            // Aquí iría la lógica para cerrar sesión
+            return RedirectToAction("Index", "Home");
+        }
+
         public IActionResult Privacy()
         {
             return View();

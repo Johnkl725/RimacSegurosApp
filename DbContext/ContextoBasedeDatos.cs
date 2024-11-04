@@ -1,33 +1,46 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Entidades;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EntidadesProyecto;
 
-namespace DbContext
+namespace MiAplicacion.Data
 {
-    public class MyDbContext : Microsoft.EntityFrameworkCore.DbContext
+    public class MyDbContext : DbContext
     {
         public MyDbContext(DbContextOptions<MyDbContext> options)
-            : base(options)
-        {
-        }
+            : base(options) { }
 
         // Propiedades DbSet para las tablas
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Beneficiario> Beneficiarios { get; set; }
-        public DbSet<Personal> Personales { get; set; }
+        public DbSet<Personal> Personal { get; set; }
         public DbSet<Administrador> Administradores { get; set; }
+        public DbSet<TipoUsuarioDto> TipoUsuarios { get; set; }
 
-        // Aquí puedes agregar más DbSet según tus tablas
 
-        // Configuración del modelo (opcional)
+        // Configuración del modelo
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configura las relaciones, claves primarias y demás configuraciones aquí si es necesario
             base.OnModelCreating(modelBuilder);
+
+            // Configuración de Usuario con herencia TPH
+            modelBuilder.Entity<Usuario>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Nombres).IsRequired().HasMaxLength(50);
+                entity.Property(e => e.Apellido1).HasMaxLength(50);
+                entity.Property(e => e.Apellido2).HasMaxLength(50);
+                entity.Property(e => e.Dni).IsRequired().HasMaxLength(10);
+                entity.Property(e => e.Telefono).HasMaxLength(7);
+                entity.Property(e => e.LiderSogId).HasMaxLength(15);
+
+                // Discriminador para diferenciar los tipos
+                entity.HasDiscriminator<string>("TipoUsuario")
+                    .HasValue<Usuario>("Usuario")
+                    .HasValue<Personal>("Personal")
+                    .HasValue<Administrador>("Administrador")
+                    .HasValue<Beneficiario>("Beneficiario");
+            });
+
         }
+
     }
 }

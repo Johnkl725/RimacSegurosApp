@@ -1,7 +1,8 @@
-
-using DbContext;
+using AccesoDatos;
+using MiAplicacion.Data;
 using LogicaNegocio;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,15 @@ builder.Services.AddDbContext<MyDbContext>(options =>
 });
 
 builder.Services.AddScoped<UsuarioLN>();
+builder.Services.AddScoped<UsuarioDA>();
 
+// Configura la autenticación usando cookies
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Login/Index";  // Ruta de inicio de sesión
+        options.LogoutPath = "/Login/Logout"; // Ruta de cierre de sesión
+    });
 
 var app = builder.Build();
 
@@ -24,7 +33,6 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -33,6 +41,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// Agrega el middleware de autenticación antes de autorización
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
