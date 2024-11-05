@@ -59,7 +59,7 @@ namespace AplicaciónWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult RegisterAdministrator(string nombres, string apellido1, string apellido2, string dni, string telefono, string liderSogId, string password, string confirmPassword)
+        public IActionResult RegisterAdministrador(string nombres, string apellido1, string apellido2, string dni, string telefono, string liderSogId, string password, string confirmPassword,string userType)
         {
             if (password != confirmPassword)
             {
@@ -67,7 +67,7 @@ namespace AplicaciónWeb.Controllers
                 return View();
             }
 
-            var usuario = _usuarioLN.RegisterUser(nombres, apellido1, apellido2, dni, telefono, liderSogId, password, "administrador");
+            var usuario = _usuarioLN.RegisterUser(nombres, apellido1, apellido2, dni, telefono, liderSogId, password, userType);
             if (usuario != null)
             {
                 return RedirectToAction("Index", "Login");
