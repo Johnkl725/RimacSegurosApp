@@ -1,0 +1,81 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .sidebar {
+        background-color: #343a40; /* Fondo más oscuro */
+        border-right: 1px solid #dee2e6; /* Borde derecho */
+        height: 100vh; /* Altura completa de la ventana */
+    }
+
+        .sidebar .nav-link {
+            color: #ffffff; /* Color de letra blanco */
+        }
+
+            .sidebar .nav-link:hover {
+                color: #cccccc; /* Color de letra al pasar el ratón */
+            }
+
+    .main-content {
+        color: #343a40; /* Color de letra más oscuro */
+        padding: 20px;
+    }
+
+    .box {
+        background-color: #ffffff; /* Fondo blanco */
+        border: 1px solid #dee2e6; /* Borde */
+        border-radius: 5px; /* Bordes redondeados */
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra */
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            Tareas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            Proyectos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            Configuración
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4 main-content">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Dashboard del Personal</h1>
+            </div>
+            <div class="box">
+                <!-- Contenido principal de la vista -->
+                <p>Bienvenido al panel de control del personal.</p>
+            </div>
+            <div class="box">
+                <!-- Otra caja de contenido -->
+                <p>Contenido adicional aquí.</p>
+            </div>
+        </main>
+    </div>
+</div>

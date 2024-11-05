@@ -1,0 +1,157 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AplicaciónWeb</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/AplicaciónWeb.styles.css" asp-append-version="true" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .navbar {
+            background-color: #343a40;
+        }
+
+        .navbar-brand, .nav-link {
+            color: #fff !important;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #f8f9fa !important;
+            background-color: #495057;
+            border-radius: 5px;
+        }
+
+        .footer {
+            background-color: #343a40;
+            color: #fff;
+            padding: 20px 0;
+        }
+
+            .footer a {
+                color: #f8f9fa;
+            }
+
+                .footer a:hover {
+                    text-decoration: underline;
+                }
+
+        main {
+            padding-top: 20px;
+        }
+
+        .dashboard {
+            margin-top: 20px;
+        }
+
+        .card {
+            margin-bottom: 20px;
+        }
+
+        .welcome {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+            .welcome i {
+                font-size: 50px;
+                margin-right: 20px;
+                color: #007bff;
+            }
+
+        .current-time {
+            font-size: 24px;
+            color: #343a40;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Content -->
+    <div class="container">
+        <main role="main" class="pb-3">
+            <div class="welcome">
+                <i class="fas fa-smile"></i>
+                <div>
+                    <h1 class="display-4">¡Bienvenido a RimacSeguros!</h1>
+                    <p class="current-time" id="current-time"></p>
+                </div>
+            </div>
+
+            <div class="dashboard">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="card-title">Polizas Activas</h5>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-text">150</h2>
+                                <p class="card-text">Total de pólizas activas en el sistema.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="card-title">Clientes Registrados</h5>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-text">300</h2>
+                                <p class="card-text">Número total de clientes registrados.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-warning text-white">
+                                <h5 class="card-title">Reclamaciones Pendientes</h5>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-text">25</h2>
+                                <p class="card-text">Total de reclamaciones por resolver.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // Función para mostrar la hora actual
+        function updateTime() {
+            const now = new Date();
+            const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            document.getElementById('current-time').innerText = `Hora actual: ${now.toLocaleTimeString('es-ES', options)}`;
+        }
+
+        // Actualizar la hora cada segundo
+        setInterval(updateTime, 1000);
+        updateTime(); // Llamar a la función al cargar
+    </script>
+</body>
+</html>

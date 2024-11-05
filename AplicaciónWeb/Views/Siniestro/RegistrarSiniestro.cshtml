@@ -1,0 +1,53 @@
+﻿@model EntidadesProyecto.Siniestro
+
+<form asp-action="RegistrarSiniestro" method="post">
+    <div class="form-group">
+        <label>Tipo de Siniestro</label>
+        <select asp-for="Tipo" class="form-control">
+            <option value="Robo">Robo</option>
+            <option value="Choque">Choque</option>
+            <option value="Daños Menores">Daños Menores</option>
+            <option value="Pérdida Total">Pérdida Total</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Fecha del Siniestro</label>
+        <input asp-for="FechaSiniestro" type="date" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Departamento (ID)</label>
+        <input asp-for="IdDepartamento" type="number" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Provincia (ID)</label>
+        <input asp-for="IdProvincia" type="number" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Distrito (ID)</label>
+        <input asp-for="IdDistrito" type="number" class="form-control" />
+    </div>
+
+    <div>
+        <!-- Campos ocultos para enviar 1 como valor por defecto -->
+        <input asp-for="IdDocumento" type="hidden" value="1" />
+        <input asp-for="IdPoliza" type="hidden" value="1" />
+        <input asp-for="IdTaller" type="hidden" value="1" />
+        <input asp-for="IdPresupuesto" type="hidden" value="1" />
+    </div>
+
+    <div class="form-group">
+        <label>Ubicación Específica</label>
+        <input asp-for="Ubicacion" type="text" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Descripción del Siniestro</label>
+        <textarea asp-for="Descripcion" class="form-control"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Registrar Siniestro</button>
+</form>
