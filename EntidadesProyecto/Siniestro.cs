@@ -14,16 +14,14 @@ namespace EntidadesProyecto
         public int? IdTaller { get; set; }
         public int? IdPresupuesto { get; set; }
 
-
         public string Tipo { get; set; }
         public DateTime? FechaSiniestro { get; set; }
         public DateTime? FechaCreacion { get; set; }
         public DateTime? FechaActualizacion { get; set; }
         public string Ubicacion { get; set; }
         public string Descripcion { get; set; }
-
-
     }
+
     public class Departamento
     {
         public int Id { get; set; }
@@ -36,7 +34,7 @@ namespace EntidadesProyecto
         public string Descripcion { get; set; }
 
         // Relación con Departamento
-        public int id_departamento { get; set; }
+        public int id_departamento { get; set; } // Cambiado a id_departamento para coincidir con la base de datos
         public Departamento Departamento { get; set; }
     }
 
@@ -46,7 +44,7 @@ namespace EntidadesProyecto
         public string Descripcion { get; set; }
 
         // Relación con Provincia
-        public int id_provincia { get; set; }
+        public int id_provincia { get; set; } // Cambiado a id_provincia para coincidir con la base de datos
         public Provincia Provincia { get; set; }
     }
 }

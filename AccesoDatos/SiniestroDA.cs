@@ -58,25 +58,22 @@ namespace AccesoDatos
                 throw new Exception("Error al registrar el siniestro.");
             }
         }
-        // Método para obtener todos los departamentos
         public async Task<List<Departamento>> ObtenerDepartamentosAsync()
         {
             return await _context.Departamento.ToListAsync();
         }
 
-        // Método para obtener las provincias por departamento
-        public async Task<List<Provincia>> ObtenerProvinciasPorDepartamentoAsync(int idDepartamento)
+        public async Task<List<Provincia>> ObtenerProvinciasPorDepartamentoAsync(int departamentoId)
         {
             return await _context.Provincia
-                .Where(p => p.id_departamento == idDepartamento)
+                .Where(p => p.id_departamento == departamentoId) // Asumiendo que el campo es IdDepartamento
                 .ToListAsync();
         }
 
-        // Método para obtener los distritos por provincia
-        public async Task<List<Distrito>> ObtenerDistritosPorProvinciaAsync(int idProvincia)
+        public async Task<List<Distrito>> ObtenerDistritosPorProvinciaAsync(int provinciaId)
         {
             return await _context.Distrito
-                .Where(d => d.id_provincia  == idProvincia)
+                .Where(d => d.id_provincia == provinciaId)
                 .ToListAsync();
         }
     }

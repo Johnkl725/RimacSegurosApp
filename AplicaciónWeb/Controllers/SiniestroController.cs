@@ -3,6 +3,7 @@ using LogicaNegocio;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AplicaciónWeb.Controllers
@@ -28,6 +29,7 @@ namespace AplicaciónWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegistrarSiniestro(Siniestro siniestro)
         {
+            // Asignación de valores por defecto para ciertos campos
             siniestro.IdDocumento ??= 1;
             siniestro.IdPoliza ??= 1;
             siniestro.IdTaller ??= 1;
@@ -51,29 +53,31 @@ namespace AplicaciónWeb.Controllers
             return View(siniestro);
         }
 
-        // Método para obtener provincias por departamento
+        // Método AJAX para obtener provincias por departamento seleccionado
         [HttpGet]
-        public async Task<JsonResult> ObtenerProvincias(int idDepartamento)
+        public async Task<JsonResult> GetProvincias(int departamentoId)
         {
-            var provincias = await _siniestroLN.ObtenerProvinciasPorDepartamentoAsync(idDepartamento);
-            return Json(provincias);
+            var provincias = await _siniestroLN.ObtenerProvinciasPorDepartamentoAsync(departamentoId);
+            return Json(provincias.Select(p => new { id = p.Id, nombre = p.Descripcion }));
         }
 
-        // Método para obtener distritos por provincia
+        // Método AJAX para obtener distritos por provincia seleccionada
         [HttpGet]
-        public async Task<JsonResult> ObtenerDistritos(int idProvincia)
+        public async Task<JsonResult> GetDistritos(int provinciaId)
         {
-            var distritos = await _siniestroLN.ObtenerDistritosPorProvinciaAsync(idProvincia);
-            return Json(distritos);
+            var distritos = await _siniestroLN.ObtenerDistritosPorProvinciaAsync(provinciaId);
+            return Json(distritos.Select(d => new { id = d.Id, nombre = d.Descripcion }));
         }
 
-        // Método para cargar las listas de departamentos, provincias y distritos en la vista
+        // Método para cargar la lista de departamentos en la vista
         private async Task CargarListasAsync()
         {
             var departamentos = await _siniestroLN.ObtenerDepartamentosAsync();
-            ViewBag.Departamentos = departamentos; // Asignamos una lista de `Departamento`
-            ViewBag.Provincias = new List<Provincia>();
-            ViewBag.Distritos = new List<Distrito>();
+            ViewBag.Departamentos = new SelectList(departamentos, "Id", "Descripcion");
+           
+            ViewBag.Departamentos = departamentos;
+            ViewBag.Provincias = new List<SelectListItem> { new SelectListItem { Text = "Seleccione una provincia", Value = "" } };
+            ViewBag.Distritos = new List<SelectListItem> { new SelectListItem { Text = "Seleccione un distrito", Value = "" } };
         }
 
         // Vista de confirmación de registro exitoso

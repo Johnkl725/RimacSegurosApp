@@ -1,6 +1,7 @@
 ﻿using AccesoDatos;
 using EntidadesProyecto;
 using MiAplicacion.Data;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace LogicaNegocio
@@ -26,19 +27,19 @@ namespace LogicaNegocio
             await _siniestroDA.RegistrarSiniestro(siniestro);
         }
         // SiniestroLN.cs
-        public async Task<List<Departamento>> ObtenerDepartamentosAsync()
+        public Task<List<Departamento>> ObtenerDepartamentosAsync()
         {
-            return await _siniestroDA.ObtenerDepartamentosAsync();
+            return _siniestroDA.ObtenerDepartamentosAsync();
         }
 
-        public async Task<List<Provincia>> ObtenerProvinciasPorDepartamentoAsync(int idDepartamento)
+        public Task<List<Provincia>> ObtenerProvinciasPorDepartamentoAsync(int departamentoId)
         {
-            return await _siniestroDA.ObtenerProvinciasPorDepartamentoAsync(idDepartamento);
+            return _siniestroDA.ObtenerProvinciasPorDepartamentoAsync(departamentoId);
         }
 
-        public async Task<List<Distrito>> ObtenerDistritosPorProvinciaAsync(int idProvincia)
+        public Task<List<Distrito>> ObtenerDistritosPorProvinciaAsync(int provinciaId)
         {
-            return await _siniestroDA.ObtenerDistritosPorProvinciaAsync(idProvincia);
+            return _siniestroDA.ObtenerDistritosPorProvinciaAsync(provinciaId);
         }
 
     }

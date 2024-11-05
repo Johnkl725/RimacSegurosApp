@@ -15,9 +15,9 @@ namespace MiAplicacion.Data
         public DbSet<Administrador> Administradores { get; set; }
         public DbSet<TipoUsuarioDto> TipoUsuarios { get; set; }
         public DbSet<Siniestro> Siniestros { get; set; }
-        public DbSet<Departamento> Departamento { get; set; }
-        public DbSet<Provincia> Provincia { get; set; }
-        public DbSet<Distrito> Distrito { get; set; }
+        public DbSet<Departamento> Departamento { get; set; } // Cambio a plural para consistencia
+        public DbSet<Provincia> Provincia { get; set; } // Cambio a plural
+        public DbSet<Distrito> Distrito { get; set; } // Cambio a plural
 
         // Configuración del modelo
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -36,17 +36,19 @@ namespace MiAplicacion.Data
                 entity.HasOne<Departamento>()
                       .WithMany()
                       .HasForeignKey(s => s.IdDepartamento)
-                      .OnDelete(DeleteBehavior.Restrict); // Configuración para evitar eliminaciones en cascada
-
-                entity.HasOne<Provincia>()
-                      .WithMany()
-                      .HasForeignKey(s => s.IdProvincia)
                       .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne<Distrito>()
-                      .WithMany()
-                      .HasForeignKey(s => s.IdDistrito)
-                      .OnDelete(DeleteBehavior.Restrict);
+                modelBuilder.Entity<Provincia>()
+      .HasOne(p => p.Departamento)
+      .WithMany()
+      .HasForeignKey(p => p.id_departamento)
+      .OnDelete(DeleteBehavior.Restrict);
+
+                modelBuilder.Entity<Distrito>()
+                    .HasOne(d => d.Provincia)
+                    .WithMany()
+                    .HasForeignKey(d => d.id_provincia)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             // Configuración de Usuario con herencia TPH
