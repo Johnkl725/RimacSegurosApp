@@ -34,7 +34,7 @@ namespace AplicaciónWeb.Controllers
             else
             {
                 ViewBag.ErrorMessage = "El registro ha fallado.";
-                return View();
+                return View("Index","Register");
             }
         }
         [HttpPost]
@@ -44,7 +44,7 @@ namespace AplicaciónWeb.Controllers
             if (password != confirmPassword)
             {
                 ViewBag.ErrorMessage = "Las contraseñas no coinciden.";
-                return View();
+                return View("Index", "Register");
             }
 
             var usuario = _usuarioLN.RegisterUser(nombres, apellido1, apellido2, dni, telefono, liderSogId, password, userType);
@@ -54,28 +54,39 @@ namespace AplicaciónWeb.Controllers
             }
 
             ViewBag.ErrorMessage = "El registro ha fallado.";
-            return View();
+            return View("Index", "Register");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult RegisterAdministrador(string nombres, string apellido1, string apellido2, string dni, string telefono, string liderSogId, string password, string confirmPassword,string userType)
+        public IActionResult RegisterAdministrador(string nombres, string apellido1, string apellido2, string dni, string telefono, string liderSogId, string password, string confirmPassword, string userType)
         {
-            if (password != confirmPassword)
+            try
             {
-                ViewBag.ErrorMessage = "Las contraseñas no coinciden.";
-                return View();
-            }
+                if (password != confirmPassword)
+                {
+                    ViewBag.ErrorMessage = "Las contraseñas no coinciden.";
+                    return View("Index", "Register");
+                }
 
-            var usuario = _usuarioLN.RegisterUser(nombres, apellido1, apellido2, dni, telefono, liderSogId, password, userType);
-            if (usuario != null)
+                var usuario = _usuarioLN.RegisterUser(nombres, apellido1, apellido2, dni, telefono, liderSogId, password, userType);
+
+                if (usuario != null)
+                {
+                    return RedirectToAction("Index", "Login");
+                }
+
+                ViewBag.ErrorMessage = "El registro ha fallado.";
+                return View("Index", "Register");
+            }
+            catch (Exception ex)
             {
-                return RedirectToAction("Index", "Login");
+                // Registra el error o maneja el error de la manera que necesites
+                ViewBag.ErrorMessage = "Ocurrió un error al registrar el administrador: " + ex.Message;
+                return View("Index", "Register");
             }
-
-            ViewBag.ErrorMessage = "El registro ha fallado.";
-            return View();
         }
+
 
 
     }

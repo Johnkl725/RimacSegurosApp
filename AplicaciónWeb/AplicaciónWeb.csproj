@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DbContext\MiAplicacion.Data.csproj" />
+    <ProjectReference Include="..\EntidadesProyecto\EntidadesProyecto.csproj" />
     <ProjectReference Include="..\LogicaNegocio\LogicaNegocio.csproj" />
   </ItemGroup>
 
