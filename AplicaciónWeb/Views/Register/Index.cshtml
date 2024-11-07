@@ -7,9 +7,9 @@
 
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header text-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-header text-center bg-primary text-white">
                     <h3><i class="fas fa-user-plus"></i> Registro</h3>
                 </div>
                 <div class="card-body">
@@ -156,6 +156,7 @@
                         </div>
                         <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-user-plus"></i> Registrar Administrador</button>
                     </form>
+                    <a href="@Url.Action("Index", "Login")" class="btn btn-secondary ml-2">Volver al Login</a>
                 </div>
             </div>
         </div>
@@ -164,20 +165,23 @@
 
 <script>
     function showForm() {
-        const userType = document.getElementById('userType').value;
+        let userType = document.getElementById("userType").value;
+        let beneficiarioForm = document.getElementById("beneficiarioForm");
+        let personalForm = document.getElementById("personalForm");
+        let administradorForm = document.getElementById("administradorForm");
 
         // Ocultar todos los formularios
-        document.getElementById('beneficiarioForm').style.display = 'none';
-        document.getElementById('personalForm').style.display = 'none';
-        document.getElementById('administradorForm').style.display = 'none';
+        beneficiarioForm.style.display = "none";
+        personalForm.style.display = "none";
+        administradorForm.style.display = "none";
 
         // Mostrar el formulario correspondiente
-        if (userType === 'beneficiario') {
-            document.getElementById('beneficiarioForm').style.display = 'block';
-        } else if (userType === 'personal') {
-            document.getElementById('personalForm').style.display = 'block';
-        } else if (userType === 'administrador') {
-            document.getElementById('administradorForm').style.display = 'block';
+        if (userType === "beneficiario") {
+            beneficiarioForm.style.display = "block";
+        } else if (userType === "personal") {
+            personalForm.style.display = "block";
+        } else if (userType === "administrador") {
+            administradorForm.style.display = "block";
         }
     }
 </script>

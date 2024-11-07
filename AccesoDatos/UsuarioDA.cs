@@ -6,6 +6,7 @@ using System.Data;
 using Azure.Core;
 using System.Numerics;
 using System.Text.RegularExpressions;
+using BCrypt.Net;
 
 namespace AccesoDatos
 {
@@ -278,21 +279,63 @@ namespace AccesoDatos
                 return null; // No se encontró el usuario
             }
 
-            // Paso 2: Autenticar al usuario
-            string tipoUsuario;
-            var tipoParam = new SqlParameter("@TipoUsuario", SqlDbType.VarChar, 50) { Direction = ParameterDirection.Output };
-            _context.Database.ExecuteSqlRaw("EXEC sp_AutenticarUsuario @IdUsuario = {0}, @Contraseña = {1}, @TipoUsuario = {2} OUTPUT", idUsuario, password, tipoParam);
-            tipoUsuario = (string)tipoParam.Value;
+            // Paso 2: Obtener la contraseña hasheada del usuario
+            string contraseñaHash = null;
+            var paramContraseñaHash = new SqlParameter("@ContraseñaHash", SqlDbType.VarChar, 60) { Direction = ParameterDirection.Output };
+            _context.Database.ExecuteSqlRaw("EXEC sp_ObtenerContraseñaHasheadaUsuario @IdUsuario = {0}, @ContraseñaHash = {1} OUTPUT",
+                idUsuario, paramContraseñaHash);
 
-            if(string.IsNullOrWhiteSpace(tipoUsuario))
+            // Verificamos si el valor de la contraseña hash es DBNull antes de asignarlo
+            if (paramContraseñaHash.Value == DBNull.Value)
             {
-                return null; // La contraseña es incorrecta
+                return null; // Si es DBNull, significa que no se encontró una contraseña
             }
 
-            return tipoUsuario;
+            contraseñaHash = (string)paramContraseñaHash.Value;
 
+            // Si no se encuentra la contraseña hasheada, retornamos null
+            if (string.IsNullOrWhiteSpace(contraseñaHash))
+            {
+                return null;
+            }
 
+            // Paso 3: Verificar si la contraseña ingresada coincide con el hash almacenado
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, contraseñaHash);
+
+            if (!isPasswordValid)
+            {
+                return null; // La contraseña no es válida
+            }
+
+            // Paso 4: Obtener el tipo de usuario (si la contraseña es correcta)
+            string tipoUsuario;
+            var tipoParam = new SqlParameter("@TipoUsuario", SqlDbType.VarChar, 60)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            // Ejecutar el procedimiento almacenado con el parámetro de salida
+            _context.Database.ExecuteSqlRaw("EXEC sp_AutenticarUsuario @IdUsuario = {0}, @TipoUsuario = @TipoUsuario OUTPUT", idUsuario, tipoParam);
+
+            // Verificamos si el valor del tipo de usuario es DBNull antes de asignarlo
+            if (tipoParam.Value == DBNull.Value)
+            {
+                return null; // Si es DBNull, significa que no se obtuvo el tipo de usuario
+            }
+
+            tipoUsuario = (string)tipoParam.Value;
+
+            if (string.IsNullOrWhiteSpace(tipoUsuario))
+            {
+                return null; // Si no se obtiene el tipo de usuario, retornamos null
+            }
+
+            return tipoUsuario; // El tipo de usuario si la autenticación es exitosa
         }
+
+
+
+
 
 
 

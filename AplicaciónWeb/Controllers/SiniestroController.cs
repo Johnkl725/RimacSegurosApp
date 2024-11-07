@@ -83,6 +83,8 @@ namespace AplicaciónWeb.Controllers
         // Vista de confirmación de registro exitoso
         public IActionResult Confirmacion()
         {
+            TempData["SuccessMessage"] = "Siniestro registrado exitosamente";
+
             return View();
         }
     }
