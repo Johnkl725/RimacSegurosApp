@@ -18,6 +18,8 @@ builder.Services.AddDbContext<MyDbContext>(options =>
 
 builder.Services.AddScoped<UsuarioLN>();
 builder.Services.AddScoped<UsuarioDA>();
+builder.Services.AddScoped<SiniestroLN>();
+builder.Services.AddScoped<SiniestroDA>();
 
 // Configura la autenticación usando cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

@@ -1,0 +1,90 @@
+﻿@model EntidadesProyecto.Siniestro
+@using EntidadesProyecto
+
+<form asp-action="RegistrarSiniestro" method="post">
+    <div class="form-group">
+        <label>Tipo de Siniestro</label>
+        <select asp-for="Tipo" class="form-control">
+            <option value="Robo">Robo</option>
+            <option value="Choque">Choque</option>
+            <option value="Daños Menores">Daños Menores</option>
+            <option value="Pérdida Total">Pérdida Total</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Fecha del Siniestro</label>
+        <input asp-for="FechaSiniestro" type="date" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Departamento</label>
+        <select id="Departamento" asp-for="IdDepartamento" class="form-control">
+            <option value="">Seleccione un departamento</option>
+            @foreach (var departamento in ViewBag.Departamentos as List<Departamento>)
+            {
+                <option value="@departamento.Id">@departamento.Descripcion</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Provincia</label>
+        <select id="Provincia" asp-for="IdProvincia" class="form-control">
+            <option value="">Seleccione una provincia</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Distrito</label>
+        <select id="Distrito" asp-for="IdDistrito" class="form-control">
+            <option value="">Seleccione un distrito</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Ubicación Específica</label>
+        <input asp-for="Ubicacion" type="text" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Descripción del Siniestro</label>
+        <textarea asp-for="Descripcion" class="form-control"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Registrar Siniestro</button>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#Departamento').change(function () {
+            var departamentoId = $(this).val();
+            if (departamentoId) {
+                $.getJSON('/Siniestro/GetProvincias', { departamentoId: departamentoId }, function (data) {
+                    $('#Provincia').empty().append('<option value="">Seleccione una provincia</option>');
+                    $.each(data, function (index, item) {
+                        $('#Provincia').append('<option value="' + item.id + '">' + item.nombre + '</option>');
+                    });
+                    $('#Distrito').empty().append('<option value="">Seleccione un distrito</option>');
+                });
+            } else {
+                $('#Provincia').empty().append('<option value="">Seleccione una provincia</option>');
+                $('#Distrito').empty().append('<option value="">Seleccione un distrito</option>');
+            }
+        });
+
+        $('#Provincia').change(function () {
+            var provinciaId = $(this).val();
+            if (provinciaId) {
+                $.getJSON('/Siniestro/GetDistritos', { provinciaId: provinciaId }, function (data) {
+                    $('#Distrito').empty().append('<option value="">Seleccione un distrito</option>');
+                    $.each(data, function (index, item) {
+                        $('#Distrito').append('<option value="' + item.id + '">' + item.nombre + '</option>');
+                    });
+                });
+            } else {
+                $('#Distrito').empty().append('<option value="">Seleccione un distrito</option>');
+            }
+        });
+    });
+</script>
