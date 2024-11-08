@@ -9,5 +9,6 @@ namespace EntidadesProyecto
     public class Administrador : Usuario
     {
         public string Contraseña { get; set; }
+        //comentar
     }
 }
