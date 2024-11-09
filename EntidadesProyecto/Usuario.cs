@@ -8,7 +8,6 @@
         public string Apellido2 { get; set; }
         public string Dni { get; set; }
         public string Telefono { get; set; }
-        public string LiderSogId { get; set; }
         public String TipoUsuario { get; set; }
 
     }

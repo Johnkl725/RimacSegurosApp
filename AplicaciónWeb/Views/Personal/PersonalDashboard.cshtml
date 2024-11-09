@@ -1,7 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -10,6 +7,10 @@
         background-color: #343a40; /* Fondo más oscuro */
         border-right: 1px solid #dee2e6; /* Borde derecho */
         height: 100vh; /* Altura completa de la ventana */
+        position: fixed; /* Fijar la barra lateral */
+        top: 0;
+        left: 0;
+        width: 200px; /* Ancho fijo */
     }
 
         .sidebar .nav-link {
@@ -23,6 +24,7 @@
     .main-content {
         color: #343a40; /* Color de letra más oscuro */
         padding: 20px;
+        margin-left: 200px; /* Espacio para la barra lateral */
     }
 
     .box {
@@ -33,11 +35,24 @@
         margin-bottom: 20px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra */
     }
+
+    .btn-custom {
+        background-color: #007bff; /* Fondo azul */
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+    }
+
+        .btn-custom:hover {
+            background-color: #0056b3; /* Azul más oscuro al pasar el ratón */
+            color: white;
+        }
 </style>
 
 <div class="container-fluid">
     <div class="row">
-        <nav class="col-md-2 d-none d-md-block sidebar">
+        <nav class="sidebar">
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
@@ -60,18 +75,25 @@
                             Configuración
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("CreateUsuario", "Personal")">
+                            Mantener Usuario
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>
 
-        <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4 main-content">
+        <main role="main" class="col main-content">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">Dashboard del Personal</h1>
             </div>
+
             <div class="box">
                 <!-- Contenido principal de la vista -->
                 <p>Bienvenido al panel de control del personal.</p>
             </div>
+
             <div class="box">
                 <!-- Otra caja de contenido -->
                 <p>Contenido adicional aquí.</p>
@@ -79,3 +101,4 @@
         </main>
     </div>
 </div>
+

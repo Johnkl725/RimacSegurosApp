@@ -18,6 +18,7 @@ namespace MiAplicacion.Data
         public DbSet<Departamento> Departamento { get; set; } // Cambio a plural para consistencia
         public DbSet<Provincia> Provincia { get; set; } // Cambio a plural
         public DbSet<Distrito> Distrito { get; set; } // Cambio a plural
+        public DbSet<Vehiculo> Vehiculos { get; set; }
 
 
         // Configuración del modelo
@@ -61,7 +62,6 @@ namespace MiAplicacion.Data
                 entity.Property(e => e.Apellido2).HasMaxLength(50);
                 entity.Property(e => e.Dni).IsRequired().HasMaxLength(10);
                 entity.Property(e => e.Telefono).HasMaxLength(7);
-                entity.Property(e => e.LiderSogId).HasMaxLength(15);
 
                 // Discriminador para diferenciar los tipos
                 entity.HasDiscriminator<string>("TipoUsuario")

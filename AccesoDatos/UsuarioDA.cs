@@ -20,11 +20,10 @@ namespace AccesoDatos
         }
 
         // Método para registrar un usuario
-        public Usuario RegistrarUsuario(Usuario usuario, string userType, string password, string placa, string marca, string modelo, string tipo, int tarjeta_vehiculo)
+        public Usuario RegistrarBeneficiario(Usuario usuario, string userType, string password)
         {
             try
             {
-                // Crear los parámetros para el procedimiento almacenado
                 var idParam = new SqlParameter("@IdUsuario", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
@@ -32,13 +31,12 @@ namespace AccesoDatos
 
                 // Ejecutar el procedimiento para registrar el usuario
                 _context.Database.ExecuteSqlRaw(
-                    "EXEC sp_RegistrarUsuario @Nombres, @Apellido1, @Apellido2, @DNI, @Telefono, @LiderSogId, @IdUsuario OUTPUT",
+                    "EXEC sp_RegistrarUsuario @Nombres, @Apellido1, @Apellido2, @DNI, @Telefono, @IdUsuario OUTPUT",
                     new SqlParameter("@Nombres", usuario.Nombres),
                     new SqlParameter("@Apellido1", usuario.Apellido1),
                     new SqlParameter("@Apellido2", usuario.Apellido2 ?? (object)DBNull.Value),
                     new SqlParameter("@DNI", usuario.Dni),
                     new SqlParameter("@Telefono", usuario.Telefono ?? (object)DBNull.Value),
-                    new SqlParameter("@LiderSogId", usuario.LiderSogId ?? (object)DBNull.Value),
                     idParam
                 );
 
@@ -51,88 +49,20 @@ namespace AccesoDatos
                     throw new Exception("El usuario no se registró correctamente, ID de usuario devuelto es 0.");
                 }
 
-                // Insertar en la tabla correspondiente según el tipo de usuario
-                switch (userType.ToLower())
+
+                // Insertar en la tabla de Beneficiario
+                var beneficiario = usuario as Beneficiario;
+                if (beneficiario != null)
                 {
-                    case "beneficiario":
-                        var beneficiario = usuario as Beneficiario;
-                        if (beneficiario != null)
-                        {
-                            beneficiario.Id = userId;
-                            beneficiario.Contraseña = password;
-
-                            var vehiculo = new Vehiculo
-                            {
-                                Placa = placa,
-                                Marca = marca,
-                                Modelo = modelo,
-                                Tipo = tipo,
-                                TarjetaVehiculo = tarjeta_vehiculo
-                            };
-
-                            var idVehiculoParam = new SqlParameter("@IdVehiculo", SqlDbType.Int)
-                            {
-                                Direction = ParameterDirection.Output
-                            };
-
-                            _context.Database.ExecuteSqlRaw(
-                                "EXEC sp_InsertarVehiculo @Placa, @Marca, @Modelo, @Tipo, @TarjetaVehiculo, @IdVehiculo OUTPUT",
-                                new SqlParameter("@Placa", vehiculo.Placa),
-                                new SqlParameter("@Marca", vehiculo.Marca),
-                                new SqlParameter("@Modelo", vehiculo.Modelo ?? (object)DBNull.Value),
-                                new SqlParameter("@Tipo", vehiculo.Tipo ?? (object)DBNull.Value),
-                                new SqlParameter("@TarjetaVehiculo", (object)vehiculo.TarjetaVehiculo ?? DBNull.Value),
-                                idVehiculoParam
-                            );
-
-                            // Obtener el ID del vehículo insertado
-                            int idVehiculo = (int)idVehiculoParam.Value;
-
-                            // Ahora puedes usar el idVehiculo para registrar al beneficiario
-                            _context.Database.ExecuteSqlRaw(
-                                "EXEC sp_RegistrarBeneficiario @id_usuario, @IdVehiculo, @Password",
-                                new SqlParameter("@id_usuario", userId),
-                                new SqlParameter("@IdVehiculo", idVehiculo),
-                                new SqlParameter("@Password", password)
-                            );
-                        }
-                        break;
-
-                    case "personal":
-                        var personal = usuario as Personal;
-                        if (personal != null)
-                        {
-                            personal.Id = userId;
-                            personal.Contraseña = password;
-
-                            _context.Database.ExecuteSqlRaw(
-                                "EXEC sp_RegistrarPersonal @id_usuario, @Password",
-                                new SqlParameter("@id_usuario", userId),
-                                new SqlParameter("@Password", password)
-                            );
-                        }
-                        break;
-
-                    case "administrador":
-                        var administrador = usuario as Administrador;
-                        if (administrador != null)
-                        {
-                            administrador.Id = userId;
-                            administrador.Contraseña = password;
-
-                            _context.Database.ExecuteSqlRaw(
-                                "EXEC sp_RegistrarAdministrador @id_usuario, @Password",
-                                new SqlParameter("@id_usuario", userId),
-                                new SqlParameter("@Password", password)
-                            );
-                        }
-                        break;
-
-                    default:
-                        throw new ArgumentException("Tipo de usuario desconocido.");
+                    _context.Database.ExecuteSqlRaw(
+                        "EXEC sp_RegistrarBeneficiario @id_usuario,@IdVehiculo,@Password",
+                        new SqlParameter("@id_usuario", userId),
+                        new SqlParameter("@IdVehiculo", 3),
+                        new SqlParameter("@Password", password)
+                    );
                 }
 
-                // Asignar el ID de usuario al objeto usuario
+
                 usuario.Id = userId;
 
                 return usuario;
@@ -156,13 +86,12 @@ namespace AccesoDatos
 
                 // Ejecutar el procedimiento para registrar el usuario
                 _context.Database.ExecuteSqlRaw(
-                    "EXEC sp_RegistrarUsuario @Nombres, @Apellido1, @Apellido2, @DNI, @Telefono, @LiderSogId, @IdUsuario OUTPUT",
+                    "EXEC sp_RegistrarUsuario @Nombres, @Apellido1, @Apellido2, @DNI, @Telefono, @IdUsuario OUTPUT",
                     new SqlParameter("@Nombres", usuario.Nombres),
                     new SqlParameter("@Apellido1", usuario.Apellido1),
                     new SqlParameter("@Apellido2", usuario.Apellido2 ?? (object)DBNull.Value),
                     new SqlParameter("@DNI", usuario.Dni),
                     new SqlParameter("@Telefono", usuario.Telefono ?? (object)DBNull.Value),
-                    new SqlParameter("@LiderSogId", usuario.LiderSogId ?? (object)DBNull.Value),
                     idParam
                 );
 

@@ -10,6 +10,11 @@
         background-color: #343a40; /* Fondo más oscuro */
         border-right: 1px solid #dee2e6; /* Borde derecho */
         height: 100vh; /* Altura completa de la ventana */
+        position: fixed; /* Fijar la barra lateral */
+        top: 0;
+        left: 0;
+        width: 200px; /* Ancho fijo */
+        z-index: 1000; /* Asegurar que la barra lateral esté sobre otros elementos */
     }
 
         .sidebar .nav-link {
@@ -23,6 +28,9 @@
     .main-content {
         color: #343a40; /* Color de letra más oscuro */
         padding: 20px;
+        margin-left: 200px; /* Espacio para la barra lateral */
+        position: relative; /* Asegurar que el contenido principal no se superponga */
+        z-index: 1; /* Asegurar que el contenido principal esté debajo de la barra lateral */
     }
 
     .box {
@@ -34,15 +42,15 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra */
     }
 
-        .header-button:hover {
-            background-color: #0056b3;
-            color: #ffffff;
-        }
+    .header-button:hover {
+        background-color: #0056b3;
+        color: #ffffff;
+    }
 </style>
 
 <div class="container-fluid">
     <div class="row">
-        <nav class="col-md-2 d-none d-md-block sidebar">
+        <nav class="sidebar">
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
@@ -70,14 +78,18 @@
                             Configuración
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Siniestro/RegistrarSiniestro">
+                            Registrar Siniestro
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>
 
-        <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4 main-content">
+        <main role="main" class="col main-content">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">Dashboard del Beneficiario</h1>
-                <a href="/Siniestro/RegistrarSiniestro" class="header-button">Registrar Siniestro</a>
             </div>
             <div class="box">
                 <!-- Contenido principal de la vista -->
