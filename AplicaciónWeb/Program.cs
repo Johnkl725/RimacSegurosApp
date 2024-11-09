@@ -18,6 +18,13 @@ builder.Services.AddDbContext<MyDbContext>(options =>
 
 builder.Services.AddScoped<UsuarioLN>();
 builder.Services.AddScoped<UsuarioDA>();
+builder.Services.AddScoped<SiniestroLN>();
+builder.Services.AddScoped<SiniestroDA>();
+builder.Services.AddScoped<BeneficiarioLN>();  // Añadido
+builder.Services.AddScoped<BeneficiarioDA>();  // Añadido
+builder.Services.AddScoped<VehiculoLN>();     // Añadido
+builder.Services.AddScoped<VehiculoDA>();     // Añadido
+
 
 // Configura la autenticación usando cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

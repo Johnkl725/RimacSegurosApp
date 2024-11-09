@@ -1,4 +1,6 @@
 using AplicaciónWeb.Models;
+using MiAplicacion.Data;
+using MiAplicacion.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,15 +9,27 @@ namespace AplicaciónWeb.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly MyDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, MyDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var model = new HomeViewModel
+            {
+                UsuariosTotales = _context.Usuarios.Count(),
+                BeneficiariosTotales = _context.Beneficiarios.Count(),
+                PersonalTotal = _context.Personal.Count(),
+                AdministradoresTotales = _context.Administradores.Count(),
+                SiniestrosTotales = _context.Siniestros.Count(),
+                VehiculosTotales = _context.Vehiculos.Count()
+            };
+
+            return View(model);
         }
 
         public IActionResult Login()

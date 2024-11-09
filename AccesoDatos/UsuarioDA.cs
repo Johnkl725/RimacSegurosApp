@@ -6,6 +6,7 @@ using System.Data;
 using Azure.Core;
 using System.Numerics;
 using System.Text.RegularExpressions;
+using BCrypt.Net;
 
 namespace AccesoDatos
 {
@@ -19,11 +20,10 @@ namespace AccesoDatos
         }
 
         // Método para registrar un usuario
-        public Usuario RegistrarUsuario(Usuario usuario, string userType, string password, string placa, string marca, string modelo, string tipo, int tarjeta_vehiculo)
+        public Usuario RegistrarBeneficiario(Usuario usuario, string userType, string password)
         {
             try
             {
-                // Crear los parámetros para el procedimiento almacenado
                 var idParam = new SqlParameter("@IdUsuario", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
@@ -31,13 +31,13 @@ namespace AccesoDatos
 
                 // Ejecutar el procedimiento para registrar el usuario
                 _context.Database.ExecuteSqlRaw(
-                    "EXEC sp_RegistrarUsuario @Nombres, @Apellido1, @Apellido2, @DNI, @Telefono, @LiderSogId, @IdUsuario OUTPUT",
+                    "EXEC sp_RegistrarUsuario @Nombres, @Apellido1, @Apellido2, @DNI, @Telefono, @UserType, @IdUsuario OUTPUT",
                     new SqlParameter("@Nombres", usuario.Nombres),
                     new SqlParameter("@Apellido1", usuario.Apellido1),
                     new SqlParameter("@Apellido2", usuario.Apellido2 ?? (object)DBNull.Value),
                     new SqlParameter("@DNI", usuario.Dni),
                     new SqlParameter("@Telefono", usuario.Telefono ?? (object)DBNull.Value),
-                    new SqlParameter("@LiderSogId", usuario.LiderSogId ?? (object)DBNull.Value),
+                    new SqlParameter("@UserType", userType), // Nuevo parámetro para userType
                     idParam
                 );
 
@@ -50,85 +50,16 @@ namespace AccesoDatos
                     throw new Exception("El usuario no se registró correctamente, ID de usuario devuelto es 0.");
                 }
 
-                // Insertar en la tabla correspondiente según el tipo de usuario
-                switch (userType.ToLower())
+                // Insertar en la tabla de Beneficiario
+                var beneficiario = usuario as Beneficiario;
+                if (beneficiario != null)
                 {
-                    case "beneficiario":
-                        var beneficiario = usuario as Beneficiario;
-                        if (beneficiario != null)
-                        {
-                            beneficiario.Id = userId;
-                            beneficiario.Contraseña = password;
-
-                            var vehiculo = new Vehiculo
-                            {
-                                Placa = placa,
-                                Marca = marca,
-                                Modelo = modelo,
-                                Tipo = tipo,
-                                TarjetaVehiculo = tarjeta_vehiculo
-                            };
-
-                            var idVehiculoParam = new SqlParameter("@IdVehiculo", SqlDbType.Int)
-                            {
-                                Direction = ParameterDirection.Output
-                            };
-
-                            _context.Database.ExecuteSqlRaw(
-                                "EXEC sp_InsertarVehiculo @Placa, @Marca, @Modelo, @Tipo, @TarjetaVehiculo, @IdVehiculo OUTPUT",
-                                new SqlParameter("@Placa", vehiculo.Placa),
-                                new SqlParameter("@Marca", vehiculo.Marca),
-                                new SqlParameter("@Modelo", vehiculo.Modelo ?? (object)DBNull.Value),
-                                new SqlParameter("@Tipo", vehiculo.Tipo ?? (object)DBNull.Value),
-                                new SqlParameter("@TarjetaVehiculo", (object)vehiculo.TarjetaVehiculo ?? DBNull.Value),
-                                idVehiculoParam
-                            );
-
-                            // Obtener el ID del vehículo insertado
-                            int idVehiculo = (int)idVehiculoParam.Value;
-
-                            // Ahora puedes usar el idVehiculo para registrar al beneficiario
-                            _context.Database.ExecuteSqlRaw(
-                                "EXEC sp_RegistrarBeneficiario @id_usuario, @IdVehiculo, @Password",
-                                new SqlParameter("@id_usuario", userId),
-                                new SqlParameter("@IdVehiculo", idVehiculo),
-                                new SqlParameter("@Password", password)
-                            );
-                        }
-                        break;
-
-                    case "personal":
-                        var personal = usuario as Personal;
-                        if (personal != null)
-                        {
-                            personal.Id = userId;
-                            personal.Contraseña = password;
-
-                            _context.Database.ExecuteSqlRaw(
-                                "EXEC sp_RegistrarPersonal @id_usuario, @Password",
-                                new SqlParameter("@id_usuario", userId),
-                                new SqlParameter("@Password", password)
-                            );
-                        }
-                        break;
-
-                    case "administrador":
-                        var administrador = usuario as Administrador;
-                        if (administrador != null)
-                        {
-                            administrador.Id = userId;
-                            administrador.Contraseña = password;
-
-                            _context.Database.ExecuteSqlRaw(
-                                "EXEC sp_RegistrarAdministrador @id_usuario, @Password",
-                                new SqlParameter("@id_usuario", userId),
-                                new SqlParameter("@Password", password)
-                            );
-                        }
-                        break;
-
-                    default:
-                        throw new ArgumentException("Tipo de usuario desconocido.");
+                    _context.Database.ExecuteSqlRaw(
+                        "EXEC sp_RegistrarBeneficiario @id_usuario, @IdVehiculo, @Password",
+                        new SqlParameter("@id_usuario", userId),
+                        new SqlParameter("@IdVehiculo", 3), // Aquí asumes un ID de vehículo estático; considera parametrizarlo si es variable
+                        new SqlParameter("@Password", password)
+                    );
                 }
 
                 // Asignar el ID de usuario al objeto usuario
@@ -143,6 +74,7 @@ namespace AccesoDatos
                 return null;
             }
         }
+
         public Usuario RegistrarUsuario(Usuario usuario, string userType, string password)
         {
             try
@@ -155,13 +87,13 @@ namespace AccesoDatos
 
                 // Ejecutar el procedimiento para registrar el usuario
                 _context.Database.ExecuteSqlRaw(
-                    "EXEC sp_RegistrarUsuario @Nombres, @Apellido1, @Apellido2, @DNI, @Telefono, @LiderSogId, @IdUsuario OUTPUT",
+                    "EXEC sp_RegistrarUsuario @Nombres, @Apellido1, @Apellido2, @DNI, @Telefono, @UserType, @IdUsuario OUTPUT",
                     new SqlParameter("@Nombres", usuario.Nombres),
                     new SqlParameter("@Apellido1", usuario.Apellido1),
                     new SqlParameter("@Apellido2", usuario.Apellido2 ?? (object)DBNull.Value),
                     new SqlParameter("@DNI", usuario.Dni),
                     new SqlParameter("@Telefono", usuario.Telefono ?? (object)DBNull.Value),
-                    new SqlParameter("@LiderSogId", usuario.LiderSogId ?? (object)DBNull.Value),
+                    new SqlParameter("@UserType", userType), // Nuevo parámetro
                     idParam
                 );
 
@@ -223,6 +155,7 @@ namespace AccesoDatos
                 return null;
             }
         }
+
 
 
         public PerfilViewModel ObtenerPerfilPorDni(string dni)
@@ -278,21 +211,63 @@ namespace AccesoDatos
                 return null; // No se encontró el usuario
             }
 
-            // Paso 2: Autenticar al usuario
-            string tipoUsuario;
-            var tipoParam = new SqlParameter("@TipoUsuario", SqlDbType.VarChar, 50) { Direction = ParameterDirection.Output };
-            _context.Database.ExecuteSqlRaw("EXEC sp_AutenticarUsuario @IdUsuario = {0}, @Contraseña = {1}, @TipoUsuario = {2} OUTPUT", idUsuario, password, tipoParam);
-            tipoUsuario = (string)tipoParam.Value;
+            // Paso 2: Obtener la contraseña hasheada del usuario
+            string contraseñaHash = null;
+            var paramContraseñaHash = new SqlParameter("@ContraseñaHash", SqlDbType.VarChar, 60) { Direction = ParameterDirection.Output };
+            _context.Database.ExecuteSqlRaw("EXEC sp_ObtenerContraseñaHasheadaUsuario @IdUsuario = {0}, @ContraseñaHash = {1} OUTPUT",
+                idUsuario, paramContraseñaHash);
 
-            if(string.IsNullOrWhiteSpace(tipoUsuario))
+            // Verificamos si el valor de la contraseña hash es DBNull antes de asignarlo
+            if (paramContraseñaHash.Value == DBNull.Value)
             {
-                return null; // La contraseña es incorrecta
+                return null; // Si es DBNull, significa que no se encontró una contraseña
             }
 
-            return tipoUsuario;
+            contraseñaHash = (string)paramContraseñaHash.Value;
 
+            // Si no se encuentra la contraseña hasheada, retornamos null
+            if (string.IsNullOrWhiteSpace(contraseñaHash))
+            {
+                return null;
+            }
 
+            // Paso 3: Verificar si la contraseña ingresada coincide con el hash almacenado
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(password, contraseñaHash);
+
+            if (!isPasswordValid)
+            {
+                return null; // La contraseña no es válida
+            }
+
+            // Paso 4: Obtener el tipo de usuario (si la contraseña es correcta)
+            string tipoUsuario;
+            var tipoParam = new SqlParameter("@TipoUsuario", SqlDbType.VarChar, 60)
+            {
+                Direction = ParameterDirection.Output
+            };
+
+            // Ejecutar el procedimiento almacenado con el parámetro de salida
+            _context.Database.ExecuteSqlRaw("EXEC sp_AutenticarUsuario @IdUsuario = {0}, @TipoUsuario = @TipoUsuario OUTPUT", idUsuario, tipoParam);
+
+            // Verificamos si el valor del tipo de usuario es DBNull antes de asignarlo
+            if (tipoParam.Value == DBNull.Value)
+            {
+                return null; // Si es DBNull, significa que no se obtuvo el tipo de usuario
+            }
+
+            tipoUsuario = (string)tipoParam.Value;
+
+            if (string.IsNullOrWhiteSpace(tipoUsuario))
+            {
+                return null; // Si no se obtiene el tipo de usuario, retornamos null
+            }
+
+            return tipoUsuario; // El tipo de usuario si la autenticación es exitosa
         }
+
+
+
+
 
 
 

@@ -13,6 +13,6 @@ namespace EntidadesProyecto
         public string Marca { get; set; } // Marca del vehículo
         public string Modelo { get; set; } // Modelo del vehículo
         public string Tipo { get; set; } // Tipo de vehículo (Ejemplo: Sedan, SUV, etc.)
-        public int? TarjetaVehiculo { get; set; }
+        public int TarjetaVehiculo { get; set; }
     }
 }

@@ -1,0 +1,24 @@
+﻿@* Views/Siniestro/Confirmacion.cshtml *@
+@{
+    ViewData["Title"] = "Confirmación de Registro";
+    var successMessage = TempData["SuccessMessage"] as string;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (!string.IsNullOrEmpty(successMessage))
+{
+    <div class="alert alert-success">
+        @successMessage
+    </div>
+}
+
+<p>Serás redirigido al dashboard del beneficiario en unos segundos...</p>
+
+<script type="text/javascript">
+    setTimeout(function () {
+        // Redirige a BeneficiarioDashboard después de 3 segundos
+        window.location.href = '@Url.Action("BeneficiarioDashboard", "Beneficiario")';
+    }, 3000); // 3000 milisegundos = 3 segundos
+</script>
+

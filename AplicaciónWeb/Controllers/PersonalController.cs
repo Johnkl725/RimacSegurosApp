@@ -1,12 +1,22 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AccesoDatos;
+using EntidadesProyecto;
+using LogicaNegocio;
+using MiAplicacion.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using BCrypt.Net;
 
 namespace AplicaciónWeb.Controllers
 {
     public class PersonalController : Controller
     {
         // GET: PersonalController
+        private readonly UsuarioLN _usuarioLN;
 
+        public PersonalController(UsuarioLN usuarioLN)
+        {
+            _usuarioLN = usuarioLN;
+        }
         public ActionResult PersonalDashboard()
         {
             return View();
@@ -23,7 +33,7 @@ namespace AplicaciónWeb.Controllers
         }
 
         // GET: PersonalController/Create
-        public ActionResult Create()
+        public IActionResult CreateUsuario()
         {
             return View();
         }
@@ -31,17 +41,44 @@ namespace AplicaciónWeb.Controllers
         // POST: PersonalController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public IActionResult CreateUsuario(string Nombres, string Apellido1, string Apellido2, string Dni, string Telefono, string Contraseña)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                // Hashear la contraseña
+                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(Contraseña);
+
+                // Llamar a la lógica de negocio para crear el usuario
+                var usuarioCreado = _usuarioLN.CrearUsuario(
+                    Nombres,
+                    Apellido1,
+                    Apellido2,
+                    Dni,
+                    Telefono,
+                    hashedPassword,
+                    "beneficiario" // Tipo de usuario
+                );
+
+                // Verificar si el usuario fue creado correctamente
+                if (usuarioCreado != null)
+                {
+                    // Redirigir a la acción de crear vehículo y pasar el ID de beneficiario
+                    return RedirectToAction("CrearVehiculo", "Beneficiario",usuarioCreado);
+                }
+                else
+                {
+                    // Si hubo un problema al crear el usuario, manejar el error (puedes agregar más lógica aquí)
+                    ModelState.AddModelError("", "Hubo un error al crear el usuario.");
+                    return View();
+                }
             }
-            catch
-            {
-                return View();
-            }
+
+            // Si el modelo no es válido, regresar al formulario con los errores de validación
+            return View();
         }
+
+
+
 
         // GET: PersonalController/Edit/5
         public ActionResult Edit(int id)

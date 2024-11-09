@@ -5,27 +5,106 @@
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header text-center">
-                    <h3><i class="fas fa-user-plus"></i> Registro</h3>
+<!-- Fondo detrás del formulario -->
+<style>
+    body {
+        background: url('https://via.placeholder.com/1500') no-repeat center center fixed;
+        background-size: cover;
+        height: 100vh;
+    }
+
+    .login-container {
+        background: rgba(255, 255, 255, 0.8); /* Fondo semitransparente */
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header h3 {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+
+    .btn-block {
+        font-size: 1.1rem;
+        padding: 10px;
+    }
+
+    .text-muted {
+        font-size: 0.9rem;
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .form-group {
+        flex: 0 0 48%; /* Ajusta el ancho de los inputs */
+        margin-bottom: 15px;
+    }
+
+        .form-group.full-width {
+            flex: 0 0 100%;
+        }
+</style>
+
+<div class="container d-flex justify-content-center align-items-center h-100">
+    <div class="login-container col-md-8">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3><i class="fas fa-user-plus"></i> Registro</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="userType"><i class="fas fa-user-tag"></i> Tipo de Usuario</label>
+                    <select class="form-control" id="userType" required onchange="showForm()">
+                        <option value="" disabled selected>Seleccione un tipo de usuario</option>
+                        <option value="personal">Personal</option>
+                        <option value="administrador">Administrador</option>
+                    </select>
                 </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="userType"><i class="fas fa-user-tag"></i> Tipo de Usuario</label>
-                        <select class="form-control" id="userType" required onchange="showForm()">
-                            <option value="" disabled selected>Seleccione un tipo de usuario</option>
-                            <option value="beneficiario">Beneficiario</option>
-                            <option value="personal">Personal</option>
-                            <option value="administrador">Administrador</option>
-                        </select>
+                <!-- Formulario Personal -->
+                <form id="personalForm" asp-controller="Register" asp-action="RegisterPersonal" method="post" style="display: none;">
+                    <input type="hidden" name="userType" value="personal" />
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nombres"><i class="fas fa-user"></i> Nombres</label>
+                            <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Ingrese sus nombres" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="apellido1"><i class="fas fa-user"></i> Primer Apellido</label>
+                            <input type="text" class="form-control" id="apellido1" name="apellido1" placeholder="Ingrese su primer apellido" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="apellido2"><i class="fas fa-user"></i> Segundo Apellido</label>
+                            <input type="text" class="form-control" id="apellido2" name="apellido2" placeholder="Ingrese su segundo apellido">
+                        </div>
+                        <div class="form-group">
+                            <label for="dni"><i class="fas fa-id-card"></i> DNI</label>
+                            <input type="text" class="form-control" id="dni" name="dni" placeholder="Ingrese su DNI" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="telefono"><i class="fas fa-phone"></i> Teléfono</label>
+                            <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ingrese su teléfono">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="password"><i class="fas fa-lock"></i> Contraseña</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese su contraseña" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="confirmPassword"><i class="fas fa-lock"></i> Confirmar Contraseña</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirme su contraseña" required>
+                        </div>
                     </div>
+                    <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-user-plus"></i> Registrar Personal</button>
+                </form>
 
-                    <!-- Formulario Beneficiario -->
-                    <form id="beneficiarioForm" asp-controller="Register" asp-action="Register" method="post" style="display: none;">
-                        <input type="hidden" name="userType" value="beneficiario" />
+                <!-- Formulario Administrador -->
+                <form id="administradorForm" asp-controller="Register" asp-action="RegisterAdministrador" method="post" style="display: none;">
+                    <input type="hidden" name="userType" value="administrador" />
+                    <div class="form-row">
                         <div class="form-group">
                             <label for="nombres"><i class="fas fa-user"></i> Nombres</label>
                             <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Ingrese sus nombres" required>
@@ -46,116 +125,19 @@
                             <label for="telefono"><i class="fas fa-phone"></i> Teléfono</label>
                             <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ingrese su teléfono">
                         </div>
-                        <div class="form-group">
-                            <label for="liderSogId"><i class="fas fa-id-badge"></i> Lider Sog ID</label>
-                            <input type="text" class="form-control" id="liderSogId" name="liderSogId" placeholder="Ingrese su Lider Sog ID">
-                        </div>
-                        <div class="form-group">
+                        <div class="form-group full-width">
                             <label for="password"><i class="fas fa-lock"></i> Contraseña</label>
                             <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese su contraseña" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group full-width">
                             <label for="confirmPassword"><i class="fas fa-lock"></i> Confirmar Contraseña</label>
                             <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirme su contraseña" required>
                         </div>
-                        <div class="form-group" id="vehicleIdGroup">
-                            <label for="placa"><i class="fas fa-car"></i> Placa del Vehículo</label>
-                            <input type="text" class="form-control" id="vehiclePlaca" name="vehiclePlaca" placeholder="Ingrese la placa del vehículo" required>
-                        </div>
-                        <div class="form-group" id="vehicleMarcaGroup">
-                            <label for="marca"><i class="fas fa-car"></i> Marca del Vehículo</label>
-                            <input type="text" class="form-control" id="vehicleMarca" name="vehicleMarca" placeholder="Ingrese la marca del vehículo" required>
-                        </div>
-                        <div class="form-group" id="vehicleModeloGroup">
-                            <label for="modelo"><i class="fas fa-car"></i> Modelo del Vehículo</label>
-                            <input type="text" class="form-control" id="vehicleModelo" name="vehicleModelo" placeholder="Ingrese el modelo del vehículo">
-                        </div>
-                        <div class="form-group" id="vehicleTipoGroup">
-                            <label for="tipo"><i class="fas fa-car"></i> Tipo del Vehículo</label>
-                            <input type="text" class="form-control" id="vehicleTipo" name="vehicleTipo" placeholder="Ingrese el tipo del vehículo">
-                        </div>
-                        <div class="form-group" id="vehicleTarjetaGroup">
-                            <label for="tarjeta_vehiculo"><i class="fas fa-car"></i> Tarjeta Vehículo</label>
-                            <input type="text" class="form-control" id="vehicleTarjeta" name="vehicleTarjeta" placeholder="Ingrese el número de la tarjeta del vehículo">
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-user-plus"></i> Registrar Beneficiario</button>
-                    </form>
-
-                    <!-- Formulario Personal -->
-                    <form id="personalForm" asp-controller="Register" asp-action="RegisterPersonal" method="post" style="display: none;">
-                        <input type="hidden" name="userType" value="personal" />
-                        <div class="form-group">
-                            <label for="nombres"><i class="fas fa-user"></i> Nombres</label>
-                            <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Ingrese sus nombres" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="apellido1"><i class="fas fa-user"></i> Primer Apellido</label>
-                            <input type="text" class="form-control" id="apellido1" name="apellido1" placeholder="Ingrese su primer apellido" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="apellido2"><i class="fas fa-user"></i> Segundo Apellido</label>
-                            <input type="text" class="form-control" id="apellido2" name="apellido2" placeholder="Ingrese su segundo apellido">
-                        </div>
-                        <div class="form-group">
-                            <label for="dni"><i class="fas fa-id-card"></i> DNI</label>
-                            <input type="text" class="form-control" id="dni" name="dni" placeholder="Ingrese su DNI" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="telefono"><i class="fas fa-phone"></i> Teléfono</label>
-                            <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ingrese su teléfono">
-                        </div>
-                        <div class="form-group">
-                            <label for="liderSogId"><i class="fas fa-id-badge"></i> Lider Sog ID</label>
-                            <input type="text" class="form-control" id="liderSogId" name="liderSogId" placeholder="Ingrese su Lider Sog ID">
-                        </div>
-                        <div class="form-group">
-                            <label for="password"><i class="fas fa-lock"></i> Contraseña</label>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese su contraseña" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="confirmPassword"><i class="fas fa-lock"></i> Confirmar Contraseña</label>
-                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirme su contraseña" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-user-plus"></i> Registrar Personal</button>
-                    </form>
-
-                    <!-- Formulario Administrador -->
-                    <form id="administradorForm" asp-controller="Register" asp-action="RegisterAdministrador" method="post" style="display: none;">
-                        <input type="hidden" name="userType" value="administrador" />
-                        <div class="form-group">
-                            <label for="nombres"><i class="fas fa-user"></i> Nombres</label>
-                            <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Ingrese sus nombres" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="apellido1"><i class="fas fa-user"></i> Primer Apellido</label>
-                            <input type="text" class="form-control" id="apellido1" name="apellido1" placeholder="Ingrese su primer apellido" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="apellido2"><i class="fas fa-user"></i> Segundo Apellido</label>
-                            <input type="text" class="form-control" id="apellido2" name="apellido2" placeholder="Ingrese su segundo apellido">
-                        </div>
-                        <div class="form-group">
-                            <label for="dni"><i class="fas fa-id-card"></i> DNI</label>
-                            <input type="text" class="form-control" id="dni" name="dni" placeholder="Ingrese su DNI" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="telefono"><i class="fas fa-phone"></i> Teléfono</label>
-                            <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Ingrese su teléfono">
-                        </div>
-                        <div class="form-group">
-                            <label for="liderSogId"><i class="fas fa-id-badge"></i> Lider Sog ID</label>
-                            <input type="text" class="form-control" id="liderSogId" name="liderSogId" placeholder="Ingrese su Lider Sog ID">
-                        </div>
-                        <div class="form-group">
-                            <label for="password"><i class="fas fa-lock"></i> Contraseña</label>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese su contraseña" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="confirmPassword"><i class="fas fa-lock"></i> Confirmar Contraseña</label>
-                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirme su contraseña" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-user-plus"></i> Registrar Administrador</button>
-                    </form>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-user-plus"></i> Registrar Administrador</button>
+                </form>
+                <div class="text-center mt-3">
+                    <a href="@Url.Action("Index", "Login")" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Volver al Login</a>
                 </div>
             </div>
         </div>
@@ -164,20 +146,19 @@
 
 <script>
     function showForm() {
-        const userType = document.getElementById('userType').value;
+        let userType = document.getElementById("userType").value;
+        let personalForm = document.getElementById("personalForm");
+        let administradorForm = document.getElementById("administradorForm");
 
         // Ocultar todos los formularios
-        document.getElementById('beneficiarioForm').style.display = 'none';
-        document.getElementById('personalForm').style.display = 'none';
-        document.getElementById('administradorForm').style.display = 'none';
+        personalForm.style.display = "none";
+        administradorForm.style.display = "none";
 
         // Mostrar el formulario correspondiente
-        if (userType === 'beneficiario') {
-            document.getElementById('beneficiarioForm').style.display = 'block';
-        } else if (userType === 'personal') {
-            document.getElementById('personalForm').style.display = 'block';
-        } else if (userType === 'administrador') {
-            document.getElementById('administradorForm').style.display = 'block';
+        if (userType === "personal") {
+            personalForm.style.display = "block";
+        } else if (userType === "administrador") {
+            administradorForm.style.display = "block";
         }
     }
 </script>
