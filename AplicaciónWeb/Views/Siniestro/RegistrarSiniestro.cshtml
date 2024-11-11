@@ -2,60 +2,64 @@
 @using EntidadesProyecto
 
 <div class="container mt-4">
-    <h2>Registrar Siniestro</h2>
+    <h2 class="text-center">Registrar Siniestro</h2>
     <form asp-action="RegistrarSiniestro" method="post">
-        <div class="form-group">
-            <label>Tipo de Siniestro</label>
-            <select asp-for="Tipo" class="form-control">
-                <option value="Robo">Robo</option>
-                <option value="Choque">Choque</option>
-                <option value="Daños Menores">Daños Menores</option>
-                <option value="Pérdida Total">Pérdida Total</option>
-            </select>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label>Tipo de Siniestro</label>
+                <select asp-for="Tipo" class="form-control">
+                    <option value="Robo">Robo</option>
+                    <option value="Choque">Choque</option>
+                    <option value="Daños Menores">Daños Menores</option>
+                    <option value="Pérdida Total">Pérdida Total</option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label>Fecha del Siniestro</label>
+                <input asp-for="FechaSiniestro" type="date" class="form-control" />
+            </div>
+
+            <div class="form-group col-md-6">
+                <label>Departamento</label>
+                <select id="Departamento" asp-for="IdDepartamento" class="form-control">
+                    <option value="">Seleccione un departamento</option>
+                    @foreach (var departamento in ViewBag.Departamentos as List<Departamento>)
+                    {
+                        <option value="@departamento.Id">@departamento.Descripcion</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label>Provincia</label>
+                <select id="Provincia" asp-for="IdProvincia" class="form-control">
+                    <option value="">Seleccione una provincia</option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label>Distrito</label>
+                <select id="Distrito" asp-for="IdDistrito" class="form-control">
+                    <option value="">Seleccione un distrito</option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label>Ubicación Específica</label>
+                <input asp-for="Ubicacion" type="text" class="form-control" />
+            </div>
+
+            <div class="form-group col-md-12">
+                <label>Descripción del Siniestro</label>
+                <textarea asp-for="Descripcion" class="form-control"></textarea>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Fecha del Siniestro</label>
-            <input asp-for="FechaSiniestro" type="date" class="form-control" />
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary">Registrar Siniestro</button>
+            <a href="@Url.Action("BeneficiarioDashboard", "Beneficiario")" class="btn btn-secondary ml-2">Volver al Dashboard</a>
         </div>
-
-        <div class="form-group">
-            <label>Departamento</label>
-            <select id="Departamento" asp-for="IdDepartamento" class="form-control">
-                <option value="">Seleccione un departamento</option>
-                @foreach (var departamento in ViewBag.Departamentos as List<Departamento>)
-                {
-                    <option value="@departamento.Id">@departamento.Descripcion</option>
-                }
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Provincia</label>
-            <select id="Provincia" asp-for="IdProvincia" class="form-control">
-                <option value="">Seleccione una provincia</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Distrito</label>
-            <select id="Distrito" asp-for="IdDistrito" class="form-control">
-                <option value="">Seleccione un distrito</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Ubicación Específica</label>
-            <input asp-for="Ubicacion" type="text" class="form-control" />
-        </div>
-
-        <div class="form-group">
-            <label>Descripción del Siniestro</label>
-            <textarea asp-for="Descripcion" class="form-control"></textarea>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Registrar Siniestro</button>
-        <a href="@Url.Action("BeneficiarioDashboard", "Beneficiario")" class="btn btn-secondary ml-2">Volver al Dashboard</a>
     </form>
 </div>
 
@@ -92,3 +96,24 @@
         });
     });
 </script>
+
+<style>
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .form-group {
+        flex: 0 0 48%;
+        margin-bottom: 15px;
+    }
+
+        .form-group.col-md-12 {
+            flex: 0 0 100%;
+        }
+
+    .btn-block {
+        width: 100%;
+    }
+</style>

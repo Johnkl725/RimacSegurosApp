@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AccesoDatos\AccesoDatos.csproj" />
     <ProjectReference Include="..\DbContext\MiAplicacion.Data.csproj" />
+    <ProjectReference Include="..\EntidadesProyecto\EntidadesProyecto.csproj" />
   </ItemGroup>
 
 </Project>

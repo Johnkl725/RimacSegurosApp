@@ -13,15 +13,13 @@ namespace LogicaNegocio
             _usuarioDA = new UsuarioDA(context);
         }
 
-        public Usuario RegisterUser(string nombres, string apellido1, string apellido2, string dni, string telefono, string liderSogId, string password, string userType, string placa, string marca, string modelo, string tipo, int tarjeta_vehiculo)
+        public Usuario CrearUsuario(string nombres, string apellido1, string apellido2, string dni, string telefono,string contraseña, string userType)
         {
-            // Verificar que userType no esté vacío o nulo
             if (string.IsNullOrWhiteSpace(userType))
             {
                 throw new ArgumentException("El tipo de usuario no puede estar vacío o nulo.");
             }
 
-            // Crear una instancia del objeto Usuario
             Usuario usuario;
             switch (userType.ToLower())
             {
@@ -32,18 +30,16 @@ namespace LogicaNegocio
                         Apellido1 = apellido1,
                         Apellido2 = apellido2,
                         Dni = dni,
-                        Telefono = telefono,
-                        LiderSogId = liderSogId
+                        Telefono = telefono
                     };
                     break;
                 default:
                     throw new ArgumentException("Tipo de usuario desconocido.");
             }
 
-            // Registrar el usuario en la base de datos
-            return _usuarioDA.RegistrarUsuario(usuario, userType, password,placa,marca,modelo,tipo,tarjeta_vehiculo);
+            return _usuarioDA.RegistrarBeneficiario(usuario, userType,contraseña);
         }
-        public Usuario RegisterUser(string nombres, string apellido1, string apellido2, string dni, string telefono, string liderSogId, string password, string userType)
+        public Usuario RegisterUser(string nombres, string apellido1, string apellido2, string dni, string telefono, string password, string userType)
         {
             // Verificar que userType no esté vacío o nulo
             if (string.IsNullOrWhiteSpace(userType))
@@ -62,8 +58,7 @@ namespace LogicaNegocio
                         Apellido1 = apellido1,
                         Apellido2 = apellido2,
                         Dni = dni,
-                        Telefono = telefono,
-                        LiderSogId = liderSogId
+                        Telefono = telefono
                     };
                     break;
 
@@ -74,8 +69,7 @@ namespace LogicaNegocio
                         Apellido1 = apellido1,
                         Apellido2 = apellido2,
                         Dni = dni,
-                        Telefono = telefono,
-                        LiderSogId = liderSogId
+                        Telefono = telefono
                     };
                     break;
 

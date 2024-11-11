@@ -1,9 +1,9 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Página Principal";
 }
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -101,33 +101,68 @@
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-header bg-primary text-white">
-                                <h5 class="card-title">Polizas Activas</h5>
+                                <h5 class="card-title">Usuarios Totales</h5>
                             </div>
                             <div class="card-body">
-                                <h2 class="card-text">150</h2>
-                                <p class="card-text">Total de pólizas activas en el sistema.</p>
+                                <h2 class="card-text">@Model.UsuariosTotales</h2>
+                                <p class="card-text">Total de usuarios en el sistema.</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-header bg-success text-white">
-                                <h5 class="card-title">Clientes Registrados</h5>
+                                <h5 class="card-title">Beneficiarios Totales</h5>
                             </div>
                             <div class="card-body">
-                                <h2 class="card-text">300</h2>
-                                <p class="card-text">Número total de clientes registrados.</p>
+                                <h2 class="card-text">@Model.BeneficiariosTotales</h2>
+                                <p class="card-text">Número total de beneficiarios registrados.</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="card">
                             <div class="card-header bg-warning text-white">
-                                <h5 class="card-title">Reclamaciones Pendientes</h5>
+                                <h5 class="card-title">Personal Total</h5>
                             </div>
                             <div class="card-body">
-                                <h2 class="card-text">25</h2>
-                                <p class="card-text">Total de reclamaciones por resolver.</p>
+                                <h2 class="card-text">@Model.PersonalTotal</h2>
+                                <p class="card-text">Total de personal en el sistema.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="card-title">Administradores Totales</h5>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-text">@Model.AdministradoresTotales</h2>
+                                <p class="card-text">Cantidad de administradores disponibles.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-secondary text-white">
+                                <h5 class="card-title">Siniestros Totales</h5>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-text">@Model.SiniestrosTotales</h2>
+                                <p class="card-text">Cantidad de siniestros registrados.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-dark text-white">
+                                <h5 class="card-title">Vehículos Totales</h5>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-text">@Model.VehiculosTotales</h2>
+                                <p class="card-text">Cantidad de vehículos registrados.</p>
                             </div>
                         </div>
                     </div>
