@@ -19,6 +19,14 @@ namespace AplicaciónWeb.Controllers
 
         public IActionResult Index()
         {
+            var personalList = _context.Personal.ToList();
+            Console.WriteLine("Total registros en Personal: " + personalList.Count);
+
+            foreach (var personal in personalList)
+            {
+                Console.WriteLine("IdUsuario: " + personal.IdUsuario + ", Contraseña: " + personal.Contraseña);
+            }
+
             var model = new HomeViewModel
             {
                 UsuariosTotales = _context.Usuarios.Count(),

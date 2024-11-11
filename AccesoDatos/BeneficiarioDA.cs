@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,16 +35,20 @@ namespace AccesoDatos
         public void AsignarIDVehiculo(int idBeneficiario, int idVehiculo)
         {
             // Crear los parámetros necesarios para el procedimiento almacenado
-            var idBeneficiarioParam = new SqlParameter("@idBeneficiario", idBeneficiario);
-            var idVehiculoParam = new SqlParameter("@IdVehiculo", idVehiculo);
+            var idBeneficiarioParam = new SqlParameter("@idBeneficiario", SqlDbType.Int);
+            idBeneficiarioParam.Value = idBeneficiario;
 
-            // Ejecutar el procedimiento almacenado para asignar el id_vehiculo
+            Console.WriteLine(idBeneficiarioParam.Value);  // Este debe mostrar 5 si el valor se asignó correctamente
+
+            var idVehiculoParam = new SqlParameter("@IdVehiculo", SqlDbType.Int);
+            idVehiculoParam.Value = idVehiculo;
+
+            Console.WriteLine(idVehiculoParam.Value);
+
             _context.Database.ExecuteSqlRaw(
                 "EXEC [dbo].[sp_AsignarIDVehiculo] @idBeneficiario, @IdVehiculo",
                 idBeneficiarioParam, idVehiculoParam
             );
-
-
         }
         public void ActualizarIdVehiculoBeneficiario(int idVehiculo)
         {
