@@ -50,14 +50,14 @@ namespace AccesoDatos
                     throw new Exception("El usuario no se registró correctamente, ID de usuario devuelto es 0.");
                 }
 
-                // Insertar en la tabla de Beneficiario
+                // Insertar en la tabla de Beneficiario sin asignar un IdVehiculo inicialmente
                 var beneficiario = usuario as Beneficiario;
                 if (beneficiario != null)
                 {
                     _context.Database.ExecuteSqlRaw(
                         "EXEC sp_RegistrarBeneficiario @id_usuario, @IdVehiculo, @Password",
                         new SqlParameter("@id_usuario", userId),
-                        new SqlParameter("@IdVehiculo", 3), // Aquí asumes un ID de vehículo estático; considera parametrizarlo si es variable
+                        new SqlParameter("@IdVehiculo", DBNull.Value), // Se pasa NULL para id_vehiculo
                         new SqlParameter("@Password", password)
                     );
                 }
@@ -74,6 +74,7 @@ namespace AccesoDatos
                 return null;
             }
         }
+
 
         public Usuario RegistrarUsuario(Usuario usuario, string userType, string password)
         {
