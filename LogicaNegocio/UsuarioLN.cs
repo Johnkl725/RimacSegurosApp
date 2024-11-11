@@ -91,6 +91,12 @@ namespace LogicaNegocio
             // Llama al método en UsuarioDA para obtener el perfil y lo retorna
             return _usuarioDA.ObtenerPerfilPorDni(dni);
         }
+        public IEnumerable<Usuario> ObtenerUsuariosPorTipo(string tipoUsuario)
+        {
+            // Llama al método en UsuarioDA para obtener la lista de usuarios del tipo especificado y la retorna
+            return _usuarioDA.ObtenerUsuariosPorTipo(tipoUsuario);
+        }
+
 
     }
 }
