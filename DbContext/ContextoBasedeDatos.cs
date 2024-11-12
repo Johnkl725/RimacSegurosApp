@@ -32,6 +32,30 @@ namespace MiAplicacion.Data
             // Configuración de Vehiculo
             modelBuilder.Entity<Vehiculo>().ToTable("Vehiculo");
 
+            modelBuilder.Entity<Taller>(entity =>
+            {
+                entity.ToTable("Taller"); // Nombre de la tabla en la base de datos
+                entity.HasKey(t => t.Id); // Clave primaria
+
+                // Propiedades de Taller
+                entity.Property(t => t.IdProveedor).HasColumnName("id_proveedor");
+                entity.Property(t => t.Nombre).IsRequired().HasMaxLength(100);
+                entity.Property(t => t.Direccion).HasMaxLength(200);
+                entity.Property(t => t.Telefono).HasMaxLength(15);
+                entity.Property(t => t.Correo).HasMaxLength(100);
+                entity.Property(t => t.Ciudad).HasMaxLength(50);
+                entity.Property(t => t.Tipo).HasMaxLength(50);
+                entity.Property(t => t.Capacidad);
+                entity.Property(t => t.Descripcion).HasMaxLength(500);
+                entity.Property(t => t.Calificacion);
+                entity.Property(t => t.Estado).HasMaxLength(20);
+
+                entity.HasMany(t => t.Siniestros)
+              .WithOne() // No se requiere una propiedad de navegación en Siniestro
+              .HasForeignKey(s => s.IdTaller)
+              .OnDelete(DeleteBehavior.Restrict);
+            });
+
             // Configuración de Poliza
             modelBuilder.Entity<Poliza>(entity =>
             {
@@ -98,6 +122,9 @@ namespace MiAplicacion.Data
                 entity.Property(s => s.FechaActualizacion).HasColumnName("fecha_actualizacion");
                 entity.Property(s => s.Ubicacion).HasColumnName("ubicacion").HasMaxLength(30);
                 entity.Property(s => s.Descripcion).HasColumnName("descripcion");
+
+
+
 
                 // Configuración de relaciones
                 entity.HasOne(s => s.Presupuesto)

@@ -13,14 +13,39 @@ public class AdminDA
         _context = context;
     }
 
-    // Obtener todos los siniestros con presupuestos para revisar
-    public List<Siniestro> ObtenerSiniestrosConPresupuestos()
+    public List<SiniestroPresupuestoViewModel> ObtenerSiniestrosConPresupuestos()
     {
         return _context.Siniestros
-                       .Include(s => s.Presupuesto)
-                       .Where(s => s.Presupuesto != null)
+                       .Where(s => s.IdPresupuesto != null) // Solo siniestros con presupuesto asignado
+                       .Join(_context.Polizas,
+                             s => s.IdPoliza,
+                             p => p.Id,
+                             (s, p) => new { Siniestro = s, Poliza = p })
+                       .Join(_context.Beneficiarios,
+                             sp => sp.Poliza.IdBeneficiario,
+                             b => b.Id,
+                             (sp, b) => new { sp.Siniestro, sp.Poliza, Beneficiario = b })
+                       .Join(_context.Vehiculos,
+                             spb => spb.Beneficiario.IdVehiculo,
+                             v => v.Id,
+                             (spb, v) => new { spb.Siniestro, spb.Poliza, spb.Beneficiario, Vehiculo = v })
+                       .Join(_context.Talleres,
+                             spbv => spbv.Siniestro.IdTaller,
+                             t => t.Id,
+                             (spbv, t) => new SiniestroPresupuestoViewModel
+                             {
+                                 NumeroSiniestro = $"SIN-{spbv.Siniestro.IdSiniestro:D3}", // Formato "SIN-001"
+                                 FechaAsignacion = spbv.Siniestro.FechaSiniestro, // Asumiendo que esta es la fecha de asignación
+                                 NombreTaller = t.Nombre,
+                                 TipoSiniestro = spbv.Siniestro.Tipo,
+                                 Placa = spbv.Vehiculo.Placa, // Obteniendo la placa del vehículo
+                                 IdSiniestro = spbv.Siniestro.IdSiniestro
+                             })
                        .ToList();
     }
+
+
+
 
 
     // Obtener un siniestro por su Id con presupuesto detallado
