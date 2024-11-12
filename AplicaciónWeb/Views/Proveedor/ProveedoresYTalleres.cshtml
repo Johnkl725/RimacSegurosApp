@@ -1,0 +1,72 @@
+﻿@model AplicaciónWeb.Models.ProveedorTallerViewModel
+
+<div class="d-flex justify-content-between align-items-center my-4">
+    <h2>Proveedores y Talleres</h2>
+    <div>
+        <a href="@Url.Action("Crear", "Proveedor")" class="btn btn-primary me-2">Agregar nuevo Proveedor</a>
+        <a href="@Url.Action("Crear", "Taller")" class="btn btn-primary">Agregar Taller</a>
+    </div>
+</div>
+
+<!-- Sección de Proveedores -->
+<h3>Proveedores</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>RUC</th>
+            <th>Teléfono</th>
+            <th>Correo</th>
+            <th>Calificación</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var proveedor in Model.Proveedores)
+        {
+            <tr>
+                <td>@proveedor.Nombre</td>
+                <td>@proveedor.Ruc</td>
+                <td>@proveedor.Telefono</td>
+                <td>@proveedor.Correo</td>
+                <td>@proveedor.Calificacion</td>
+                <td>@proveedor.Descripcion</td>
+                <td>
+                    <a href="@Url.Action("Editar", "Proveedor", new { id = proveedor.Id })" class="btn btn-warning">Editar</a>
+                    <a href="@Url.Action("Eliminar", "Proveedor", new { id = proveedor.Id })" class="btn btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Sección de Talleres -->
+<h3>Talleres</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Dirección</th>
+            <th>Ciudad</th>
+            <th>Capacidad</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var taller in Model.Talleres)
+        {
+            <tr>
+                <td>@taller.Nombre</td>
+                <td>@taller.Direccion</td>
+                <td>@taller.Ciudad</td>
+                <td>@taller.Capacidad</td>
+                <td>
+                    <a href="@Url.Action("Detalle", "Taller", new { id = taller.Id })" class="btn btn-info">Ver</a>
+                    <a href="@Url.Action("Editar", "Taller", new { id = taller.Id })" class="btn btn-warning">Editar</a>
+                    <a href="@Url.Action("Eliminar", "Taller", new { id = taller.Id })" class="btn btn-danger">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

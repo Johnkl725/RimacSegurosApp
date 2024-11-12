@@ -28,6 +28,8 @@ builder.Services.AddScoped<AdminDA>();
 builder.Services.AddScoped<AdminLN>();
 builder.Services.AddScoped<ProveedorDA>();
 builder.Services.AddScoped<ProveedorLN>();
+builder.Services.AddScoped<TallerDA>();
+builder.Services.AddScoped<TallerLN>();
 
 
 // Configura la autenticaci�n usando cookies

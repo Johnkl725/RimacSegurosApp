@@ -2,7 +2,12 @@
 using LogicaNegocio;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using MiAplicacion.Models;
+using AplicaciónWeb.Models;
+
+
 
 namespace AplicaciónWeb.Controllers
 {
@@ -10,10 +15,35 @@ namespace AplicaciónWeb.Controllers
     public class ProveedorController : Controller
     {
         private readonly ProveedorLN _proveedorLN;
+        private readonly TallerLN _tallerLN;
 
-        public ProveedorController(ProveedorLN proveedorLN)
+        // Constructor que inyecta la lógica de negocio para Proveedor y Taller
+        public ProveedorController(ProveedorLN proveedorLN, TallerLN tallerLN)
         {
             _proveedorLN = proveedorLN;
+            _tallerLN = tallerLN;
+        }
+
+        // Acción que muestra la lista combinada de Proveedores y Talleres
+        [HttpGet("ProveedoresYTalleres")]
+        public async Task<IActionResult> ProveedoresYTalleres()
+        {
+            try
+            {
+                var viewModel = new ProveedorTallerViewModel
+                {
+                    Proveedores = await _proveedorLN.ObtenerProveedoresAsync(),
+                    Talleres = await Task.Run(() => _tallerLN.ObtenerTodosLosTalleres())
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener proveedores y talleres: {ex.Message}");
+                ModelState.AddModelError("", "No se pueden mostrar los datos en este momento.");
+                return View("Error");
+            }
         }
 
         // GET: Muestra la vista de índice con todos los proveedores
