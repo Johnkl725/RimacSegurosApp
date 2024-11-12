@@ -16,7 +16,10 @@ public class AdminController : Controller
     }
     public IActionResult GestionarPresupuestos()
     {
-        var siniestros = _adminLN.ObtenerSiniestrosConPresupuestos();
+        // Obtiene la lista de siniestros con presupuestos
+        List<SiniestroPresupuestoViewModel> siniestros = _adminLN.ObtenerSiniestrosConPresupuestos();
+
+        // Pasa la lista a la vista
         return View(siniestros);
     }
 

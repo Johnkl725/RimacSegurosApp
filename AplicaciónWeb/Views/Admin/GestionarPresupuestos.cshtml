@@ -1,77 +1,37 @@
 ﻿@using EntidadesProyecto
-@model IEnumerable<Siniestro>
+@model IEnumerable<SiniestroPresupuestoViewModel>
 
-<h2>Gestionar Presupuestos</h2>
+<h2>Gestionar Presupuesto Detallado</h2>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>ID Siniestro</th>
-            <th>Tipo</th>
-            <th>Fecha del Siniestro</th>
-            <th>Estado del Presupuesto</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var siniestro in Model)
-        {
+<div class="table-responsive">
+    <table class="table">
+        <thead>
             <tr>
-                <td>@siniestro.IdSiniestro</td>
-                <td>@siniestro.Tipo</td>
-                <td>@siniestro.FechaSiniestro?.ToString("yyyy-MM-dd")</td>
-                <td>
-                    @if (siniestro.Presupuesto?.Estado == "Aprobado")
-                    {
-                        <span class="text-warning">Pendiente</span>
-                    }
-                    else if (siniestro.Presupuesto?.Estado == "Pagado")
-                    {
-                        <span class="text-success">Pagado</span>
-                    }
-                    else
-                    {
-                        <span class="text-muted">Estado desconocido</span>
-                    }
-                </td>
-
-                <td>
-                    @if (siniestro.Presupuesto != null && siniestro.Presupuesto.Estado == "Aprobado")
-                    {
-                        <form asp-action="PagarIndemnizacion" method="post" style="display:inline;">
-                            <input type="hidden" name="idSiniestro" value="@siniestro.IdSiniestro" />
-                            <button type="submit" class="btn btn-success">Pagar</button>
-                        </form>
-                    }
-                    else if (siniestro.Presupuesto != null && siniestro.Presupuesto.Estado == "Pendiente")
-                    {
-                        <form asp-action="AprobarPresupuesto" method="post" style="display:inline;">
-                            <input type="hidden" name="idSiniestro" value="@siniestro.IdSiniestro" />
-                            <button type="submit" class="btn btn-primary">Aprobar</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <span class="text-muted">No hay acciones disponibles</span>
-                    }
-                </td>
+                <th>Número de Siniestro</th>
+                <th>Fecha de Asignación</th>
+                <th>Taller Asignado</th>
+                <th>Tipo de Siniestro</th>
+                <th>Placa</th>
+                <th>Acción</th>
             </tr>
-        }
-    </tbody>
-</table>
-
-<!-- Mensajes de éxito o error -->
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
-
-<div class="text-center mt-3">
-    <a href="@Url.Action("AdminDashboard", "Admin")" class="btn btn-outline-secondary btn-sm">
-        <i class="fas fa-arrow-left me-2"></i> Volver al Dashboard
-    </a>
+        </thead>
+        <tbody>
+            @foreach (var siniestro in Model)
+            {
+                <tr>
+                    <td>@siniestro.NumeroSiniestro</td>
+                    <td>@siniestro.FechaAsignacion?.ToString("yyyy-MM-dd")</td>
+                    <td>@siniestro.NombreTaller</td>
+                    <td>@siniestro.TipoSiniestro</td>
+                    <td>@siniestro.Placa</td>
+                    <td>
+                        <form asp-action="EditarPresupuesto" method="get">
+                            <input type="hidden" name="idSiniestro" value="@siniestro.IdSiniestro" />
+                            <button type="submit" class="btn btn-primary btn-sm">Seleccionar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>

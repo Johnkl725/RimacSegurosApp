@@ -11,7 +11,8 @@ public class AdminLN
     }
 
     // Obtener todos los siniestros con presupuestos
-    public List<Siniestro> ObtenerSiniestrosConPresupuestos()
+    // Método para obtener siniestros con presupuestos asignados
+    public List<SiniestroPresupuestoViewModel> ObtenerSiniestrosConPresupuestos()
     {
         return _adminDA.ObtenerSiniestrosConPresupuestos();
     }
