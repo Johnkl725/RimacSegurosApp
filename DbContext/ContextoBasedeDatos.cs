@@ -23,6 +23,8 @@ namespace MiAplicacion.Data
         public DbSet<TipoPoliza> TipoPolizas { get; set; }
         public DbSet<Proveedor> Proveedor { get; set; }
         public DbSet<Presupuesto> Presupuestos { get; set; }
+        public DbSet<Taller> Talleres { get; set; }
+
 
         // Configuración del modelo
         protected override void OnModelCreating(ModelBuilder modelBuilder)
