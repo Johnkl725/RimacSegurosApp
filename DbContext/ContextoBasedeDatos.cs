@@ -21,6 +21,7 @@ namespace MiAplicacion.Data
         public DbSet<Vehiculo> Vehiculos { get; set; }
         public DbSet<Poliza> Polizas { get; set; }
         public DbSet<TipoPoliza> TipoPolizas { get; set; }
+        public DbSet<Proveedor> Proveedor { get; set; }
         public DbSet<Presupuesto> Presupuestos { get; set; }
 
         // Configuración del modelo
