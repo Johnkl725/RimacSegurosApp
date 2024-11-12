@@ -41,6 +41,10 @@ namespace LogicaNegocio
         {
             return _siniestroDA.ObtenerDistritosPorProvinciaAsync(provinciaId);
         }
+        public async Task<List<Siniestro>> ObtenerTodosLosSiniestros()
+        {
+            return await _siniestroDA.ObtenerTodosLosSiniestrosAsync();
+        }
 
     }
 }

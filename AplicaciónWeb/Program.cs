@@ -3,6 +3,7 @@ using MiAplicacion.Data;
 using LogicaNegocio;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using EntidadesProyecto;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,10 @@ builder.Services.AddScoped<BeneficiarioLN>();  // Añadido
 builder.Services.AddScoped<BeneficiarioDA>();  // Añadido
 builder.Services.AddScoped<VehiculoLN>();     // Añadido
 builder.Services.AddScoped<VehiculoDA>();     // Añadido
+builder.Services.AddScoped<ReclamacionLN>(); // Lógica de negocio para Reclamaciones
+builder.Services.AddScoped<ReclamacionDA>(); // Acceso a datos para Reclamaciones
+builder.Services.AddScoped<DocumentoReclamacionLN>(); // Lógica de negocio para Documentos de Reclamaciones
+builder.Services.AddScoped<DocumentoReclamacionDA>();
 
 
 // Configura la autenticación usando cookies

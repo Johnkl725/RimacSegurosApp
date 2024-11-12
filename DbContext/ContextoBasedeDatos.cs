@@ -20,6 +20,9 @@ namespace MiAplicacion.Data
         public DbSet<Provincia> Provincia { get; set; } // Cambio a plural
         public DbSet<Distrito> Distrito { get; set; } // Cambio a plural
         public DbSet<Vehiculo> Vehiculos { get; set; }
+        // Propiedades DbSet para las nuevas tablas
+        public DbSet<Reclamacion> Reclamaciones { get; set; }
+        public DbSet<DocumentosReclamacion> DocumentosReclamacion { get; set; }
 
 
         // Configuración del modelo
@@ -102,6 +105,38 @@ namespace MiAplicacion.Data
                 entity.Property(a => a.Contraseña)
                 .HasColumnName("contraseña");
             });
+            // Configuración para Reclamacion
+            modelBuilder.Entity<Reclamacion>(entity =>
+            {
+                entity.ToTable("Reclamacion");
+                entity.HasKey(r => r.Id);
+
+                entity.Property(r => r.Estado).HasMaxLength(10).IsRequired().HasDefaultValue("Pendiente");
+                entity.Property(r => r.Tipo).HasMaxLength(20).IsRequired();
+                entity.Property(r => r.Descripcion).IsRequired();
+
+                entity.HasOne<Siniestro>()
+                      .WithMany()
+                      .HasForeignKey(r => r.IdSiniestro)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // Configuración para DocumentosReclamacion
+            modelBuilder.Entity<DocumentosReclamacion>(entity =>
+            {
+                entity.ToTable("DocumentosReclamacion");
+                entity.HasKey(d => d.IdDocumento);
+
+                entity.Property(d => d.Nombre).HasMaxLength(100).IsRequired();
+                entity.Property(d => d.Extension).HasMaxLength(50).IsRequired();
+                entity.Property(d => d.FechaSubida).HasDefaultValueSql("GETDATE()");
+
+                entity.HasOne<Reclamacion>()
+                      .WithMany(r => r.Documentos)
+                      .HasForeignKey(d => d.IdReclamacion)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
 
             base.OnModelCreating(modelBuilder);
         }

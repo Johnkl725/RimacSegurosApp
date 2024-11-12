@@ -76,5 +76,17 @@ namespace AccesoDatos
                 .Where(d => d.id_provincia == provinciaId)
                 .ToListAsync();
         }
+        public async Task<List<Siniestro>> ObtenerTodosLosSiniestrosAsync()
+        {
+            try
+            {
+                return await _context.Siniestros.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw new Exception("Error al obtener los siniestros.");
+            }
+        }
     }
 }

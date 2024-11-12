@@ -1,0 +1,71 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Ingresar Reclamación";
+}
+
+<h2>Ingresar Reclamación</h2>
+
+<form asp-action="IngresarReclamacion" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="idSiniestro">Siniestro</label>
+        <select name="idSiniestro" class="form-control" required>
+            <option value="">Seleccione un siniestro</option>
+            @if (ViewBag.Siniestros != null)
+            {
+                foreach (var siniestro in ViewBag.Siniestros as List<EntidadesProyecto.Siniestro>)
+                {
+                    <option value="@siniestro.IdSiniestro">Siniestro #@siniestro.IdSiniestro - @siniestro.Tipo</option>
+                }
+            }
+            else
+            {
+                <option value="">No hay siniestros disponibles</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="tipo">Tipo de Reclamación</label>
+        <select name="tipo" class="form-control" required>
+            <option value="">Seleccione un tipo</option>
+            <option value="Vehicular">Vehicular</option>
+            <option value="Robo">Robo</option>
+            <option value="Daño Material">Daño Material</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="descripcion">Descripción</label>
+        <textarea name="descripcion" class="form-control" rows="4" required></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="archivos">Subir Documentos</label>
+        <input type="file" name="archivos" multiple class="form-control" accept=".jpg,.jpeg,.png,.pdf" />
+        <small class="form-text text-muted">
+            Puede subir hasta 5 documentos (JPEG, PNG, PDF) con un tamaño máximo de 10MB cada uno.
+        </small>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enviar</button>
+    <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success mt-3">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger mt-3">
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
