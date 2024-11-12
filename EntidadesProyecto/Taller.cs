@@ -18,7 +18,7 @@ namespace EntidadesProyecto
         public string Tipo { get; set; }
         public int Capacidad { get; set; }
         public string Descripcion { get; set; }
-        public int Calificacion { get; set; }
+        public String Calificacion { get; set; }
         public string Estado { get; set; }
 
         // Relación con Siniestro
