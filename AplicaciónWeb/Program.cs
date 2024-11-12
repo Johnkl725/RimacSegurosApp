@@ -23,7 +23,9 @@ builder.Services.AddScoped<SiniestroDA>();
 builder.Services.AddScoped<BeneficiarioLN>();  // Añadido
 builder.Services.AddScoped<BeneficiarioDA>();  // Añadido
 builder.Services.AddScoped<VehiculoLN>();     // Añadido
-builder.Services.AddScoped<VehiculoDA>();     // Añadido
+builder.Services.AddScoped<VehiculoDA>();
+builder.Services.AddScoped<AdminDA>();
+builder.Services.AddScoped<AdminLN>();
 
 
 // Configura la autenticación usando cookies

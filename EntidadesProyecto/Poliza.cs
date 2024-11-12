@@ -7,8 +7,8 @@ namespace EntidadesProyecto
     {
         public int Id { get; set; } // Clave primaria
 
-        [Column("id_usuario")] // Coincide con el nombre en la base de datos
-        public int IdUsuario { get; set; }
+        [Column("id_beneficiario")] // Actualizado para coincidir con el nombre en la base de datos
+        public int IdBeneficiario { get; set; }
 
         [Column("id_tipo")] // Coincide con el nombre en la base de datos
         public int IdTipo { get; set; }
@@ -23,7 +23,7 @@ namespace EntidadesProyecto
         public string Estado { get; set; }
 
         // Propiedades de navegación
-        public Usuario Usuario { get; set; }
+        public Beneficiario Beneficiario { get; set; } // Cambiado a Beneficiario
         public TipoPoliza Tipo { get; set; }
     }
 

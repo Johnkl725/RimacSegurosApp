@@ -1,4 +1,5 @@
-﻿using EntidadesProyecto;
+﻿using AplicaciónWeb.Models;
+using EntidadesProyecto;
 using LogicaNegocio;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -27,21 +28,31 @@ namespace AplicaciónWeb.Controllers
         // POST: Procesa el formulario de registro de siniestro
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RegistrarSiniestro(Siniestro siniestro)
+        public async Task<IActionResult> RegistrarSiniestro(SiniestroViewModel model)
         {
-            // Asignación de valores por defecto para ciertos campos
-            siniestro.IdDocumento ??= 1;
-            siniestro.IdPoliza ??= 1;
-            siniestro.IdTaller ??= 1;
-            siniestro.IdPresupuesto ??= 1;
-
             if (ModelState.IsValid)
             {
+                // Convertir ViewModel a entidad `Siniestro`
+                var siniestro = new Siniestro
+                {
+                    IdDepartamento = model.IdDepartamento,
+                    IdProvincia = model.IdProvincia,
+                    IdDistrito = model.IdDistrito,
+                    IdDocumento = 2, // Valores por defecto
+                    IdPoliza = 5,
+                    IdTaller =  4,
+                    IdPresupuesto = 1,
+                    Tipo = model.Tipo,
+                    FechaSiniestro = model.FechaSiniestro,
+                    Ubicacion = model.Ubicacion,
+                    Descripcion = model.Descripcion
+                };
+
                 try
                 {
                     await _siniestroLN.RegistrarSiniestro(siniestro);
                     ViewBag.Message = "Siniestro registrado con éxito.";
-                    return RedirectToAction("Confirmacion"); // Redirigir a una página de confirmación
+                    return RedirectToAction("Confirmacion");
                 }
                 catch (Exception ex)
                 {
@@ -50,8 +61,9 @@ namespace AplicaciónWeb.Controllers
             }
 
             await CargarListasAsync();
-            return View(siniestro);
+            return View(model);
         }
+
 
         // Método AJAX para obtener provincias por departamento seleccionado
         [HttpGet]

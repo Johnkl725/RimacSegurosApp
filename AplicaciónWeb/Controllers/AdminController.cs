@@ -1,88 +1,67 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using EntidadesProyecto;
+using System.Collections.Generic;
 
-namespace AplicaciónWeb.Controllers
+public class AdminController : Controller
 {
-    public class AdminController : Controller
+    private readonly AdminLN _adminLN;
+
+    public AdminController(AdminLN adminLN)
     {
-        public ActionResult AdminDashboard()
-        {
-            return View();
-        }
-
-        // GET: AdminController
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-        // GET: AdminController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: AdminController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: AdminController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: AdminController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: AdminController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: AdminController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: AdminController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        _adminLN = adminLN;
     }
+    public IActionResult AdminDashboard()
+    {
+        return View();
+    }
+    public IActionResult GestionarPresupuestos()
+    {
+        var siniestros = _adminLN.ObtenerSiniestrosConPresupuestos();
+        return View(siniestros);
+    }
+
+    // Aprobar presupuesto de un siniestro
+    [HttpPost]
+    public IActionResult AprobarPresupuesto(int idPresupuesto)
+    {
+        bool resultado = _adminLN.AprobarPresupuesto(idPresupuesto);
+
+        if (resultado)
+        {
+            TempData["SuccessMessage"] = "Presupuesto aprobado correctamente.";
+        }
+        else
+        {
+            TempData["ErrorMessage"] = "No se pudo aprobar el presupuesto.";
+        }
+
+        return RedirectToAction("GestionarPresupuestos");
+    }
+
+    public IActionResult GestionarPagosIndemnizacion()
+    {
+        var siniestros = _adminLN.ObtenerSiniestrosParaPago()
+                                 .Where(s => s.Presupuesto != null)
+                                 .ToList();
+        return View(siniestros);
+    }
+
+
+    [HttpPost]
+    public IActionResult PagarIndemnizacion(int idSiniestro)
+    {
+        bool resultado = _adminLN.PagarIndemnizacion(idSiniestro);
+
+        if (resultado)
+        {
+            TempData["SuccessMessage"] = "Pago realizado correctamente.";
+        }
+        else
+        {
+            TempData["ErrorMessage"] = "No se pudo realizar el pago.";
+        }
+
+        return RedirectToAction("GestionarPagosIndemnizacion");
+    }
+
 }
