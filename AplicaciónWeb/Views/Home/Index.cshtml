@@ -24,152 +24,197 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
+            background-color: #f9f9f9;
         }
 
         .navbar {
-            background-color: #343a40;
+            background-color: #b71c1c;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .navbar-brand, .nav-link {
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
             color: #fff !important;
         }
 
-        .navbar-nav .nav-link:hover {
-            color: #f8f9fa !important;
-            background-color: #495057;
-            border-radius: 5px;
+        .nav-link {
+            color: #ffffff !important;
+            margin-left: 10px;
+        }
+
+            .nav-link:hover {
+                text-decoration: underline;
+            }
+
+        .welcome-section {
+            background: linear-gradient(135deg, #ff8a80, #ff5252);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+            .welcome-section h1 {
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+            }
+
+            .welcome-section p {
+                font-size: 1.2rem;
+            }
+
+        .dashboard {
+            margin-top: 30px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: linear-gradient(135deg, #ffffff, #f1f1f1);
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            }
+
+        .card-header {
+            font-weight: bold;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #ff6f61, #b71c1c);
+            color: white;
+            text-align: center;
+        }
+
+        .card-body img {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px;
         }
 
         .footer {
-            background-color: #343a40;
-            color: #fff;
-            padding: 20px 0;
+            background-color: #b71c1c;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
         }
 
             .footer a {
-                color: #f8f9fa;
+                color: #ff8a80;
+                text-decoration: none;
             }
 
                 .footer a:hover {
                     text-decoration: underline;
                 }
-
-        main {
-            padding-top: 20px;
-        }
-
-        .dashboard {
-            margin-top: 20px;
-        }
-
-        .card {
-            margin-bottom: 20px;
-        }
-
-        .welcome {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-            .welcome i {
-                font-size: 50px;
-                margin-right: 20px;
-                color: #007bff;
-            }
-
-        .current-time {
-            font-size: 24px;
-            color: #343a40;
-        }
     </style>
 </head>
 <body>
-    <!-- Main Content -->
-    <div class="container">
-        <main role="main" class="pb-3">
-            <div class="welcome">
-                <i class="fas fa-smile"></i>
-                <div>
-                    <h1 class="display-4">¡Bienvenido a RimacSeguros!</h1>
-                    <p class="current-time" id="current-time"></p>
-                </div>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Rimac Seguros</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Servicios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contacto</a>
+                    </li>
+                </ul>
             </div>
+        </div>
+    </nav>
 
-            <div class="dashboard">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="card-title">Usuarios Totales</h5>
-                            </div>
-                            <div class="card-body">
-                                <h2 class="card-text">@Model.UsuariosTotales</h2>
-                                <p class="card-text">Total de usuarios en el sistema.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header bg-success text-white">
-                                <h5 class="card-title">Beneficiarios Totales</h5>
-                            </div>
-                            <div class="card-body">
-                                <h2 class="card-text">@Model.BeneficiariosTotales</h2>
-                                <p class="card-text">Número total de beneficiarios registrados.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header bg-warning text-white">
-                                <h5 class="card-title">Personal Total</h5>
-                            </div>
-                            <div class="card-body">
-                                <h2 class="card-text">@Model.PersonalTotal</h2>
-                                <p class="card-text">Total de personal en el sistema.</p>
-                            </div>
+    <div class="container">
+        <div class="welcome-section">
+            <h1>¡Bienvenido a Rimac Seguros!</h1>
+            <p id="current-time"></p>
+        </div>
+
+        <div class="dashboard">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">Usuarios Totales</div>
+                        <div class="card-body text-center">
+                            <img src="https://cdn-icons-png.flaticon.com/512/5087/5087579.png" alt="Usuarios">
+                            <h3>@Model.UsuariosTotales</h3>
+                            <p>Total de usuarios en el sistema.</p>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header bg-info text-white">
-                                <h5 class="card-title">Administradores Totales</h5>
-                            </div>
-                            <div class="card-body">
-                                <h2 class="card-text">@Model.AdministradoresTotales</h2>
-                                <p class="card-text">Cantidad de administradores disponibles.</p>
-                            </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">Beneficiarios Totales</div>
+                        <div class="card-body text-center">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3893/3893170.png" alt="Beneficiarios">
+                            <h3>@Model.BeneficiariosTotales</h3>
+                            <p>Número total de beneficiarios registrados.</p>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header bg-secondary text-white">
-                                <h5 class="card-title">Siniestros Totales</h5>
-                            </div>
-                            <div class="card-body">
-                                <h2 class="card-text">@Model.SiniestrosTotales</h2>
-                                <p class="card-text">Cantidad de siniestros registrados.</p>
-                            </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">Personal Total</div>
+                        <div class="card-body text-center">
+                            <img src="https://img.icons8.com/fluency/48/staff.png" alt="Personal">
+                            <h3>@Model.PersonalTotal</h3>
+                            <p>Total de personal en el sistema.</p>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header bg-dark text-white">
-                                <h5 class="card-title">Vehículos Totales</h5>
-                            </div>
-                            <div class="card-body">
-                                <h2 class="card-text">@Model.VehiculosTotales</h2>
-                                <p class="card-text">Cantidad de vehículos registrados.</p>
-                            </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">Administradores Totales</div>
+                        <div class="card-body text-center">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Administradores"> <!-- Administradores Totales -->
+                            <h3>@Model.AdministradoresTotales</h3>
+                            <p>Cantidad de administradores disponibles.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">Siniestros Totales</div>
+                        <div class="card-body text-center">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2179/2179458.png" alt="Siniestros"> <!-- Siniestros Totales -->
+
+
+                            <h3>@Model.SiniestrosTotales</h3>
+                            <p>Cantidad de siniestros registrados.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">Vehículos Totales</div>
+                        <div class="card-body text-center">
+                            <img src="https://img.icons8.com/fluency/48/car.png" alt="Vehículos">
+                            <h3>@Model.VehiculosTotales</h3>
+                            <p>Cantidad de vehículos registrados.</p>
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
     </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 Rimac Seguros. Todos los derechos reservados. <a href="#">Política de Privacidad</a></p>
+    </footer>
 
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -177,16 +222,14 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script>
-        // Función para mostrar la hora actual
         function updateTime() {
             const now = new Date();
             const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
             document.getElementById('current-time').innerText = `Hora actual: ${now.toLocaleTimeString('es-ES', options)}`;
         }
 
-        // Actualizar la hora cada segundo
         setInterval(updateTime, 1000);
-        updateTime(); // Llamar a la función al cargar
+        updateTime();
     </script>
 </body>
 </html>
