@@ -19,6 +19,13 @@ namespace MiAplicacion.Data
         public DbSet<Provincia> Provincia { get; set; }
         public DbSet<Distrito> Distrito { get; set; }
         public DbSet<Vehiculo> Vehiculos { get; set; }
+        public DbSet<Poliza> Polizas { get; set; }
+        public DbSet<TipoPoliza> TipoPolizas { get; set; }
+        public DbSet<Proveedor> Proveedor { get; set; }
+        public DbSet<Presupuesto> Presupuestos { get; set; }
+        public DbSet<Taller> Talleres { get; set; }
+
+
 
 
         // Configuración del modelo
