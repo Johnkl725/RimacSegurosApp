@@ -21,22 +21,18 @@ builder.Services.AddScoped<UsuarioLN>();
 builder.Services.AddScoped<UsuarioDA>();
 builder.Services.AddScoped<SiniestroLN>();
 builder.Services.AddScoped<SiniestroDA>();
-builder.Services.AddScoped<BeneficiarioLN>();  // Añadido
-builder.Services.AddScoped<BeneficiarioDA>();  // Añadido
-builder.Services.AddScoped<VehiculoLN>();     // Añadido
-builder.Services.AddScoped<VehiculoDA>();     // Añadido
-builder.Services.AddScoped<ReclamacionLN>(); // Lógica de negocio para Reclamaciones
-builder.Services.AddScoped<ReclamacionDA>(); // Acceso a datos para Reclamaciones
-builder.Services.AddScoped<DocumentoReclamacionLN>(); // Lógica de negocio para Documentos de Reclamaciones
-builder.Services.AddScoped<DocumentoReclamacionDA>();
+builder.Services.AddScoped<BeneficiarioLN>();  // AÃ±adido
+builder.Services.AddScoped<BeneficiarioDA>();  // AÃ±adido
+builder.Services.AddScoped<VehiculoLN>();     // AÃ±adido
+builder.Services.AddScoped<VehiculoDA>();     // AÃ±adido
 
 
-// Configura la autenticación usando cookies
+// Configura la autenticaciï¿½n usando cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Login/Index";  // Ruta de inicio de sesión
-        options.LogoutPath = "/Login/Logout"; // Ruta de cierre de sesión
+        options.LoginPath = "/Login/Index";  // Ruta de inicio de sesiï¿½n
+        options.LogoutPath = "/Login/Logout"; // Ruta de cierre de sesiï¿½n
     });
 
 var app = builder.Build();
@@ -53,7 +49,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Agrega el middleware de autenticación antes de autorización
+// Agrega el middleware de autenticaciï¿½n antes de autorizaciï¿½n
 app.UseAuthentication();
 app.UseAuthorization();
 

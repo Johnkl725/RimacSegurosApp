@@ -77,6 +77,13 @@ namespace AplicaciónWeb.Controllers
             return View();
         }
 
+        public IActionResult MantenerUsuario()
+        {
+            var beneficiarios = _usuarioLN.ObtenerUsuariosPorTipo("beneficiario");
+            return View(beneficiarios);
+        }
+
+
 
 
 

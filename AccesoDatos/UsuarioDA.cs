@@ -193,7 +193,12 @@ namespace AccesoDatos
             return perfil;
         }
 
-
+        public IEnumerable<Usuario> ObtenerUsuariosPorTipo(string tipoUsuario)
+        {
+            return _context.Usuarios
+                .Where(u => u.TipoUsuario == tipoUsuario)
+                .ToList();
+        }
 
 
 

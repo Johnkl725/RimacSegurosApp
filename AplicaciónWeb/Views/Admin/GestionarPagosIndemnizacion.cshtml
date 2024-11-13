@@ -1,0 +1,69 @@
+﻿@using EntidadesProyecto
+@model IEnumerable<Siniestro>
+
+<h2>Gestionar Pagos de Indemnización</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID Siniestro</th>
+            <th>Fecha del Siniestro</th>
+            <th>Monto de Indemnización</th>
+            <th>Estado del Pago</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var siniestro in Model)
+        {
+            <tr>
+                <td>@siniestro.IdSiniestro</td>
+                <td>@siniestro.FechaSiniestro?.ToString("yyyy-MM-dd")</td>
+                <td>
+                    @siniestro.Presupuesto.MontoTotal.ToString("C", new System.Globalization.CultureInfo("es-PE"))
+                </td> <!-- Muestra el monto de indemnización -->
+
+                <td>
+                    @if (siniestro.Presupuesto.Estado == "Aprobado")
+                    {
+                        <span class="text-warning">Pendiente</span>
+                    }
+                    else if (siniestro.Presupuesto.Estado == "Pagado")
+                    {
+                        <span class="text-success">Pagado</span>
+                    }
+                </td>
+
+                <td>
+                    @if (siniestro.Presupuesto?.Estado == "Aprobado")
+                    {
+                        <form asp-action="PagarIndemnizacion" method="post" style="display:inline;">
+                            <input type="hidden" name="idSiniestro" value="@siniestro.IdSiniestro" />
+                            <button type="submit" class="btn btn-success">Pagar</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Pago no disponible</span>
+                    }
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Mensajes de éxito o error -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+<div class="text-center mt-3">
+    <a href="@Url.Action("AdminDashboard", "Admin")" class="btn btn-outline-secondary btn-sm">
+        <i class="fas fa-arrow-left me-2"></i> Volver al Dashboard
+    </a>
+</div>

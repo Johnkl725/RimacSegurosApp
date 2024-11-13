@@ -1,0 +1,37 @@
+﻿@using EntidadesProyecto
+@model IEnumerable<SiniestroPresupuestoViewModel>
+
+<h2>Gestionar Presupuesto Detallado</h2>
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Número de Siniestro</th>
+                <th>Fecha de Asignación</th>
+                <th>Taller Asignado</th>
+                <th>Tipo de Siniestro</th>
+                <th>Placa</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var siniestro in Model)
+            {
+                <tr>
+                    <td>@siniestro.NumeroSiniestro</td>
+                    <td>@siniestro.FechaAsignacion?.ToString("yyyy-MM-dd")</td>
+                    <td>@siniestro.NombreTaller</td>
+                    <td>@siniestro.TipoSiniestro</td>
+                    <td>@siniestro.Placa</td>
+                    <td>
+                        <form asp-action="EditarPresupuesto" method="get">
+                            <input type="hidden" name="idSiniestro" value="@siniestro.IdSiniestro" />
+                            <button type="submit" class="btn btn-primary btn-sm">Seleccionar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
