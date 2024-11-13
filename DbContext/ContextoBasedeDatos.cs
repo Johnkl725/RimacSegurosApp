@@ -24,8 +24,8 @@ namespace MiAplicacion.Data
         public DbSet<Proveedor> Proveedor { get; set; }
         public DbSet<Presupuesto> Presupuestos { get; set; }
         public DbSet<Taller> Talleres { get; set; }
-
-
+        public DbSet<Reclamacion> Reclamaciones { get; set; }
+        public DbSet<DocumentosReclamacion> DocumentosReclamacion { get; set; }
 
 
         // Configuración del modelo
