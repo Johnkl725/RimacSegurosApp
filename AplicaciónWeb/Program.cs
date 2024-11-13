@@ -25,6 +25,15 @@ builder.Services.AddScoped<BeneficiarioLN>();  // Añadido
 builder.Services.AddScoped<BeneficiarioDA>();  // Añadido
 builder.Services.AddScoped<VehiculoLN>();     // Añadido
 builder.Services.AddScoped<VehiculoDA>();     // Añadido
+builder.Services.AddScoped<AdminDA>();
+builder.Services.AddScoped<AdminLN>();
+builder.Services.AddScoped<ProveedorDA>();
+builder.Services.AddScoped<ProveedorLN>();
+builder.Services.AddScoped<TallerDA>();
+builder.Services.AddScoped<ReclamacionLN>();
+builder.Services.AddScoped<ReclamacionLN>();
+builder.Services.AddScoped<DocumentoReclamacionDA>();
+builder.Services.AddScoped<DocumentoReclamacionLN>();
 
 
 // Configura la autenticaci�n usando cookies
@@ -58,3 +67,4 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+

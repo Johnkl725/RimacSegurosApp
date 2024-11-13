@@ -3,6 +3,7 @@ using EntidadesProyecto;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Linq;
 
 namespace AccesoDatos
 {
@@ -88,5 +89,19 @@ namespace AccesoDatos
                 throw new Exception("Error al obtener los siniestros.");
             }
         }
+        public async Task<List<Siniestro>> ObtenerSiniestrosPorBeneficiarioAsync(int idBeneficiario)
+        {
+            // Materializamos la lista de IdPoliza antes de usar Contains
+            var polizas = await _context.Polizas
+                .Where(p => p.IdBeneficiario == idBeneficiario)
+                .Select(p => p.Id)
+                .ToListAsync(); // Materialización aquí
+
+            return await _context.Siniestros
+            .Where(s => s.IdPoliza.HasValue && polizas.Contains(s.IdPoliza.Value)) // Asegúrate de que IdPoliza no sea nulo
+            .ToListAsync();
+
+        }
+
     }
 }

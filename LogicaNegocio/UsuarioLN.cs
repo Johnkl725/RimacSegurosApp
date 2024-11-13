@@ -81,10 +81,16 @@ namespace LogicaNegocio
             return _usuarioDA.RegistrarUsuario(usuario, userType, password);
         }
 
-        public string LoginUser(string username, string password)
+        public (string TipoUsuario, int IdUsuario) LoginUser(string username, string password)
         {
-            // Llamar a UsuarioDA para autenticar el usuario
-            return _usuarioDA.AuthenticateUser(username, password);
+            // Verificar credenciales
+            var tipoUsuario = _usuarioDA.AuthenticateUser(username, password);
+            if (tipoUsuario == null) return (null, 0);
+
+            // Obtener IdUsuario
+            int idUsuario = _usuarioDA.ObtenerIdUsuarioPorDni(username);
+
+            return (tipoUsuario, idUsuario);
         }
         public PerfilViewModel ObtenerPerfilPorDni(string dni)
         {

@@ -55,5 +55,13 @@ namespace AccesoDatos
                 .Where(r => r.IdSiniestro == idSiniestro)
                 .ToList();
         }
+
+        public int ObtenerIdBeneficiarioPorUsuario(int idUsuario)
+        {
+            var beneficiario = _context.Beneficiarios
+                .FirstOrDefault(b => b.IdUsuario == idUsuario);
+
+            return beneficiario?.Id ?? 0; // Retorna 0 si no se encuentra
+        }
     }
 }

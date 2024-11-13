@@ -1,6 +1,7 @@
 ﻿using AccesoDatos;
 using EntidadesProyecto;
 using MiAplicacion.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,10 @@ namespace LogicaNegocio
             return _reclamacionDA.ObtenerReclamacionesPorSiniestro(idSiniestro);
         }
 
+        public int ObtenerIdBeneficiarioPorUsuario(int idUsuario)
+        {
+            return _reclamacionDA.ObtenerIdBeneficiarioPorUsuario(idUsuario);
+        }
 
     }
 }

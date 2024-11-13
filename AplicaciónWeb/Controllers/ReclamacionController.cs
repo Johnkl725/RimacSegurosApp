@@ -10,30 +10,45 @@ namespace AplicaciónWeb.Controllers
         
             private readonly ReclamacionLN _reclamacionLN;
             private readonly DocumentoReclamacionLN _documentosReclamacionLN;
+            private readonly SiniestroLN _siniestroLN;
 
 
-        public ReclamacionController(ReclamacionLN reclamacionLN, DocumentoReclamacionLN documentosReclamacionLN)
+
+        public ReclamacionController(ReclamacionLN reclamacionLN,
+    DocumentoReclamacionLN documentosReclamacionLN,
+    SiniestroLN siniestroLN)
             {
-                _reclamacionLN = reclamacionLN;
-                _documentosReclamacionLN = documentosReclamacionLN;
-            
-        }
+            _reclamacionLN = reclamacionLN;
+            _documentosReclamacionLN = documentosReclamacionLN;
+            _siniestroLN = siniestroLN;
 
+
+        }
         [HttpGet]
-        public IActionResult IngresarReclamacion()
+        public async Task<IActionResult> IngresarReclamacion()
         {
             try
             {
-                // Datos estáticos para siniestros
-                var siniestros = new List<Siniestro>
-            {
-                new Siniestro { IdSiniestro = 5, Tipo = "Choque", Descripcion = "Choque leve" },
-                new Siniestro { IdSiniestro = 6, Tipo = "Robo", Descripcion = "Robo total" },
-                new Siniestro { IdSiniestro = 7, Tipo = "Daño Material", Descripcion = "Daño en la carrocería" }
-            };
+                // Obtener el ID del usuario autenticado
+                int idUsuario = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+                Console.WriteLine($"ID Usuario autenticado: {idUsuario}");
+
+
+                // Obtener el ID del beneficiario asociado al usuario autenticado
+                var idBeneficiario = _reclamacionLN.ObtenerIdBeneficiarioPorUsuario(idUsuario);
+                Console.WriteLine($"ID Beneficiario asociado: {idBeneficiario}");
+
+                if (idBeneficiario <= 0)
+                {
+                    TempData["ErrorMessage"] = "No se encontró un beneficiario asociado.";
+                    return RedirectToAction("Error");
+                }
+
+                // Obtener los siniestros asociados al beneficiario autenticado de forma asíncrona
+                var siniestros = await _siniestroLN.ObtenerSiniestrosPorBeneficiarioAsync(idBeneficiario);
+                Console.WriteLine($"Número de siniestros encontrados: {siniestros.Count}");
 
                 ViewBag.Siniestros = siniestros;
-
                 return View();
             }
             catch (Exception ex)

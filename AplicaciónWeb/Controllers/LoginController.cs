@@ -24,40 +24,30 @@ namespace AplicaciónWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(string username, string password)
         {
-            string tipo_usuario = _usuarioLN.LoginUser(username, password);
-
-            if (tipo_usuario != null)
+            var (tipoUsuario, idUsuario) = _usuarioLN.LoginUser(username, password);
+            if (!string.IsNullOrEmpty(tipoUsuario))
             {
-                // Crear las claims del usuario
                 var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, username),
-            new Claim("TipoUsuario", tipo_usuario)
+            new Claim(ClaimTypes.Name, username), // DNI o nombre de usuario
+            new Claim("TipoUsuario", tipoUsuario),
+            new Claim(ClaimTypes.NameIdentifier, idUsuario.ToString()) // Almacena el IdUsuario
         };
 
-                // Crear la identidad del usuario y el principal
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
-                // Iniciar sesión con las cookies
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
 
-                // Redirigir a la interfaz correspondiente según el tipo de usuario
-                switch (tipo_usuario)
+                return tipoUsuario switch
                 {
-                    case "Beneficiario":
-                        return RedirectToAction("BeneficiarioDashboard", "Beneficiario");
-                    case "Personal":
-                        return RedirectToAction("PersonalDashboard", "Personal");
-                    case "Administrador":
-                        return RedirectToAction("AdminDashboard", "Admin");
-                    default:
-                        ViewBag.ErrorMessage = "Tipo de usuario desconocido.";
-                        return View();
-                }
+                    "Beneficiario" => RedirectToAction("BeneficiarioDashboard", "Beneficiario"),
+                    "Personal" => RedirectToAction("PersonalDashboard", "Personal"),
+                    "Administrador" => RedirectToAction("AdminDashboard", "Admin"),
+                    _ => View("Error")
+                };
             }
 
-            // Si las credenciales son incorrectas, mostrar un mensaje de error
             ViewBag.ErrorMessage = "Usuario o contraseña incorrectos.";
             return View();
         }

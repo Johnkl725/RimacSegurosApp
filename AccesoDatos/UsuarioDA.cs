@@ -272,6 +272,29 @@ namespace AccesoDatos
         }
 
 
+        public int ObtenerIdUsuarioPorDni(string dni)
+        {
+            try
+            {
+                var idParam = new SqlParameter("@IdUsuario", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                _context.Database.ExecuteSqlRaw(
+                    "EXEC sp_ObtenerIdPorDNI @DNI, @IdUsuario OUTPUT",
+                    new SqlParameter("@DNI", dni),
+                    idParam
+                );
+
+                return (int)idParam.Value;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener ID del usuario: {ex.Message}");
+                return 0; // 0 indica que no se encontró el usuario
+            }
+        }
 
 
 
