@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Crear Póliza";
+}
+
+<h2>Crear Póliza</h2>
+
+<form asp-action="CrearPoliza" method="post">
+    <input type="hidden" name="idBeneficiario" value="@ViewBag.IdBeneficiario" />
+
+    <div class="form-group">
+        <label for="idTipoPoliza">Tipo de Póliza</label>
+        <select id="idTipoPoliza" name="idTipoPoliza" class="form-control" required>
+            <option value="">Seleccione un tipo de póliza</option>
+            @foreach (var tipo in (IEnumerable<EntidadesProyecto.TipoPoliza>)ViewBag.TiposPoliza)
+            {
+                <option value="@tipo.Id">@tipo.Descripcion - @tipo.MontoMensual.ToString("C")</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="fechaInicio">Fecha de Inicio</label>
+        <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="fechaFin">Fecha de Fin</label>
+        <input type="date" id="fechaFin" name="fechaFin" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="estado">Estado</label>
+        <input type="text" id="estado" name="estado" class="form-control" required placeholder="Estado de la póliza" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Crear Póliza</button>
+</form>

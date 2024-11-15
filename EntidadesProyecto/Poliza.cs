@@ -24,7 +24,7 @@ namespace EntidadesProyecto
 
         // Propiedades de navegación
         public Beneficiario Beneficiario { get; set; } // Cambiado a Beneficiario
-        public TipoPoliza Tipo { get; set; }
+        public TipoPoliza TipoPoliza { get; set; }
     }
 
     public class TipoPoliza
