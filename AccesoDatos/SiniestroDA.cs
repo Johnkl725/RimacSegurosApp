@@ -76,5 +76,45 @@ namespace AccesoDatos
                 .Where(d => d.id_provincia == provinciaId)
                 .ToListAsync();
         }
+
+        public async Task<List<Siniestro>> ObtenerSiniestrosConTallerPorDefectoAsync(int idTallerPorDefecto)
+        {
+            return await _context.Siniestros
+                .Where(s => s.IdTaller == idTallerPorDefecto)
+                .Select(s => new Siniestro
+                {
+                    IdSiniestro = s.IdSiniestro,
+                    Tipo = s.Tipo,
+                    FechaSiniestro = s.FechaSiniestro,
+                    Ubicacion = s.Ubicacion,
+                    Descripcion = s.Descripcion,
+                    IdDepartamento = s.IdDepartamento,
+                    IdProvincia = s.IdProvincia,
+                    IdDistrito = s.IdDistrito,
+                    IdTaller = s.IdTaller
+                }) // Selección explícita de propiedades
+                .ToListAsync();
+        }
+
+
+
+
+        public async Task<Siniestro> ObtenerSiniestroPorIdAsync(int idSiniestro)
+        {
+            return await _context.Siniestros
+                                 .Include(s => s.Taller) // Incluir relación con Taller
+                                 .FirstOrDefaultAsync(s => s.IdSiniestro == idSiniestro);
+        }
+
+
+
+
+
+        public async Task ActualizarSiniestroAsync(Siniestro siniestro)
+        {
+            _context.Siniestros.Update(siniestro);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

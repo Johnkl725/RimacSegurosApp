@@ -1,0 +1,60 @@
+﻿@model List<EntidadesProyecto.Siniestro>
+
+<h2>Asignar Taller a Siniestro</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Número de Siniestro</th>
+            <th>Fecha</th>
+            <th>Tipo de Incidente</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var siniestro in Model)
+        {
+                <tr>
+                    <td>@siniestro.IdSiniestro</td>
+                    <td>@siniestro.FechaSiniestro?.ToString("yyyy-MM-dd")</td>
+                    <td>@siniestro.Tipo</td>
+                    <td>
+                        <button class="btn btn-primary btn-seleccionar" data-id="@siniestro.IdSiniestro" data-bs-toggle="modal" data-bs-target="#modalAsignarTaller">
+                            Seleccionar
+                        </button>
+                    </td>
+                </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="modalAsignarTaller" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Asignar Taller</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Aquí se cargará el contenido del modal mediante AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $('.btn-seleccionar').click(function () {
+            var siniestroId = $(this).data('id');
+            $.get('/Siniestro/DetalleSiniestro/' + siniestroId, function (data) {
+                $('#modalAsignarTaller .modal-body').html(data);
+            }).fail(function () {
+                alert("Error al cargar los detalles del siniestro.");
+            });
+        });
+    </script>
+
+}
+
+
