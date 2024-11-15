@@ -210,6 +210,13 @@ namespace MiAplicacion.Data
                 entity.Property(b => b.Contraseña).HasColumnName("contraseña");
             });
 
+                    modelBuilder.Entity<Beneficiario>()
+            .HasOne<Usuario>() // Beneficiario está relacionado con Usuario
+            .WithMany()
+            .HasForeignKey(b => b.IdUsuario)
+            .OnDelete(DeleteBehavior.Restrict);
+
+
             // Configuración de Personal
             modelBuilder.Entity<Personal>(entity =>
             {

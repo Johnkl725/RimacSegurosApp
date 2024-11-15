@@ -43,6 +43,16 @@ namespace LogicaNegocio
             return _polizaDA.ObtenerTipoPolizaAsync();
         }
 
+        public async Task<List<PolizaConTipo>> ObtenerPolizasPorFiltroAsync(string filtro)
+        {
+            return await _polizaDA.ObtenerPolizasPorFiltroAsync(filtro);
+        }
+
+        public async Task ActualizarEstadoPolizaAsync(int idPoliza, string nuevoEstado)
+        {
+            await _polizaDA.ActualizarEstadoPolizaAsync(idPoliza, nuevoEstado);
+        }
+
     }
 
 }

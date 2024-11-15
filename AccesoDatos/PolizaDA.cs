@@ -70,5 +70,36 @@ namespace AccesoDatos
             return await _context.TipoPolizas.ToListAsync();
         }
 
+
+        public async Task<List<PolizaConTipo>> ObtenerPolizasPorFiltroAsync(string filtro)
+        {
+            return await (from poliza in _context.Polizas
+                          join tipoPoliza in _context.TipoPolizas on poliza.IdTipo equals tipoPoliza.Id
+                          join beneficiario in _context.Beneficiarios on poliza.IdBeneficiario equals beneficiario.Id
+                          join usuario in _context.Usuarios on beneficiario.IdUsuario equals usuario.Id // Relación con Usuario
+                          where poliza.Id.ToString() == filtro || usuario.Dni == filtro // Filtro por DNI
+                          select new PolizaConTipo
+                          {
+                              IdPoliza = poliza.Id,
+                              Vigencia = $"{poliza.FechaInicio:yyyy-MM-dd} - {poliza.FechaFin:yyyy-MM-dd}",
+                              Cobertura = tipoPoliza.Descripcion,
+                              Estado = poliza.Estado
+                          }).ToListAsync();
+        }
+
+        public async Task ActualizarEstadoPolizaAsync(int idPoliza, string nuevoEstado)
+        {
+            var poliza = await _context.Polizas.FindAsync(idPoliza);
+            if (poliza != null)
+            {
+                poliza.Estado = nuevoEstado;
+                await _context.SaveChangesAsync();
+            }
+        }
+
+
+
+
+
     }
 }

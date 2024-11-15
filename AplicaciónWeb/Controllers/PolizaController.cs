@@ -38,6 +38,39 @@ namespace AplicaciónWeb.Controllers
             return View();
         }
 
+
+        public async Task<IActionResult> ValidarPoliza(string filtro)
+        {
+            if (string.IsNullOrWhiteSpace(filtro))
+            {
+                ModelState.AddModelError("", "Por favor ingrese un número de póliza o DNI.");
+                return View(new List<PolizaConTipo>());
+            }
+
+            var polizas = await _polizaLN.ObtenerPolizasPorFiltroAsync(filtro);
+
+            if (!polizas.Any())
+            {
+                ViewBag.Message = "No se encontraron pólizas con el filtro proporcionado.";
+            }
+
+            return View(polizas);
+        }
+
+        public async Task<IActionResult> DetallePoliza(int id)
+        {
+            var poliza = await _polizaLN.ObtenerPolizasPorFiltroAsync(id.ToString());
+            if (poliza == null || !poliza.Any())
+            {
+                return NotFound("Póliza no encontrada.");
+            }
+
+            return PartialView("_DetallePoliza", poliza.First());
+        }
+
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult CrearPoliza(int idBeneficiario, int idTipoPoliza, DateTime fechaInicio, DateTime fechaFin, string estado)
@@ -80,5 +113,22 @@ namespace AplicaciónWeb.Controllers
 
             return View();
         }
+
+        [HttpPost]
+        [HttpPost]
+        public async Task<IActionResult> ValidarPoliza([FromBody] int idPoliza)
+        {
+            await _polizaLN.ActualizarEstadoPolizaAsync(idPoliza, "Activo");
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NoValidarPoliza([FromBody] int idPoliza)
+        {
+            await _polizaLN.ActualizarEstadoPolizaAsync(idPoliza, "Inactivo");
+            return Json(new { success = true });
+        }
+
+
     }
 }
