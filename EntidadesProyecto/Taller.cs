@@ -22,6 +22,6 @@ namespace EntidadesProyecto
         public string Estado { get; set; }
 
         // Relación con Siniestro
-        public ICollection<Siniestro> Siniestros { get; set; } // Un taller puede tener varios siniestros asignados
+        public ICollection<Siniestro> Siniestros { get; set; }= new List<Siniestro>(); // Un taller puede tener varios siniestros asignados
     }
 }
