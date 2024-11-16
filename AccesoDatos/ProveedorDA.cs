@@ -80,4 +80,3 @@ public class ProveedorDA
         await _context.Database.ExecuteSqlRawAsync("EXEC spEliminarProveedor @Id", new SqlParameter("@Id", id));
     }
 }
-

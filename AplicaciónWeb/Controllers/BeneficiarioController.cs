@@ -15,16 +15,18 @@ namespace AplicaciónWeb.Controllers
         private readonly MyDbContext _context;
 
         // Inyección de dependencias para las capas de negocio
-        public BeneficiarioController(VehiculoLN vehiculoLN, BeneficiarioLN beneficiarioLN,MyDbContext context)
+        public BeneficiarioController(VehiculoLN vehiculoLN, BeneficiarioLN beneficiarioLN, MyDbContext context)
         {
             _vehiculoLN = vehiculoLN;
             _beneficiarioLN = beneficiarioLN;
             _context = context;
         }
+
         public IActionResult BeneficiarioDashboard()
         {
             return View();
         }
+
         // Vista para crear el beneficiario, mostrando formulario para vehículo y usuario
         public IActionResult CrearVehiculo()
         {
@@ -37,7 +39,6 @@ namespace AplicaciónWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                // 1. Crear el vehículo y obtener el id
                 int idVehiculo = _vehiculoLN.CrearVehiculo(
                     vehiculo.Placa,
                     vehiculo.Marca,
@@ -48,30 +49,39 @@ namespace AplicaciónWeb.Controllers
 
                 try
                 {
-                    // 2. Actualizar el id_vehiculo del beneficiario
+                    // Obtener el id del último beneficiario 
                     int idBeneficiario = _context.Beneficiarios
-                .OrderByDescending(b => b.IdUsuario)  // Ordenar en orden descendente por id
-                .Select(b => b.IdUsuario)             // Seleccionar solo el campo id
-                .FirstOrDefault();             // Obtener el primer (último) id
+                        .OrderByDescending(b => b.Id)  // Ordenar por IdUsuario descendente
+                        .Select(b => b.Id)  // Seleccionamos el IdUsuario de beneficiario
+                        .FirstOrDefault();
+
+                    // para el usuario
+                    int idBeneficiario2 = _context.Beneficiarios
+                        .OrderByDescending(b => b.IdUsuario)  // Ordenar por IdUsuario descendente
+                        .Select(b => b.IdUsuario)  // Seleccionamos el IdUsuario de beneficiario
+                        .FirstOrDefault();
+
 
                     if (idBeneficiario == 0)
                     {
                         throw new Exception("No se encontró un beneficiario para asignar el vehículo.");
                     }
-                    _beneficiarioLN.asignarIDVehiculo(idBeneficiario, idVehiculo);
+
+                    _beneficiarioLN.asignarIDVehiculo(idBeneficiario2, idVehiculo);
+
+                    // Redirigir a CrearPoliza con el idBeneficiario obtenido
+                    return RedirectToAction("CrearPoliza", "Poliza", new { idBeneficiario = idBeneficiario });
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                     return View("Error");
                 }
-
-                // Redirigir a una página después de la creación del vehículo y asignación del id_vehiculo al beneficiario
-                return RedirectToAction("PersonalDashboard", "Personal");
             }
 
             return View(vehiculo);
         }
+
 
 
     }

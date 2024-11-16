@@ -37,16 +37,20 @@ namespace MiAplicacion.Data
             {
                 entity.ToTable("Poliza");
                 entity.HasKey(p => p.Id);
+                // propiedades
+
+                entity.Property(p => p.Id).HasColumnName("id"); // llave primaria 
                 entity.Property(p => p.IdBeneficiario).HasColumnName("id_beneficiario");
                 entity.Property(p => p.IdTipo).HasColumnName("id_tipo");
                 entity.Property(p => p.FechaInicio).HasColumnName("fecha_inicio").HasColumnType("DATE");
                 entity.Property(p => p.FechaFin).HasColumnName("fecha_fin").HasColumnType("DATE");
-                entity.Property(p => p.Estado).HasColumnName("estado").HasMaxLength(50);
+                entity.Property(p => p.Estado).HasColumnName("estado").HasMaxLength(10);
+                // llaves foraneas
                 entity.HasOne(p => p.Beneficiario)
                       .WithMany()
                       .HasForeignKey(p => p.IdBeneficiario)
                       .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.Tipo)
+                entity.HasOne(p => p.TipoPoliza)
                       .WithMany()
                       .HasForeignKey(p => p.IdTipo)
                       .OnDelete(DeleteBehavior.Restrict);
@@ -110,6 +114,13 @@ namespace MiAplicacion.Data
                       .HasForeignKey(s => s.IdPoliza)
                       .OnDelete(DeleteBehavior.Restrict);
 
+                entity.HasOne(s => s.Taller)
+                      .WithMany(t => t.Siniestros) // Relación uno a muchos
+                      .HasForeignKey(s => s.IdTaller)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+
+
                 entity.HasOne<Departamento>()
                       .WithMany()
                       .HasForeignKey(s => s.IdDepartamento)
@@ -125,6 +136,30 @@ namespace MiAplicacion.Data
                       .HasForeignKey(s => s.IdDistrito)
                       .OnDelete(DeleteBehavior.Restrict);
             });
+
+
+            // configurar taller
+            modelBuilder.Entity<Taller>(entity =>
+            {
+                entity.ToTable("Taller"); // Nombre de la tabla en la base de datos
+
+                entity.HasKey(t => t.Id); // Clave primaria
+                entity.Property(t => t.Id).HasColumnName("id");
+
+                entity.Property(t => t.IdProveedor).HasColumnName("id_proveedor"); // Asegura que se mapea correctamente
+                entity.Property(t => t.Nombre).HasColumnName("nombre");
+                entity.Property(t => t.Direccion).HasColumnName("direccion");
+                entity.Property(t => t.Telefono).HasColumnName("telefono");
+                entity.Property(t => t.Correo).HasColumnName("correo");
+                entity.Property(t => t.Ciudad).HasColumnName("ciudad");
+                entity.Property(t => t.Tipo).HasColumnName("tipo");
+                entity.Property(t => t.Capacidad).HasColumnName("capacidad");
+                entity.Property(t => t.Descripcion).HasColumnName("descripcion");
+                entity.Property(t => t.Calificacion).HasColumnName("calificacion");
+                entity.Property(t => t.Estado).HasColumnName("estado");
+            });
+
+
             modelBuilder.Entity<Provincia>(entity =>
             {
                 entity.ToTable("Provincia");

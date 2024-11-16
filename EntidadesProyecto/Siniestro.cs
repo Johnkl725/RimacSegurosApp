@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EntidadesProyecto
 {
@@ -11,6 +12,7 @@ namespace EntidadesProyecto
         public int? IdDistrito { get; set; }
         public int? IdDocumento { get; set; }
         public int? IdPoliza { get; set; } // Clave foránea hacia Poliza
+        [Column("id_taller")]
         public int? IdTaller { get; set; }
         public int? IdPresupuesto { get; set; } // Clave foránea hacia Presupuesto
 
@@ -24,6 +26,11 @@ namespace EntidadesProyecto
         // Propiedades de navegación
         public Presupuesto Presupuesto { get; set; }
         public Poliza Poliza { get; set; }
+
+        //[NotMapped]  Esto asegura que la propiedad no se considere en consultas SQL directas
+        public Taller Taller { get; set; } // Propiedad de navegación
+
+
 
     }
 

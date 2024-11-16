@@ -80,10 +80,14 @@
                             Mantener Usuario
                         </a>
                     </li>
-                    <!-- Nuevo botón para Gestión de Proveedores -->
                     <li class="nav-item">
                         <a class="nav-link" href="@Url.Action("ProveedoresYTalleres", "Proveedor")">
                             Proveedores y Talleres
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("ValidarPoliza", "Poliza")">
+                            Validar Póliza
                         </a>
                     </li>
                 </ul>
@@ -96,12 +100,16 @@
             </div>
 
             <div class="box">
-                <!-- Contenido principal de la vista -->
                 <p>Bienvenido al panel de control del personal.</p>
             </div>
 
             <div class="box">
-                <!-- Otra caja de contenido -->
+                <h3>Gestión de Talleres</h3>
+                <p>Desde aquí puedes asignar talleres a los siniestros pendientes.</p>
+                <a class="btn btn-custom" href="@Url.Action("AsignarTaller", "Siniestro")">Asignar Taller a Siniestro</a>
+            </div>
+
+            <div class="box">
                 <p>Contenido adicional aquí.</p>
             </div>
         </main>
