@@ -50,4 +50,3 @@ public class AdminLN
         return true;
     }
 }
-

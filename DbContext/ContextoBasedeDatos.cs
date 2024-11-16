@@ -126,6 +126,8 @@ namespace MiAplicacion.Data
 
 
 
+
+
                 entity.HasOne<Departamento>()
                       .WithMany()
                       .HasForeignKey(s => s.IdDepartamento)

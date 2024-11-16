@@ -99,22 +99,75 @@ namespace AccesoDatos
 
 
 
-        public async Task<Siniestro> ObtenerSiniestroPorIdAsync(int idSiniestro)
+        public async Task<Siniestro?> ObtenerSiniestroPorIdAsync(int idSiniestro)
         {
             return await _context.Siniestros
-                                 .Include(s => s.Taller) // Incluir relación con Taller
-                                 .FirstOrDefaultAsync(s => s.IdSiniestro == idSiniestro);
+                .Where(s => s.IdSiniestro == idSiniestro)
+                .Include(s => s.Taller)
+                .Select(s => new Siniestro
+                {
+                    IdSiniestro = s.IdSiniestro,
+                    Descripcion = s.Descripcion,
+                    FechaActualizacion = s.FechaActualizacion,
+                    FechaCreacion = s.FechaCreacion,
+                    FechaSiniestro = s.FechaSiniestro,
+                    IdDepartamento = s.IdDepartamento,
+                    IdDistrito = s.IdDistrito,
+                    IdDocumento = s.IdDocumento,
+                    IdPoliza = s.IdPoliza,
+                    IdPresupuesto = s.IdPresupuesto,
+                    IdProvincia = s.IdProvincia,
+                    IdTaller = s.IdTaller,
+                    Tipo = s.Tipo,
+                    Ubicacion = s.Ubicacion,
+                    Taller = s.Taller != null ? new Taller
+                    {
+                        Id = s.Taller.Id,
+                        Calificacion = s.Taller.Calificacion,
+                        Capacidad = s.Taller.Capacidad,
+                        Ciudad = s.Taller.Ciudad,
+                        Correo = s.Taller.Correo,
+                        Descripcion = s.Taller.Descripcion,
+                        Direccion = s.Taller.Direccion,
+                        Estado = s.Taller.Estado,
+                        IdProveedor = s.Taller.IdProveedor,
+                        Nombre = s.Taller.Nombre,
+                        Telefono = s.Taller.Telefono,
+                        Tipo = s.Taller.Tipo
+                    } : null
+                })
+                .FirstOrDefaultAsync();
         }
-
 
 
 
 
         public async Task ActualizarSiniestroAsync(Siniestro siniestro)
         {
-            _context.Siniestros.Update(siniestro);
-            await _context.SaveChangesAsync();
+            try
+            {
+                var entidadExistente = await _context.Siniestros
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(s => s.IdSiniestro == siniestro.IdSiniestro);
+
+                if (entidadExistente == null)
+                {
+                    throw new Exception("El siniestro no existe en la base de datos.");
+                }
+
+                _context.Entry(siniestro).State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al actualizar el siniestro: {ex.Message}");
+                throw;
+            }
         }
+
+
+
 
     }
 }

@@ -1,21 +1,21 @@
-﻿@model EntidadesProyecto.Siniestro
-
-<h4>Detalles del Siniestro</h4>
-<p><strong>Número:</strong> @Model.IdSiniestro</p>
-<p><strong>Fecha:</strong> @Model.FechaSiniestro?.ToString("yyyy-MM-dd")</p>
-<p><strong>Tipo:</strong> @Model.Tipo</p>
-
-<form method="post" asp-action="ConfirmarAsignacion">
-    <input type="hidden" name="idSiniestro" value="@Model.IdSiniestro" />
-    <div class="mb-3">
-        <label for="idTaller" class="form-label">Seleccionar Taller</label>
-        <select class="form-select" id="idTaller" name="idTaller">
-            <option value="">Seleccione un taller</option>
-            @foreach (var taller in ViewBag.Talleres as List<SelectListItem>)
-            {
-                <option value="@taller.Value">@taller.Text</option>
-            }
-        </select>
-    </div>
-    <button type="submit" class="btn btn-success">Confirmar Asignación</button>
-</form>
+﻿@if (ViewBag.Talleres == null || !((List<SelectListItem>)ViewBag.Talleres).Any())
+{
+    <p>No hay talleres disponibles para asignar.</p>
+}
+else
+{
+    <form method="post" asp-action="ConfirmarAsignacion">
+        <input type="hidden" name="idSiniestro" value="@Model.IdSiniestro" />
+        <div class="mb-3">
+            <label for="idTaller" class="form-label">Seleccionar Taller</label>
+            <select class="form-select" id="idTaller" name="idTaller">
+                <option value="">Seleccione un taller</option>
+                @foreach (var taller in ViewBag.Talleres as List<SelectListItem>)
+                {
+                    <option value="@taller.Value">@taller.Text</option>
+                }
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Confirmar Asignación</button>
+    </form>
+}

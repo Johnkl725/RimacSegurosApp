@@ -27,7 +27,6 @@ namespace AplicaciónWeb.Controllers
             await CargarListasAsync();
             return View();
         }
-       
 
         // POST: Procesa el formulario de registro de siniestro
         [HttpPost]
@@ -90,7 +89,7 @@ namespace AplicaciónWeb.Controllers
         {
             var departamentos = await _siniestroLN.ObtenerDepartamentosAsync();
             ViewBag.Departamentos = new SelectList(departamentos, "Id", "Descripcion");
-           
+
             ViewBag.Departamentos = departamentos;
             ViewBag.Provincias = new List<SelectListItem> { new SelectListItem { Text = "Seleccione una provincia", Value = "" } };
             ViewBag.Distritos = new List<SelectListItem> { new SelectListItem { Text = "Seleccione un distrito", Value = "" } };
@@ -121,17 +120,26 @@ namespace AplicaciónWeb.Controllers
         {
             var siniestro = await _siniestroLN.ObtenerSiniestroPorIdAsync(id);
             if (siniestro == null)
+            {
                 return NotFound("Siniestro no encontrado.");
+            }
 
-            var talleres = _tallerLN.ObtenerTodosLosTalleres(); // Mantén esto sin await si no es asíncrono
+            var talleres = _tallerLN.ObtenerTodosLosTalleres();
+            if (talleres == null || !talleres.Any())
+            {
+                ModelState.AddModelError("", "No hay talleres disponibles.");
+                return PartialView("_DetalleSiniestro", siniestro);
+            }
+
             ViewBag.Talleres = talleres.Select(t => new SelectListItem
             {
                 Value = t.Id.ToString(),
-                Text = t.Nombre // Solo el nombre del taller
-            });
+                Text = t.Nombre
+            }).ToList();
 
             return PartialView("_DetalleSiniestro", siniestro);
         }
+
 
 
 
@@ -147,29 +155,29 @@ namespace AplicaciónWeb.Controllers
                 return RedirectToAction("AsignarTaller");
             }
 
-            var siniestro = await _siniestroLN.ObtenerSiniestroPorIdAsync(idSiniestro);
-            if (siniestro == null)
-            {
-                TempData["ErrorMessage"] = "Siniestro no encontrado.";
-                return RedirectToAction("AsignarTaller");
-            }
-
-            // Asignar taller al siniestro
             try
             {
-                siniestro.IdTaller = idTaller;
-                await _siniestroLN.ActualizarSiniestroAsync(siniestro);
+                var siniestro = await _siniestroLN.ObtenerSiniestroPorIdAsync(idSiniestro);
+                if (siniestro == null)
+                {
+                    TempData["ErrorMessage"] = "Siniestro no encontrado.";
+                    return RedirectToAction("AsignarTaller");
+                }
 
+                siniestro.IdTaller = idTaller;
+
+                await _siniestroLN.ActualizarSiniestroAsync(siniestro);
                 TempData["SuccessMessage"] = "Taller asignado correctamente.";
             }
             catch (Exception ex)
             {
-                // Log error para debug si tienes un logger disponible
                 TempData["ErrorMessage"] = "Error al asignar el taller: " + ex.Message;
             }
 
             return RedirectToAction("AsignarTaller");
         }
+
+
 
 
 
