@@ -1,0 +1,30 @@
+﻿@using EntidadesProyecto
+@model PolizaConTipo
+
+<div>
+    <p><strong>Número de Póliza:</strong> @Model.IdPoliza</p>
+    <p><strong>Vigencia:</strong> @Model.Vigencia</p>
+    <p><strong>Estado:</strong> @Model.Estado</p>
+    <p><strong>Cobertura:</strong> @Model.Cobertura</p>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-success" onclick="cambiarEstadoPoliza(@Model.IdPoliza, 'validar')">Validar</button>
+    <button type="button" class="btn btn-danger" onclick="cambiarEstadoPoliza(@Model.IdPoliza, 'no-validar')">No Validar</button>
+</div>
+
+
+
+<script>
+    document.querySelectorAll('button[data-bs-target="#modalDetallePoliza"]').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const polizaId = this.getAttribute('data-id');
+            fetch(`/Poliza/DetallePoliza/${polizaId}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.querySelector('#modalDetallePoliza .modal-body').innerHTML = html;
+                });
+        });
+    });
+</script>
+

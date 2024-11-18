@@ -1,0 +1,19 @@
+﻿@model EntidadesProyecto.Proveedor
+
+<h2>Eliminar Proveedor</h2>
+
+<p>¿Está seguro de que desea eliminar el proveedor <strong>@Model.Nombre</strong>?</p>
+
+<form asp-action="Eliminar" method="post">
+    @Html.AntiForgeryToken() <!-- Protección contra CSRF -->
+    <!-- Pasar el ID del proveedor en un campo oculto -->
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mt-3">
+        <!-- Botón de eliminación -->
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+
+        <!-- Enlace para cancelar -->
+        <a href="@Url.Action("Index", "Proveedor")" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>

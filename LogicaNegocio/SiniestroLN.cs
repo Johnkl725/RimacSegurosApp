@@ -50,5 +50,22 @@ namespace LogicaNegocio
             return await _siniestroDA.ObtenerSiniestrosPorBeneficiarioAsync(idBeneficiario);
         }
 
+        public Task<List<Siniestro>> ObtenerSiniestrosConTallerPorDefectoAsync(int idTallerPorDefecto)
+        {
+            return _siniestroDA.ObtenerSiniestrosConTallerPorDefectoAsync(idTallerPorDefecto);
+        }
+
+        public Task<Siniestro> ObtenerSiniestroPorIdAsync(int idSiniestro)
+        {
+            return _siniestroDA.ObtenerSiniestroPorIdAsync(idSiniestro);
+        }
+
+        public async Task ActualizarSiniestroAsync(Siniestro siniestro)
+        {
+            await _siniestroDA.ActualizarSiniestroAsync(siniestro);
+        }
+
+
+
     }
 }

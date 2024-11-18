@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using EntidadesProyecto;
+using MiAplicacion.Data;
+
 
 namespace MiAplicacion.Data
 {
@@ -28,55 +30,38 @@ namespace MiAplicacion.Data
         public DbSet<DocumentosReclamacion> DocumentosReclamacion { get; set; }
 
 
+
         // Configuración del modelo
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configuración de Vehiculo
             modelBuilder.Entity<Vehiculo>().ToTable("Vehiculo");
 
-            modelBuilder.Entity<Taller>(entity =>
-            {
-                entity.ToTable("Taller"); // Nombre de la tabla en la base de datos
-                entity.HasKey(t => t.Id); // Clave primaria
-
-                // Propiedades de Taller
-                entity.Property(t => t.IdProveedor).HasColumnName("id_proveedor");
-                entity.Property(t => t.Nombre).IsRequired().HasMaxLength(100);
-                entity.Property(t => t.Direccion).HasMaxLength(200);
-                entity.Property(t => t.Telefono).HasMaxLength(15);
-                entity.Property(t => t.Correo).HasMaxLength(100);
-                entity.Property(t => t.Ciudad).HasMaxLength(50);
-                entity.Property(t => t.Tipo).HasMaxLength(50);
-                entity.Property(t => t.Capacidad);
-                entity.Property(t => t.Descripcion).HasMaxLength(500);
-                entity.Property(t => t.Calificacion);
-                entity.Property(t => t.Estado).HasMaxLength(20);
-
-                entity.HasMany(t => t.Siniestros)
-              .WithOne() // No se requiere una propiedad de navegación en Siniestro
-              .HasForeignKey(s => s.IdTaller)
-              .OnDelete(DeleteBehavior.Restrict);
-            });
-
-            // Configuración de Poliza
+            //Configuración de Poliza original v2
             modelBuilder.Entity<Poliza>(entity =>
             {
                 entity.ToTable("Poliza");
                 entity.HasKey(p => p.Id);
+                // propiedades
+
+                entity.Property(p => p.Id).HasColumnName("id"); // llave primaria 
                 entity.Property(p => p.IdBeneficiario).HasColumnName("id_beneficiario");
                 entity.Property(p => p.IdTipo).HasColumnName("id_tipo");
                 entity.Property(p => p.FechaInicio).HasColumnName("fecha_inicio").HasColumnType("DATE");
                 entity.Property(p => p.FechaFin).HasColumnName("fecha_fin").HasColumnType("DATE");
-                entity.Property(p => p.Estado).HasColumnName("estado").HasMaxLength(50);
+                entity.Property(p => p.Estado).HasColumnName("estado").HasMaxLength(10);
+                // llaves foraneas
                 entity.HasOne(p => p.Beneficiario)
                       .WithMany()
                       .HasForeignKey(p => p.IdBeneficiario)
                       .OnDelete(DeleteBehavior.Restrict);
-                entity.HasOne(p => p.Tipo)
+                entity.HasOne(p => p.TipoPoliza)
                       .WithMany()
                       .HasForeignKey(p => p.IdTipo)
                       .OnDelete(DeleteBehavior.Restrict);
             });
+
+
 
             // Configuración de TipoPoliza
             modelBuilder.Entity<TipoPoliza>(entity =>
@@ -125,9 +110,6 @@ namespace MiAplicacion.Data
                 entity.Property(s => s.Ubicacion).HasColumnName("ubicacion").HasMaxLength(30);
                 entity.Property(s => s.Descripcion).HasColumnName("descripcion");
 
-
-
-
                 // Configuración de relaciones
                 entity.HasOne(s => s.Presupuesto)
                       .WithOne()
@@ -138,6 +120,15 @@ namespace MiAplicacion.Data
                       .WithMany()
                       .HasForeignKey(s => s.IdPoliza)
                       .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(s => s.Taller)
+          .WithMany(t => t.Siniestros) // Relación uno a muchos
+          .HasForeignKey(s => s.IdTaller)
+          .OnDelete(DeleteBehavior.Restrict);
+
+
+
+
 
                 entity.HasOne<Departamento>()
                       .WithMany()
@@ -154,6 +145,47 @@ namespace MiAplicacion.Data
                       .HasForeignKey(s => s.IdDistrito)
                       .OnDelete(DeleteBehavior.Restrict);
             });
+
+
+            //modelBuilder.Entity<Siniestro>(entity =>
+            //{
+            //    entity.ToTable("Siniestro");
+
+            //    entity.HasKey(s => s.IdSiniestro);
+
+            //    entity.Property(s => s.IdTaller).HasColumnName("id_taller"); // Correcto mapeo
+
+            //    // Configuración de relaciones
+            //    entity.HasOne(s => s.Taller)
+            //          .WithMany()
+            //          .HasForeignKey(s => s.IdTaller)
+            //          .OnDelete(DeleteBehavior.Restrict);
+            //});
+
+
+            modelBuilder.Entity<Taller>(entity =>
+            {
+                entity.ToTable("Taller"); // Nombre de la tabla en la base de datos
+
+                entity.HasKey(t => t.Id); // Clave primaria
+                entity.Property(t => t.Id).HasColumnName("id");
+
+                entity.Property(t => t.IdProveedor).HasColumnName("id_proveedor"); // Asegura que se mapea correctamente
+                entity.Property(t => t.Nombre).HasColumnName("nombre");
+                entity.Property(t => t.Direccion).HasColumnName("direccion");
+                entity.Property(t => t.Telefono).HasColumnName("telefono");
+                entity.Property(t => t.Correo).HasColumnName("correo");
+                entity.Property(t => t.Ciudad).HasColumnName("ciudad");
+                entity.Property(t => t.Tipo).HasColumnName("tipo");
+                entity.Property(t => t.Capacidad).HasColumnName("capacidad");
+                entity.Property(t => t.Descripcion).HasColumnName("descripcion");
+                entity.Property(t => t.Calificacion).HasColumnName("calificacion");
+                entity.Property(t => t.Estado).HasColumnName("estado");
+            });
+
+
+
+
             modelBuilder.Entity<Provincia>(entity =>
             {
                 entity.ToTable("Provincia");
@@ -209,6 +241,13 @@ namespace MiAplicacion.Data
                 entity.Property(b => b.IdVehiculo).HasColumnName("id_vehiculo");
                 entity.Property(b => b.Contraseña).HasColumnName("contraseña");
             });
+
+                    modelBuilder.Entity<Beneficiario>()
+            .HasOne<Usuario>() // Beneficiario está relacionado con Usuario
+            .WithMany()
+            .HasForeignKey(b => b.IdUsuario)
+            .OnDelete(DeleteBehavior.Restrict);
+
 
             // Configuración de Personal
             modelBuilder.Entity<Personal>(entity =>

@@ -1,0 +1,95 @@
+﻿@using EntidadesProyecto
+@model List<PolizaConTipo>
+
+<div class="container">
+    <h2>Validar Póliza</h2>
+    <form method="get" asp-action="ValidarPoliza">
+        <input type="text" name="filtro" placeholder="Ingrese número de póliza o DNI" class="form-control mb-3" />
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Número de Póliza</th>
+                    <th>Vigencia</th>
+                    <th>Cobertura</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var poliza in Model)
+                {
+                    <tr>
+                        <td>@poliza.IdPoliza</td>
+                        <td>@poliza.Vigencia</td>
+                        <td>@poliza.Cobertura</td>
+                        <td>@poliza.Estado</td>
+                        <td>
+                            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalDetallePoliza" data-id="@poliza.IdPoliza">Detalles</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No se encontraron pólizas.</p>
+    }
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalDetallePoliza" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Detalles de la Póliza</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Detalles de la póliza se cargarán aquí -->
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('button[data-bs-target="#modalDetallePoliza"]').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const polizaId = this.getAttribute('data-id');
+            fetch(`/Poliza/DetallePoliza/${polizaId}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.querySelector('#modalDetallePoliza .modal-body').innerHTML = html;
+                });
+        });
+    });
+</script>
+
+<script>
+    function cambiarEstadoPoliza(polizaId, accion) {
+        const url = accion === 'validar' ? '/Poliza/ValidarPoliza' : '/Poliza/NoValidarPoliza';
+
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(polizaId) // Enviar solo el ID como JSON
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(`Póliza ${accion === 'validar' ? 'validada' : 'no validada'} con éxito.`);
+                location.reload(); // Recargar la página para reflejar los cambios
+            } else {
+                alert('Ocurrió un error al cambiar el estado.');
+            }
+        });
+    }
+</script>
+
