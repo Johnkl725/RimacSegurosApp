@@ -77,31 +77,98 @@ namespace AccesoDatos
                 .Where(d => d.id_provincia == provinciaId)
                 .ToListAsync();
         }
-        public async Task<List<Siniestro>> ObtenerTodosLosSiniestrosAsync()
+
+        public async Task<List<Siniestro>> ObtenerSiniestrosConTallerPorDefectoAsync(int idTallerPorDefecto)
+        {
+            return await _context.Siniestros
+                .Where(s => s.IdTaller == idTallerPorDefecto)
+                .Select(s => new Siniestro
+                {
+                    IdSiniestro = s.IdSiniestro,
+                    Tipo = s.Tipo,
+                    FechaSiniestro = s.FechaSiniestro,
+                    Ubicacion = s.Ubicacion,
+                    Descripcion = s.Descripcion,
+                    IdDepartamento = s.IdDepartamento,
+                    IdProvincia = s.IdProvincia,
+                    IdDistrito = s.IdDistrito,
+                    IdTaller = s.IdTaller
+                }) // Selección explícita de propiedades
+                .ToListAsync();
+        }
+
+
+
+
+        public async Task<Siniestro?> ObtenerSiniestroPorIdAsync(int idSiniestro)
+        {
+            return await _context.Siniestros
+                .Where(s => s.IdSiniestro == idSiniestro)
+                .Include(s => s.Taller)
+                .Select(s => new Siniestro
+                {
+                    IdSiniestro = s.IdSiniestro,
+                    Descripcion = s.Descripcion,
+                    FechaActualizacion = s.FechaActualizacion,
+                    FechaCreacion = s.FechaCreacion,
+                    FechaSiniestro = s.FechaSiniestro,
+                    IdDepartamento = s.IdDepartamento,
+                    IdDistrito = s.IdDistrito,
+                    IdDocumento = s.IdDocumento,
+                    IdPoliza = s.IdPoliza,
+                    IdPresupuesto = s.IdPresupuesto,
+                    IdProvincia = s.IdProvincia,
+                    IdTaller = s.IdTaller,
+                    Tipo = s.Tipo,
+                    Ubicacion = s.Ubicacion,
+                    Taller = s.Taller != null ? new Taller
+                    {
+                        Id = s.Taller.Id,
+                        Calificacion = s.Taller.Calificacion,
+                        Capacidad = s.Taller.Capacidad,
+                        Ciudad = s.Taller.Ciudad,
+                        Correo = s.Taller.Correo,
+                        Descripcion = s.Taller.Descripcion,
+                        Direccion = s.Taller.Direccion,
+                        Estado = s.Taller.Estado,
+                        IdProveedor = s.Taller.IdProveedor,
+                        Nombre = s.Taller.Nombre,
+                        Telefono = s.Taller.Telefono,
+                        Tipo = s.Taller.Tipo
+                    } : null
+                })
+                .FirstOrDefaultAsync();
+        }
+
+
+
+
+        public async Task ActualizarSiniestroAsync(Siniestro siniestro)
         {
             try
             {
-                return await _context.Siniestros.ToListAsync();
+                var entidadExistente = await _context.Siniestros
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(s => s.IdSiniestro == siniestro.IdSiniestro);
+
+                if (entidadExistente == null)
+                {
+                    throw new Exception("El siniestro no existe en la base de datos.");
+                }
+
+                _context.Entry(siniestro).State = EntityState.Modified;
+
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                throw new Exception("Error al obtener los siniestros.");
+                Console.WriteLine($"Error al actualizar el siniestro: {ex.Message}");
+                throw;
             }
         }
-        public async Task<List<Siniestro>> ObtenerSiniestrosPorBeneficiarioAsync(int idBeneficiario)
-        {
-            // Materializamos la lista de IdPoliza antes de usar Contains
-            var polizas = await _context.Polizas
-                .Where(p => p.IdBeneficiario == idBeneficiario)
-                .Select(p => p.Id)
-                .ToListAsync(); // Materialización aquí
 
-            return await _context.Siniestros
-            .Where(s => s.IdPoliza.HasValue && polizas.Contains(s.IdPoliza.Value)) // Asegúrate de que IdPoliza no sea nulo
-            .ToListAsync();
 
-        }
+
 
     }
 }
