@@ -140,7 +140,9 @@ namespace AccesoDatos
                             Id = reader["id"] != DBNull.Value ? (int)reader["id"] : 0,
                             IdProveedor = reader["id_proveedor"] != DBNull.Value ? (int)reader["id_proveedor"] : 0,
                             Nombre = reader["nombre"] != DBNull.Value ? reader["nombre"].ToString() : string.Empty,
-                            // Añadir todas las propiedades
+                            Direccion = reader["Direccion"] != DBNull.Value ? reader["Direccion"].ToString() : string.Empty,
+                            Ciudad = reader["Ciudad"] != DBNull.Value ? reader["Ciudad"].ToString() : string.Empty,
+                            Capacidad = reader["Capacidad"] != DBNull.Value ? (int)reader["Capacidad"] : 0
                         };
 
                         talleres.Add(taller);
