@@ -21,13 +21,14 @@ namespace AplicacionWeb.Controllers
         // Acción que muestra la lista de talleres
         public async Task<IActionResult> Index()
         {
-            List<Taller> talleres = await Task.Run(() => tallerLN.ObtenerTodosLosTalleres());
+            var talleres = await tallerLN.ObtenerTodosLosTalleresAsync(); // Llamar al método correctamente
             return View(talleres);
         }
 
-        public IActionResult Detalle(int id)
+        // Acción para ver los detalles de un taller
+        public async Task<IActionResult> Detalle(int id)
         {
-            Taller taller = tallerLN.ObtenerTallerPorId(id);
+            var taller = await Task.Run(() => tallerLN.ObtenerTallerPorId(id));
             if (taller == null)
                 return NotFound();
             return View(taller);
@@ -50,7 +51,7 @@ namespace AplicacionWeb.Controllers
             if (ModelState.IsValid)
             {
                 await Task.Run(() => tallerLN.AgregarTaller(taller));
-                return RedirectToAction("Index");
+                return RedirectToAction("ProveedoresYTalleres", "Proveedor");
             }
 
             // Volver a cargar la lista de proveedores si hay un error en el modelo
@@ -62,7 +63,7 @@ namespace AplicacionWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> Editar(int id)
         {
-            Taller taller = await Task.Run(() => tallerLN.ObtenerTallerPorId(id));
+            var taller = await Task.Run(() => tallerLN.ObtenerTallerPorId(id));
             if (taller == null) return NotFound();
 
             // Cargar la lista de proveedores de forma asíncrona para el menú desplegable
@@ -78,7 +79,7 @@ namespace AplicacionWeb.Controllers
             if (ModelState.IsValid)
             {
                 await Task.Run(() => tallerLN.ActualizarTaller(taller));
-                return RedirectToAction("Index");
+                return RedirectToAction("ProveedoresYTalleres", "Proveedor");
             }
 
             // Volver a cargar la lista de proveedores si hay un error en el modelo
@@ -86,13 +87,25 @@ namespace AplicacionWeb.Controllers
             return View(taller);
         }
 
-        // Acción para manejar la eliminación de un taller
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        // Acción para mostrar el formulario de confirmación de eliminación
+        [HttpGet]
         public async Task<IActionResult> Eliminar(int id)
         {
+            var taller = await Task.Run(() => tallerLN.ObtenerTallerPorId(id));
+            if (taller == null)
+            {
+                return NotFound();
+            }
+            return View(taller);
+        }
+
+        // Acción para manejar la eliminación del taller
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EliminarConfirmado(int id)
+        {
             await Task.Run(() => tallerLN.EliminarTaller(id));
-            return RedirectToAction("Index");
+            return RedirectToAction("ProveedoresYTalleres", "Proveedor");
         }
     }
 }

@@ -137,7 +137,8 @@ namespace AplicaciónWeb.Controllers
                 return NotFound("Siniestro no encontrado.");
             }
 
-            var talleres = _tallerLN.ObtenerTodosLosTalleres();
+            // Llamada asincrónica al método ObtenerTodosLosTalleresAsync
+            var talleres = await _tallerLN.ObtenerTodosLosTalleresAsync();
             if (talleres == null || !talleres.Any())
             {
                 ModelState.AddModelError("", "No hay talleres disponibles.");

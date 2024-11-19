@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using MiAplicacion.Models;
 using AplicaciónWeb.Models;
 
-
-
 namespace AplicaciónWeb.Controllers
 {
     [Route("Personal/proveedor")]
@@ -26,24 +24,18 @@ namespace AplicaciónWeb.Controllers
 
         // Acción que muestra la lista combinada de Proveedores y Talleres
         [HttpGet("ProveedoresYTalleres")]
-        public async Task<IActionResult> ProveedoresYTalleres()
+        public async Task<IActionResult> ProveedoresYTalleres(string view = "Ambos")
         {
-            try
-            {
-                var viewModel = new ProveedorTallerViewModel
-                {
-                    Proveedores = await _proveedorLN.ObtenerProveedoresAsync(),
-                    Talleres = await Task.Run(() => _tallerLN.ObtenerTodosLosTalleres())
-                };
+            // Guardamos la selección para que se mantenga en el dropdown
+            ViewData["SelectedView"] = view;
 
-                return View(viewModel);
-            }
-            catch (Exception ex)
+            var viewModel = new ProveedorTallerViewModel
             {
-                Console.WriteLine($"Error al obtener proveedores y talleres: {ex.Message}");
-                ModelState.AddModelError("", "No se pueden mostrar los datos en este momento.");
-                return View("Error");
-            }
+                Proveedores = await _proveedorLN.ObtenerProveedoresAsync(),
+                Talleres = await _tallerLN.ObtenerTodosLosTalleresAsync(),
+            };
+
+            return View(viewModel);
         }
 
         // GET: Muestra la vista de índice con todos los proveedores
@@ -83,7 +75,7 @@ namespace AplicaciónWeb.Controllers
                     Console.WriteLine("Intentando crear un proveedor...");
                     await _proveedorLN.AgregarProveedorAsync(proveedor);
                     Console.WriteLine("Proveedor creado exitosamente.");
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("ProveedoresYTalleres", "Proveedor");
                 }
                 catch (Exception ex)
                 {
@@ -132,7 +124,7 @@ namespace AplicaciónWeb.Controllers
                     Console.WriteLine("Intentando actualizar proveedor...");
                     await _proveedorLN.ActualizarProveedorAsync(proveedor);
                     Console.WriteLine("Proveedor actualizado exitosamente.");
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("ProveedoresYTalleres", "Proveedor");
                 }
                 catch (Exception ex)
                 {
@@ -185,7 +177,7 @@ namespace AplicaciónWeb.Controllers
                 await _proveedorLN.EliminarProveedorAsync(id);
                 Console.WriteLine("Proveedor eliminado exitosamente.");
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("ProveedoresYTalleres", "Proveedor");
             }
             catch (Exception ex)
             {
