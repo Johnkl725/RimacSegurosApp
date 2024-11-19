@@ -36,13 +36,18 @@
         <span asp-validation-for="Ciudad" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Tipo"></label>
-        <input asp-for="Tipo" class="form-control" />
+        <label asp-for="Tipo">Tipo</label>
+        <select asp-for="Tipo" class="form-control">
+            <option value="Mecánico">Mecánico</option>
+            <option value="Eléctrico">Eléctrico</option>
+            <option value="Pintura">Pintura</option>
+            <option value="Latonería">Latonería</option>
+        </select>
         <span asp-validation-for="Tipo" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Capacidad"></label>
-        <input asp-for="Capacidad" class="form-control" />
+        <label asp-for="Capacidad">Capacidad</label>
+        <input asp-for="Capacidad" class="form-control" type="number" min="1" step="1" />
         <span asp-validation-for="Capacidad" class="text-danger"></span>
     </div>
     <div class="form-group">
@@ -51,13 +56,22 @@
         <span asp-validation-for="Descripcion" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Calificacion"></label>
-        <input asp-for="Calificacion" class="form-control" />
+        <label asp-for="Calificacion">Calificación</label>
+        <select asp-for="Calificacion" class="form-control">
+            <option value="A">A</option>
+            <option value="B">B</option>
+            <option value="C">C</option>
+            <option value="D">D</option>
+        </select>
         <span asp-validation-for="Calificacion" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label asp-for="Estado"></label>
-        <input asp-for="Estado" class="form-control" />
+        <label asp-for="Estado">Estado</label>
+        <select asp-for="Estado" class="form-control">
+            <option value="Activo">Activo</option>
+            <option value="Inactivo">Inactivo</option>
+            <option value="Revisión">Revisión</option>
+        </select>
         <span asp-validation-for="Estado" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Guardar</button>

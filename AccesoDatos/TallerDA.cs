@@ -100,18 +100,18 @@ namespace AccesoDatos
                     {
                         return new Taller
                         {
-                            Id = reader["Id"] != DBNull.Value ? (int)reader["Id"] : 0,
-                            IdProveedor = reader["id_proveedor"] != DBNull.Value ? (int)reader["id_proveedor"] : 0,
-                            Nombre = reader["Nombre"] != DBNull.Value ? reader["Nombre"].ToString() : string.Empty,
-                            Direccion = reader["Direccion"] != DBNull.Value ? reader["Direccion"].ToString() : string.Empty,
-                            Telefono = reader["Telefono"] != DBNull.Value ? reader["Telefono"].ToString() : string.Empty,
-                            Correo = reader["Correo"] != DBNull.Value ? reader["Correo"].ToString() : string.Empty,
-                            Ciudad = reader["Ciudad"] != DBNull.Value ? reader["Ciudad"].ToString() : string.Empty,
-                            Tipo = reader["Tipo"] != DBNull.Value ? reader["Tipo"].ToString() : string.Empty,
-                            Capacidad = reader["Capacidad"] != DBNull.Value ? (int)reader["Capacidad"] : 0,
-                            Descripcion = reader["Descripcion"] != DBNull.Value ? reader["Descripcion"].ToString() : string.Empty,
-                            Calificacion = reader["Calificacion"] != DBNull.Value ? reader["Calificacion"].ToString() : string.Empty,
-                            Estado = reader["Estado"] != DBNull.Value ? reader["Estado"].ToString() : string.Empty
+                            Id = (int)reader["Id"],
+                            IdProveedor = (int)reader["id_proveedor"], // Asegúrate de que es "ProveedorId" aquí
+                            Nombre = reader["Nombre"].ToString(),
+                            Direccion = reader["Direccion"].ToString(),
+                            Telefono = reader["Telefono"].ToString(),
+                            Correo = reader["Correo"].ToString(),
+                            Ciudad = reader["Ciudad"].ToString(),
+                            Tipo = reader["Tipo"].ToString(),
+                            Capacidad = (int)reader["Capacidad"],
+                            Descripcion = reader["Descripcion"].ToString(),
+                            Calificacion = reader["Calificacion"].ToString(),
+                            Estado = reader["Estado"].ToString()
                         };
                     }
                     return null;
@@ -119,9 +119,7 @@ namespace AccesoDatos
             }
         }
 
-
-
-        public List<Taller> ObtenerTodosLosTalleres()
+        public async Task<List<Taller>> ObtenerTodosLosTalleresAsync()
         {
             List<Taller> talleres = new List<Taller>();
 
@@ -130,19 +128,25 @@ namespace AccesoDatos
                 SqlCommand cmd = new SqlCommand("spObtenerTalleres", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                conn.Open();
-                using (SqlDataReader reader = cmd.ExecuteReader())
+                await conn.OpenAsync(); // Abrir la conexión de forma asíncrona
+                using (SqlDataReader reader = await cmd.ExecuteReaderAsync()) // Ejecutar el lector de forma asíncrona
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync()) // Leer cada fila de forma asíncrona
                     {
                         Taller taller = new Taller
                         {
                             Id = reader["id"] != DBNull.Value ? (int)reader["id"] : 0,
                             IdProveedor = reader["id_proveedor"] != DBNull.Value ? (int)reader["id_proveedor"] : 0,
                             Nombre = reader["nombre"] != DBNull.Value ? reader["nombre"].ToString() : string.Empty,
-                            Direccion = reader["Direccion"] != DBNull.Value ? reader["Direccion"].ToString() : string.Empty,
-                            Ciudad = reader["Ciudad"] != DBNull.Value ? reader["Ciudad"].ToString() : string.Empty,
-                            Capacidad = reader["Capacidad"] != DBNull.Value ? (int)reader["Capacidad"] : 0
+                            Direccion = reader["direccion"] != DBNull.Value ? reader["direccion"].ToString() : string.Empty,
+                            Telefono = reader["telefono"] != DBNull.Value ? reader["telefono"].ToString() : string.Empty,
+                            Correo = reader["correo"] != DBNull.Value ? reader["correo"].ToString() : string.Empty,
+                            Ciudad = reader["ciudad"] != DBNull.Value ? reader["ciudad"].ToString() : string.Empty,
+                            Tipo = reader["tipo"] != DBNull.Value ? reader["tipo"].ToString() : string.Empty,
+                            Capacidad = reader["capacidad"] != DBNull.Value ? (int)reader["capacidad"] : 0,
+                            Descripcion = reader["descripcion"] != DBNull.Value ? reader["descripcion"].ToString() : string.Empty,
+                            Calificacion = reader["calificacion"] != DBNull.Value ? reader["calificacion"].ToString() : string.Empty,
+                            Estado = reader["estado"] != DBNull.Value ? reader["estado"].ToString() : string.Empty
                         };
 
                         talleres.Add(taller);
@@ -150,11 +154,8 @@ namespace AccesoDatos
                 }
             }
 
-            // Prueba si se están obteniendo datos
-            Console.WriteLine($"Total talleres: {talleres.Count}");
             return talleres;
         }
-
 
     }
 }
