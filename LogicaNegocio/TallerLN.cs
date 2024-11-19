@@ -38,10 +38,10 @@ namespace LogicaNegocio
             return tallerDA.ObtenerTallerPorId(id);
         }
 
-        // Método para obtener la lista de todos los talleres
-        public List<Taller> ObtenerTodosLosTalleres()
+        public async Task<List<Taller>> ObtenerTodosLosTalleresAsync()
         {
-            return tallerDA.ObtenerTodosLosTalleres();
+            return await tallerDA.ObtenerTodosLosTalleresAsync();
         }
+
     }
 }

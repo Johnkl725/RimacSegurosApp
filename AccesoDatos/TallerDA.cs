@@ -119,8 +119,7 @@ namespace AccesoDatos
             }
         }
 
-
-        public List<Taller> ObtenerTodosLosTalleres()
+        public async Task<List<Taller>> ObtenerTodosLosTalleresAsync()
         {
             List<Taller> talleres = new List<Taller>();
 
@@ -129,10 +128,10 @@ namespace AccesoDatos
                 SqlCommand cmd = new SqlCommand("spObtenerTalleres", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                conn.Open();
-                using (SqlDataReader reader = cmd.ExecuteReader())
+                await conn.OpenAsync(); // Abrir la conexión de forma asíncrona
+                using (SqlDataReader reader = await cmd.ExecuteReaderAsync()) // Ejecutar el lector de forma asíncrona
                 {
-                    while (reader.Read())
+                    while (await reader.ReadAsync()) // Leer cada fila de forma asíncrona
                     {
                         Taller taller = new Taller
                         {
@@ -157,5 +156,6 @@ namespace AccesoDatos
 
             return talleres;
         }
+
     }
 }

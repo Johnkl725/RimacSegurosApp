@@ -21,9 +21,10 @@ namespace AplicacionWeb.Controllers
         // Acción que muestra la lista de talleres
         public async Task<IActionResult> Index()
         {
-            List<Taller> talleres = await Task.Run(() => tallerLN.ObtenerTodosLosTalleres());
+            List<Taller> talleres = await tallerLN.ObtenerTodosLosTalleresAsync(); // Llamar al método con ()
             return View(talleres);
         }
+
 
         public IActionResult Detalle(int id)
         {
@@ -50,7 +51,7 @@ namespace AplicacionWeb.Controllers
             if (ModelState.IsValid)
             {
                 await Task.Run(() => tallerLN.AgregarTaller(taller));
-                return RedirectToAction("Index");
+                return RedirectToAction("ProveedoresYTalleres", "Proveedor");
             }
 
             // Volver a cargar la lista de proveedores si hay un error en el modelo
@@ -78,7 +79,7 @@ namespace AplicacionWeb.Controllers
             if (ModelState.IsValid)
             {
                 await Task.Run(() => tallerLN.ActualizarTaller(taller));
-                return RedirectToAction("Index");
+                return RedirectToAction("ProveedoresYTalleres", "Proveedor");
             }
 
             // Volver a cargar la lista de proveedores si hay un error en el modelo
@@ -92,7 +93,7 @@ namespace AplicacionWeb.Controllers
         public async Task<IActionResult> Eliminar(int id)
         {
             await Task.Run(() => tallerLN.EliminarTaller(id));
-            return RedirectToAction("Index");
+            return RedirectToAction("ProveedoresYTalleres", "Proveedor");
         }
     }
 }

@@ -8,65 +8,147 @@
     </div>
 </div>
 
-<!-- Sección de Proveedores -->
-<h3>Proveedores</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>RUC</th>
-            <th>Teléfono</th>
-            <th>Correo</th>
-            <th>Calificación</th>
-            <th>Descripción</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var proveedor in Model.Proveedores)
+<!-- Menú desplegable para filtrar la vista -->
+<div class="mb-3">
+    <label for="viewSelection" class="form-label">Seleccionar vista:</label>
+    <select id="viewSelection" class="form-select" onchange="location = this.value;">
+        @if (ViewData["SelectedView"]?.ToString() == "Proveedores")
         {
-            <tr>
-                <td>@proveedor.Nombre</td>
-                <td>@proveedor.Ruc</td>
-                <td>@proveedor.Telefono</td>
-                <td>@proveedor.Correo</td>
-                <td>@proveedor.Calificacion</td>
-                <td>@proveedor.Descripcion</td>
-                <td>
-                    <a href="@Url.Action("Editar", "Proveedor", new { id = proveedor.Id })" class="btn btn-warning">Editar</a>
-                    <a href="@Url.Action("Eliminar", "Proveedor", new { id = proveedor.Id })" class="btn btn-danger">Eliminar</a>
-                </td>
-            </tr>
+            <option value="@Url.Action("ProveedoresYTalleres", "Proveedor", new { view = "Proveedores" })" selected>Ver Proveedores</option>
         }
-    </tbody>
-</table>
+        else
+        {
+            <option value="@Url.Action("ProveedoresYTalleres", "Proveedor", new { view = "Proveedores" })">Ver Proveedores</option>
+        }
+
+        @if (ViewData["SelectedView"]?.ToString() == "Talleres")
+        {
+            <option value="@Url.Action("ProveedoresYTalleres", "Proveedor", new { view = "Talleres" })" selected>Ver Talleres</option>
+        }
+        else
+        {
+            <option value="@Url.Action("ProveedoresYTalleres", "Proveedor", new { view = "Talleres" })">Ver Talleres</option>
+        }
+
+        @if (ViewData["SelectedView"]?.ToString() == "Ambos")
+        {
+            <option value="@Url.Action("ProveedoresYTalleres", "Proveedor", new { view = "Ambos" })" selected>Ver Proveedores y Talleres</option>
+        }
+        else
+        {
+            <option value="@Url.Action("ProveedoresYTalleres", "Proveedor", new { view = "Ambos" })">Ver Proveedores y Talleres</option>
+        }
+    </select>
+</div>
+
+<!-- Sección de Proveedores -->
+@if (ViewData["SelectedView"]?.ToString() == "Proveedores" || ViewData["SelectedView"]?.ToString() == "Ambos")
+{
+    <h3>Proveedores</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>RUC</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th>Calificación</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var proveedor in Model.Proveedores)
+            {
+                <tr>
+                    <td>@proveedor.Nombre</td>
+                    <td>@proveedor.Ruc</td>
+                    <td>@proveedor.Telefono</td>
+                    <td>@proveedor.Correo</td>
+                    <td>@proveedor.Calificacion</td>
+                    <td>@proveedor.Descripcion</td>
+                    <td>
+                        <a href="@Url.Action("Editar", "Proveedor", new { id = proveedor.Id })" class="btn btn-warning">Editar</a>
+                        <a href="@Url.Action("Eliminar", "Proveedor", new { id = proveedor.Id })" class="btn btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 <!-- Sección de Talleres -->
-<h3>Talleres</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Dirección</th>
-            <th>Ciudad</th>
-            <th>Capacidad</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var taller in Model.Talleres)
-        {
+@if (ViewData["SelectedView"]?.ToString() == "Talleres" || ViewData["SelectedView"]?.ToString() == "Ambos")
+{
+    <h3>Talleres</h3>
+    <table class="table">
+        <thead>
             <tr>
-                <td>@taller.Nombre</td>
-                <td>@taller.Direccion</td>
-                <td>@taller.Ciudad</td>
-                <td>@taller.Capacidad</td>
-                <td>
-                    <a href="@Url.Action("Detalle", "Taller", new { id = taller.Id })" class="btn btn-info">Ver</a>
-                    <a href="@Url.Action("Editar", "Taller", new { id = taller.Id })" class="btn btn-warning">Editar</a>
-                    <a href="@Url.Action("Eliminar", "Taller", new { id = taller.Id })" class="btn btn-danger">Eliminar</a>
-                </td>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Ciudad</th>
+                <th>Capacidad</th>
+                <th>Acciones</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var taller in Model.Talleres)
+            {
+                <tr>
+                    <td>@taller.Nombre</td>
+                    <td>@taller.Direccion</td>
+                    <td>@taller.Ciudad</td>
+                    <td>@taller.Capacidad</td>
+                    <td>
+                        <a href="@Url.Action("Detalle", "Taller", new { id = taller.Id })" class="btn btn-info">Ver</a>
+                        <a href="@Url.Action("Editar", "Taller", new { id = taller.Id })" class="btn btn-warning">Editar</a>
+                        <a href="@Url.Action("Eliminar", "Taller", new { id = taller.Id })" class="btn btn-danger">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h3 class="mt-5">Relación entre Proveedores y Talleres</h3>
+<canvas id="stackedBarChart" width="400" height="200"></canvas>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Datos dinámicos de proveedores y talleres
+        var proveedores = @Html.Raw(Json.Serialize(Model.Proveedores.Select(p => p.Nombre))); // Nombres de proveedores
+        var talleresPorProveedor = @Html.Raw(Json.Serialize(Model.Proveedores.Select(p => Model.Talleres.Count(t => t.IdProveedor == p.Id)))); // Cantidad de talleres por proveedor
+
+        // Crear gráfico
+        var ctx = document.getElementById('stackedBarChart').getContext('2d');
+        var stackedBarChart = new Chart(ctx, {
+            type: 'bar', // Gráfico de barras
+            data: {
+                labels: proveedores, // Nombres de los proveedores
+                datasets: [{
+                    label: 'Talleres por Proveedor',
+                    data: talleresPorProveedor, // Número de talleres asociados a cada proveedor
+                    backgroundColor: '#42A5F5', // Color de las barras
+                    borderColor: '#1E88E5', // Color del borde
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false } // Ocultar la leyenda si no es necesaria
+                },
+                scales: {
+                    x: {
+                        stacked: true // Barras apiladas
+                    },
+                    y: {
+                        beginAtZero: true,
+                        stacked: true // Eje Y apilado
+                    }
+                }
+            }
+        });
+    </script>
+}
