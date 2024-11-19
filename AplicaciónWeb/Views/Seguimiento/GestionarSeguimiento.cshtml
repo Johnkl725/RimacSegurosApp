@@ -1,0 +1,21 @@
+﻿@model List<EntidadesProyecto.Siniestro>
+
+<h2>Siniestros Registrados</h2>
+
+<table>
+    <tr>
+        <th>Número</th>
+        <th>Fecha Siniestro</th>
+        <th>Acciones</th>
+    </tr>
+    @foreach (var siniestro in Model)
+    {
+        <tr>
+            <td>@siniestro.IdSiniestro</td>
+            <td>@siniestro.FechaSiniestro</td>
+            <td>
+                <a asp-action="DetalleSeguimiento" asp-route-idSiniestro="@siniestro.IdSiniestro">Ver Detalle</a>
+            </td>
+        </tr>
+    }
+</table>

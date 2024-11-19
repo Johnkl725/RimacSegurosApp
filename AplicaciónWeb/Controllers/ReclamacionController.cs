@@ -68,6 +68,13 @@ namespace AplicaciónWeb.Controllers
                 return View();
             }
 
+            // Validación para verificar la cantidad de archivos
+            if (archivos != null && archivos.Count > 5)
+            {
+                ModelState.AddModelError("archivos", "No puede subir más de 5 archivos.");
+                return View();
+            }
+
             try
             {
                 var reclamacion = new Reclamacion

@@ -1,2 +1,10 @@
-﻿<h2>@ViewBag.Message</h2>
-<a href="@Url.Action("IngresarReclamacion")" class="btn btn-secondary">Registrar otra reclamación</a>
+﻿<<h2>@ViewBag.Message</h2>
+
+<div class="d-flex justify-content-between mt-3">
+    <a href="@Url.Action("IngresarReclamacion", "Reclamacion")" class="btn btn-secondary">
+        Registrar otra reclamación
+    </a>
+    <a href="@Url.Action("BeneficiarioDashboard", "Beneficiario")" class="btn btn-primary">
+        Volver al Dashboard
+    </a>
+</div>

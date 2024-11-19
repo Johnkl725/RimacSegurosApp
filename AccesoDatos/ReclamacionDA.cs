@@ -34,9 +34,9 @@ namespace AccesoDatos
                     "EXEC sp_RegistrarReclamacion @IdSiniestro, @FechaReclamacion, @Estado, @Tipo, @Descripcion, @IdReclamacion OUTPUT",
                     new SqlParameter("@IdSiniestro", reclamacion.IdSiniestro),
                     new SqlParameter("@FechaReclamacion", reclamacion.FechaReclamacion),
-                    new SqlParameter("@Estado", reclamacion.Estado ?? "Pendiente"),
-                    new SqlParameter("@Tipo", reclamacion.Tipo),
+                    new SqlParameter("@Estado", reclamacion.Estado ?? "Pendiente"), 
                     new SqlParameter("@Descripcion", reclamacion.Descripcion),
+                    new SqlParameter("@Tipo", reclamacion.Tipo),
                     idParam
                 );
 

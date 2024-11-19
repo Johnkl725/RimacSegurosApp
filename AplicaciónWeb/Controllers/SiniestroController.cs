@@ -35,15 +35,26 @@ namespace AplicaciónWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Convertir ViewModel a entidad `Siniestro`
+                int idUsuario = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+
+                // Obtener la póliza activa del beneficiario
+                var poliza = await _siniestroLN.ObtenerPolizaActivaPorUsuarioAsync(idUsuario);
+
+                if (poliza == null)
+                {
+                    ModelState.AddModelError("", "No se encontró una póliza activa para este beneficiario.");
+                    await CargarListasAsync();
+                    return View(model);
+                }
+
                 var siniestro = new Siniestro
                 {
                     IdDepartamento = model.IdDepartamento,
                     IdProvincia = model.IdProvincia,
                     IdDistrito = model.IdDistrito,
-                    IdDocumento = 2, // Valores por defecto
-                    IdPoliza = 5,
-                    IdTaller =  1,
+                    IdDocumento = 1,
+                    IdPoliza = poliza.Id,
+                    IdTaller = 1,
                     IdPresupuesto = 1,
                     Tipo = model.Tipo,
                     FechaSiniestro = model.FechaSiniestro,
@@ -66,6 +77,8 @@ namespace AplicaciónWeb.Controllers
             await CargarListasAsync();
             return View(model);
         }
+
+
 
 
         // Método AJAX para obtener provincias por departamento seleccionado

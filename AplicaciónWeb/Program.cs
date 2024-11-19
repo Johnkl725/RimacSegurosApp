@@ -31,8 +31,12 @@ builder.Services.AddScoped<ProveedorDA>();
 builder.Services.AddScoped<ProveedorLN>();
 builder.Services.AddScoped<TallerDA>();
 builder.Services.AddScoped<TallerLN>();
-
-
+builder.Services.AddScoped<PolizaLN>();
+builder.Services.AddScoped<PolizaDA>();
+builder.Services.AddScoped<ReclamacionLN>();
+builder.Services.AddScoped<ReclamacionDA>();
+builder.Services.AddScoped<DocumentoReclamacionDA>();
+builder.Services.AddScoped<DocumentoReclamacionLN>();
 // Configura la autenticaci�n usando cookies
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

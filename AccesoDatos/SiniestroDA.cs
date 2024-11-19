@@ -167,7 +167,44 @@ namespace AccesoDatos
             }
         }
 
+        public async Task<List<Siniestro>> ObtenerTodosLosSiniestrosAsync()
+        {
+            return await _context.Siniestros.ToListAsync();
+        }
+        
 
+        
+
+     
+        public async Task<List<Siniestro>> ObtenerSiniestrosPorBeneficiarioAsync(int idBeneficiario)
+        {
+            var polizas = await _context.Polizas
+                .Where(p => p.IdBeneficiario == idBeneficiario)
+                .Select(p => p.Id)
+                .ToListAsync();
+
+            return await _context.Siniestros
+                .Where(s => polizas.Contains(s.IdPoliza.Value))
+                .ToListAsync();
+        }
+
+        public async Task<Siniestro> ObtenerSiniestroConDetallesAsync(int idSiniestro)
+        {
+            return await _context.Siniestros
+                .Include(s => s.Presupuesto)
+                .Include(s => s.Poliza)
+                .ThenInclude(p => p.TipoPoliza)
+                .Include(s => s.Taller)
+                .FirstOrDefaultAsync(s => s.IdSiniestro == idSiniestro);
+        }
+
+        public async Task<List<Reclamacion>> ObtenerReclamacionesPorSiniestroAsync(int idSiniestro)
+        {
+            return await _context.Reclamaciones
+                .Where(r => r.IdSiniestro == idSiniestro)
+                .Include(r => r.Documentos)
+                .ToListAsync();
+        }
 
 
     }

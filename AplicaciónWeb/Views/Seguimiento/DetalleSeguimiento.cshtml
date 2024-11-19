@@ -1,0 +1,30 @@
+﻿@model AplicaciónWeb.Models.SeguimientoViewModel
+
+<h2>Seguimiento del Siniestro</h2>
+<p><strong>Estado Actual:</strong> @Model.EstadoActual</p>
+
+<h4>Presupuesto:</h4>
+@if (Model.Presupuesto != null)
+{
+    <p>Monto Total: @Model.Presupuesto.MontoTotal</p>
+    <p>Detalles: @Model.Presupuesto.Detalles</p>
+}
+else
+{
+    <p>Sin presupuesto asociado.</p>
+}
+
+<h4>Reclamaciones:</h4>
+@if (Model.Reclamaciones.Any())
+{
+    <ul>
+        @foreach (var reclamacion in Model.Reclamaciones)
+        {
+            <li>@reclamacion.Descripcion - Estado: @reclamacion.Estado</li>
+        }
+    </ul>
+}
+else
+{
+    <p>No hay reclamaciones.</p>
+}
