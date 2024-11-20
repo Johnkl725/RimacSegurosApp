@@ -173,9 +173,6 @@ namespace AccesoDatos
         }
         
 
-        
-
-     
         public async Task<List<Siniestro>> ObtenerSiniestrosPorBeneficiarioAsync(int idBeneficiario)
         {
             var polizas = await _context.Polizas

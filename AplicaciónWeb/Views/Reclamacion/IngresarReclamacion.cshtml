@@ -1,71 +1,154 @@
-﻿@{
+﻿
+
+@{ 
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Ingresar Reclamación";
 }
 
-<h2>Ingresar Reclamación</h2>
+<div class="container mt-5">
+    <h2 class="text-center text-danger">Ingresar Reclamación</h2>
+    <p class="text-muted text-center">Complete el formulario para registrar su reclamación.</p>
 
-<form asp-action="IngresarReclamacion" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label for="idSiniestro">Siniestro</label>
-        <select name="idSiniestro" class="form-control" required>
-            <option value="">Seleccione un siniestro</option>
-            @if (ViewBag.Siniestros != null)
-            {
-                foreach (var siniestro in ViewBag.Siniestros as List<EntidadesProyecto.Siniestro>)
+    <form asp-action="IngresarReclamacion" method="post" enctype="multipart/form-data" class="p-4 shadow-sm rounded" style="background-color: #f9f9f9;font-size: 1.2rem;">
+        <div class="form-group">
+            <label for="idSiniestro" class="font-weight-bold">Siniestro</label>
+            <select name="idSiniestro" class="form-control" required>
+                <option value="">Seleccione un siniestro</option>
+                @if (ViewBag.Siniestros != null)
                 {
-                    <option value="@siniestro.IdSiniestro">Siniestro #@siniestro.IdSiniestro - @siniestro.Tipo</option>
+                    foreach (var siniestro in ViewBag.Siniestros)
+                    {
+                        <option value="@siniestro.IdSiniestro">
+                            Número @siniestro.Numero - ID: @siniestro.IdSiniestro - @siniestro.Tipo (Fecha: @siniestro.FechaCreacion.ToString("dd/MM/yyyy"))
+                        </option>
+                    }
                 }
-            }
-            else
-            {
-                <option value="">No hay siniestros disponibles</option>
-            }
-        </select>
-    </div>
+                else
+                {
+                    <option value="">No hay siniestros disponibles</option>
+                }
+            </select>
+        </div>
 
-    <div class="form-group">
-        <label for="tipo">Tipo de Reclamación</label>
-        <select name="tipo" class="form-control" required>
-            <option value="">Seleccione un tipo</option>
-            <option value="Vehicular">Vehicular</option>
-            <option value="Robo">Robo</option>
-            <option value="Daño Material">Daño Material</option>
-        </select>
-    </div>
+        <div class="form-group">
+            <label for="tipo" class="font-weight-bold">Tipo de Reclamación</label>
+            <select name="tipo" class="form-control" required>
+                <option value="">Seleccione un tipo</option>
+                <option value="Gastos Asociados">Gastos Asociados</option>
+                <option value="Robo">Robo</option>
+                <option value="Daño Material">Daño Material</option>
+            </select>
+        </div>
 
-    <div class="form-group">
-        <label for="descripcion">Descripción</label>
-        <textarea name="descripcion" class="form-control" rows="4" required></textarea>
-    </div>
+        <div class="form-group">
+            <label for="descripcion" class="font-weight-bold">Descripción</label>
+            <textarea name="descripcion" class="form-control" rows="4" placeholder="Describa brevemente el motivo de la reclamación..." required></textarea>
+        </div>
 
-    <div class="form-group">
-        <label for="archivos">Subir Documentos</label>
-        <input type="file" name="archivos" multiple class="form-control" accept=".jpg,.jpeg,.png,.pdf" />
-        <small class="form-text text-muted">
-            Puede subir hasta 5 documentos (JPEG, PNG, PDF) con un tamaño máximo de 10MB cada uno.
-        </small>
-    </div>
+        <div class="form-group">
+            <label for="archivos" class="font-weight-bold">Subir Documentos</label>
+            <input type="file" name="archivos" multiple class="form-control" accept=".jpg,.jpeg,.png,.pdf" />
+            <small class="form-text text-muted">
+                Puede subir hasta 5 documentos (JPEG, PNG, PDF) con un tamaño máximo de 10MB cada uno.
+            </small>
+        </div>
 
-    <button type="submit" class="btn btn-primary">Enviar</button>
-    <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Cancelar</a>
-</form>
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-lg btn-danger w-45">Enviar</button>
+            <a asp-action="BeneficiarioDashboard" asp-controller="Beneficiario" class="btn btn-lg btn-secondary w-45">Cancelar</a>
+        </div>
+    </form>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success mt-3">
-        @TempData["SuccessMessage"]
-    </div>
-}
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success mt-3">
+            @TempData["SuccessMessage"]
+        </div>
+    }
 
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger mt-3">
-        <ul>
-            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-            {
-                <li>@error.ErrorMessage</li>
-            }
-        </ul>
-    </div>
-}
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger mt-3">
+            <ul>
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+</div>
+
+<style>
+    h2 {
+        margin-bottom: 20px;
+        color: #b30000;
+        font-weight: bold;
+    }
+
+    .form-group label {
+        color: #b30000;
+        font-weight: bold;
+    }
+
+    .btn-lg {
+        padding: 10px 15px;
+        font-size: 20px;
+        background-color: #b30000;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+        .btn-lg:hover {
+            background-color: #8b0000;
+            transform: scale(1.02);
+            color: #ffffff;
+        }
+
+        .btn-lg:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(179, 0, 0, 0.5);
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        padding: 10px 15px;
+        font-size: 20px;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+        .btn-secondary:hover {
+            background-color: #565e64;
+            transform: scale(1.02);
+        }
+
+    .form-control {
+        border-radius: 0.25rem;
+        background-color: #f2f2f2;
+        border: 1px solid #b30000;
+    }
+
+    .shadow-sm {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .container {
+        background-color: #fff5f5;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-text {
+        color: #6c757d;
+    }
+
+    .w-45 {
+        width: 45%;
+    }
+</style>
+

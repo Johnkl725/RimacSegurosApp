@@ -1,10 +1,12 @@
-﻿<<h2>@ViewBag.Message</h2>
+﻿<div class="container p-4" style="background-color: #f8d7da; border-radius: 8px;">
+    <h2 class="text-danger text-center">@ViewBag.Message</h2>
 
-<div class="d-flex justify-content-between mt-3">
-    <a href="@Url.Action("IngresarReclamacion", "Reclamacion")" class="btn btn-secondary">
-        Registrar otra reclamación
-    </a>
-    <a href="@Url.Action("BeneficiarioDashboard", "Beneficiario")" class="btn btn-primary">
-        Volver al Dashboard
-    </a>
+    <div class="d-flex justify-content-between mt-4">
+        <a href="@Url.Action("IngresarReclamacion", "Reclamacion")" class="btn btn-outline-danger btn-lg">
+            Registrar otra reclamación
+        </a>
+        <a href="@Url.Action("BeneficiarioDashboard", "Beneficiario")" class="btn btn-danger btn-lg">
+            Volver al Dashboard
+        </a>
+    </div>
 </div>

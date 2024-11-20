@@ -31,7 +31,7 @@ namespace AccesoDatos
                 };
 
                 _context.Database.ExecuteSqlRaw(
-                    "EXEC sp_RegistrarReclamacion @IdSiniestro, @FechaReclamacion, @Estado, @Tipo, @Descripcion, @IdReclamacion OUTPUT",
+                    "EXEC sp_RegistrarReclamacion @IdSiniestro, @FechaReclamacion, @Estado, @Descripcion,@Tipo, @IdReclamacion OUTPUT",
                     new SqlParameter("@IdSiniestro", reclamacion.IdSiniestro),
                     new SqlParameter("@FechaReclamacion", reclamacion.FechaReclamacion),
                     new SqlParameter("@Estado", reclamacion.Estado ?? "Pendiente"), 
@@ -49,19 +49,21 @@ namespace AccesoDatos
         }
 
 
-        public List<Reclamacion> ObtenerReclamacionesPorSiniestro(int idSiniestro)
-        {
-            return _context.Reclamaciones
-                .Where(r => r.IdSiniestro == idSiniestro)
-                .ToList();
-        }
 
         public int ObtenerIdBeneficiarioPorUsuario(int idUsuario)
         {
             var beneficiario = _context.Beneficiarios
                 .FirstOrDefault(b => b.IdUsuario == idUsuario);
 
-            return beneficiario?.Id ?? 0; // Retorna 0 si no se encuentra
+            return beneficiario?.Id ?? 0; 
+        }
+
+
+        public List<Reclamacion> ObtenerReclamacionesPorSiniestro(int idSiniestro)
+        {
+            return _context.Reclamaciones
+                .Where(r => r.IdSiniestro == idSiniestro)
+                .ToList();
         }
     }
 }

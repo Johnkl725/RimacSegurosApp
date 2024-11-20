@@ -15,8 +15,8 @@ namespace AplicaciónWeb.Controllers
 
 
         public ReclamacionController(ReclamacionLN reclamacionLN,
-    DocumentoReclamacionLN documentosReclamacionLN,
-    SiniestroLN siniestroLN)
+            DocumentoReclamacionLN documentosReclamacionLN,
+            SiniestroLN siniestroLN)
             {
             _reclamacionLN = reclamacionLN;
             _documentosReclamacionLN = documentosReclamacionLN;
@@ -47,8 +47,18 @@ namespace AplicaciónWeb.Controllers
                 // Obtener los siniestros asociados al beneficiario autenticado de forma asíncrona
                 var siniestros = await _siniestroLN.ObtenerSiniestrosPorBeneficiarioAsync(idBeneficiario);
                 Console.WriteLine($"Número de siniestros encontrados: {siniestros.Count}");
+                var siniestrosConNumero = siniestros
+               .Select((siniestro, index) => new
+               {
+                   Numero = index + 1,
+                   IdSiniestro = siniestro.IdSiniestro,
+                   Tipo = siniestro.Tipo,
+                   FechaCreacion = siniestro.FechaCreacion
+               }).ToList();
 
-                ViewBag.Siniestros = siniestros;
+                  ViewBag.Siniestros = siniestrosConNumero;
+
+                
                 return View();
             }
             catch (Exception ex)
@@ -81,8 +91,8 @@ namespace AplicaciónWeb.Controllers
                 {
                     IdSiniestro = idSiniestro,
                     FechaReclamacion = DateTime.Now,
-                    Tipo = tipo,
                     Descripcion = descripcion,
+                    Tipo = tipo,
                     Estado = "Pendiente"
                 };
 
