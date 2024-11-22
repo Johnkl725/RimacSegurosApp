@@ -25,6 +25,24 @@ namespace AplicaciónWeb.Controllers
         {
             return View();
         }
+        [HttpGet]
+        public IActionResult BuscarUsuarioPorDni(string dni)
+        {
+            if (string.IsNullOrEmpty(dni))
+            {
+                return Json(new { success = false, message = "El campo DNI está vacío." });
+            }
+
+            var usuarios = _usuarioLN.ObtenerUsuariosPorDni(dni);
+            if (!usuarios.Any())
+            {
+                return Json(new { success = false, message = "No se encontraron usuarios con ese DNI." });
+            }
+
+            return Json(new { success = true, data = usuarios });
+        }
+
+
 
         // GET: PersonalController/Details/5
         public ActionResult Details(int id)
@@ -88,45 +106,89 @@ namespace AplicaciónWeb.Controllers
 
 
         // GET: PersonalController/Edit/5
-        public ActionResult Edit(int id)
+        // Acción para obtener los datos de un usuario y mostrarlos en la vista de edición
+        public IActionResult EditUsuario(int id)
         {
-            return View();
+            var usuario = _usuarioLN.ObtenerUsuarioPorId(id);
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+            return View(usuario);
         }
 
-        // POST: PersonalController/Edit/5
+        // Acción para guardar los cambios realizados en la edición de un usuario
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public IActionResult EditUsuario(int id, Usuario usuarioEditado)
+        {
+            if (id != usuarioEditado.Id)
+            {
+                return BadRequest();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var actualizado = _usuarioLN.ActualizarUsuario(usuarioEditado);
+                    if (actualizado)
+                    {
+                        TempData["Mensaje"] = "El usuario se actualizó correctamente.";
+                        return RedirectToAction(nameof(MantenerUsuario));
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "No se pudo actualizar el usuario. Inténtalo de nuevo.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Error: {ex.Message}");
+                }
+            }
+
+            return View(usuarioEditado);
+        }
+
+        // Acción para confirmar la eliminación de un usuario
+        public IActionResult DeleteUsuario(int id)
+        {
+            var usuario = _usuarioLN.ObtenerUsuarioPorId(id);
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+            return View(usuario);
+        }
+
+        // Acción para eliminar un usuario definitivamente
+        [HttpPost, ActionName("DeleteUsuario")]
+        [ValidateAntiForgeryToken]
+        public IActionResult ConfirmDeleteUsuario(int id)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var eliminado = _usuarioLN.EliminarUsuario(id);
+                if (eliminado)
+                {
+                    TempData["Mensaje"] = "El usuario fue eliminado correctamente.";
+                    return RedirectToAction(nameof(MantenerUsuario));
+                }
+                else
+                {
+                    TempData["Error"] = "No se pudo eliminar el usuario.";
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                TempData["Error"] = $"Error: {ex.Message}";
             }
+
+            return RedirectToAction(nameof(MantenerUsuario));
         }
 
-        // GET: PersonalController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: PersonalController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

@@ -1,0 +1,12 @@
+﻿@using EntidadesProyecto
+@model Usuario
+
+<div class="container mt-5 text-center">
+    <h2 class="text-danger"><i class="fas fa-trash-alt me-2"></i>Eliminar Usuario</h2>
+    <p>¿Estás seguro de que deseas eliminar al usuario <strong>@Model.Nombres @Model.Apellido1</strong>?</p>
+    <form asp-action="DeleteUsuario" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a asp-action="MantenerUsuario" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>

@@ -196,9 +196,12 @@ namespace AccesoDatos
         public IEnumerable<Usuario> ObtenerUsuariosPorTipo(string tipoUsuario)
         {
             return _context.Usuarios
-                .Where(u => u.TipoUsuario == tipoUsuario)
-                .ToList();
+            .Where(u => u.TipoUsuario == tipoUsuario)
+            .OrderBy(u => u.Nombres) // Ordena por nombres
+            .Take(15)
+            .ToList();
         }
+
 
 
 
@@ -294,6 +297,46 @@ namespace AccesoDatos
                 Console.WriteLine($"Error al obtener ID del usuario: {ex.Message}");
                 return 0; // 0 indica que no se encontró el usuario
             }
+        }
+        public IEnumerable<Usuario> ObtenerUsuariosPorDni(string dni)
+        {
+            return _context.Usuarios.Where(u => u.Dni == dni).ToList();
+        }
+
+        public Usuario ObtenerUsuarioPorId(int id)
+        {
+            return _context.Usuarios.AsNoTracking().FirstOrDefault(u => u.Id == id);
+        }
+
+        public bool ActualizarUsuario(Usuario usuario)
+        {
+            var usuarioExistente = _context.Usuarios.FirstOrDefault(u => u.Id == usuario.Id);
+            if (usuarioExistente == null)
+            {
+                return false; // Usuario no encontrado
+            }
+
+            usuarioExistente.Nombres = usuario.Nombres;
+            usuarioExistente.Apellido1 = usuario.Apellido1;
+            usuarioExistente.Apellido2 = usuario.Apellido2;
+            usuarioExistente.Dni = usuario.Dni;
+            usuarioExistente.Telefono = usuario.Telefono;
+
+            _context.SaveChanges();
+            return true;
+        }
+
+        public bool EliminarUsuario(int id)
+        {
+            var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == id);
+            if (usuario == null)
+            {
+                return false;
+            }
+
+            _context.Usuarios.Remove(usuario);
+            _context.SaveChanges();
+            return true;
         }
 
 

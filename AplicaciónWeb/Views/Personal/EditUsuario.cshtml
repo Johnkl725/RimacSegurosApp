@@ -1,0 +1,36 @@
+﻿@using EntidadesProyecto
+@model Usuario
+
+<div class="container mt-5">
+    <h2 class="text-primary mb-4"><i class="fas fa-edit me-2"></i>Editar Usuario</h2>
+    <form asp-action="EditUsuario" method="post">
+        @Html.AntiForgeryToken()
+
+        <!-- Campo oculto para pasar TipoUsuario -->
+        <input type="hidden" name="TipoUsuario" value="@Model.TipoUsuario" />
+        <input type="hidden" name="Id" value="@Model.Id" />
+
+        <div class="mb-3">
+            <label for="Nombres" class="form-label">Nombres</label>
+            <input type="text" class="form-control" id="Nombres" name="Nombres" value="@Model.Nombres" required>
+        </div>
+        <div class="mb-3">
+            <label for="Apellido1" class="form-label">Apellido Paterno</label>
+            <input type="text" class="form-control" id="Apellido1" name="Apellido1" value="@Model.Apellido1" required>
+        </div>
+        <div class="mb-3">
+            <label for="Apellido2" class="form-label">Apellido Materno</label>
+            <input type="text" class="form-control" id="Apellido2" name="Apellido2" value="@Model.Apellido2" required>
+        </div>
+        <div class="mb-3">
+            <label for="Dni" class="form-label">DNI</label>
+            <input type="text" class="form-control" id="Dni" name="Dni" value="@Model.Dni" required>
+        </div>
+        <div class="mb-3">
+            <label for="Telefono" class="form-label">Teléfono</label>
+            <input type="text" class="form-control" id="Telefono" name="Telefono" value="@Model.Telefono" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        <a asp-action="MantenerUsuario" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>

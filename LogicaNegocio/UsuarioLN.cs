@@ -102,6 +102,40 @@ namespace LogicaNegocio
             // Llama al método en UsuarioDA para obtener la lista de usuarios del tipo especificado y la retorna
             return _usuarioDA.ObtenerUsuariosPorTipo(tipoUsuario);
         }
+        public IEnumerable<Usuario> ObtenerUsuariosPorDni(string dni)
+        {
+            return _usuarioDA.ObtenerUsuariosPorDni(dni);
+        }
+
+        public Usuario ObtenerUsuarioPorId(int id)
+        {
+            return _usuarioDA.ObtenerUsuarioPorId(id);
+        }
+
+        public bool ActualizarUsuario(Usuario usuario)
+        {
+            // Validar los datos del usuario si es necesario
+            if (string.IsNullOrWhiteSpace(usuario.Nombres) || string.IsNullOrWhiteSpace(usuario.Dni))
+            {
+                throw new ArgumentException("Los campos Nombre y DNI son obligatorios.");
+            }
+
+            // Llamar a la capa de datos para actualizar
+            return _usuarioDA.ActualizarUsuario(usuario);
+        }
+
+        public bool EliminarUsuario(int id)
+        {
+            // Verificar si el usuario existe antes de intentar eliminarlo
+            var usuario = _usuarioDA.ObtenerUsuarioPorId(id);
+            if (usuario == null)
+            {
+                throw new InvalidOperationException("El usuario no existe.");
+            }
+
+            // Llamar a la capa de datos para eliminar
+            return _usuarioDA.EliminarUsuario(id);
+        }
 
 
     }

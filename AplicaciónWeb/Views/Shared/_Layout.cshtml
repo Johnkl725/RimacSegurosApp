@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,29 +14,91 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
+            background-color: #f9f9f9;
         }
 
         .navbar {
-            background-color: #343a40;
+            background-color: #b71c1c;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .navbar-brand, .nav-link {
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
             color: #fff !important;
         }
 
-        .navbar-nav .nav-link:hover {
-            color: #f8f9fa !important;
-            background-color: #495057;
-            border-radius: 5px;
+        .nav-link {
+            color: #ffffff !important;
+            margin-left: 10px;
         }
 
-        main {
-            padding-top: 20px;
+            .nav-link:hover {
+                text-decoration: underline;
+            }
+
+        .footer {
+            background-color: #b71c1c;
+            color: #ffffff;
+            padding: 10px;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+            .footer a {
+                color: #ff8a80;
+                text-decoration: none;
+            }
+
+                .footer a:hover {
+                    text-decoration: underline;
+                }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: #b71c1c;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200px;
+            z-index: 1000;
+            color: #fff;
+        }
+
+            .sidebar .nav {
+                padding-top: 15px;
+            }
+
+            .sidebar .nav-link {
+                color: #ffffff;
+                padding: 10px 15px;
+                display: block;
+                text-decoration: none;
+                font-size: 1rem;
+                transition: background-color 0.3s ease;
+            }
+
+                .sidebar .nav-link:hover {
+                    background-color: #a11414;
+                    color: #ffffff;
+                    text-decoration: none;
+                }
+
+                .sidebar .nav-link.active {
+                    background-color: #8e0c0c;
+                    font-weight: bold;
+                }
+
+        /* Main Content Styles */
+        .container-fluid {
+            margin-top: 10px; /* Ajusta el margen superior para el espacio debajo del navbar */
         }
     </style>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
 </head>
 <body>
     <header>
@@ -84,32 +146,28 @@
         </nav>
     </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="perfilModal" tabindex="-1" role="dialog" aria-labelledby="perfilModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="perfilModalLabel">Perfil de Usuario</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="hidePerfil()">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" id="perfilContent">
-                    <!-- Aquí se cargará la información del perfil -->
-                </div>
+    <div class="container-fluid">
+        <div class="row">
+            @if (IsSectionDefined("Sidebar"))
+            {
+                <aside class="col-2">
+                    @RenderSection("Sidebar", required: false)
+                </aside>
+            }
+            <div class="@((IsSectionDefined("Sidebar") ? "col-10" : "col-12"))">
+                @RenderSection("BodyContent", required: false)
+                @RenderBody()
             </div>
         </div>
     </div>
 
+    <footer class="footer">
+        <p>&copy; 2024 Rimac Seguros. Todos los derechos reservados. <a href="#">Política de Privacidad</a></p>
+    </footer>
+
     <script>
         function mostrarPerfil() {
-            $.get('@Url.Action("Perfil", "Login")', function (data) {
+            $.get('@Url.Action("_PerfilPartial", "Login")', function (data) {
                 $("#perfilContent").html(data); // Inserta el contenido en el modal
                 $('#perfilModal').modal('show'); // Muestra el modal
             }).fail(function () {
@@ -120,6 +178,15 @@
         function hidePerfil() {
             $('#perfilModal').modal('hide'); // Oculta el modal
         }
+
+        function updateTime() {
+            const now = new Date();
+            const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            document.getElementById('current-time').innerText = `Hora actual: ${now.toLocaleTimeString('es-ES', options)}`;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)

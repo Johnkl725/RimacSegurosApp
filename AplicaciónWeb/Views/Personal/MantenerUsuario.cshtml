@@ -2,16 +2,26 @@
 @model IEnumerable<Usuario>
 
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
 
-<!-- Incluye Font Awesome CDN en el encabezado si aún no lo has hecho -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMGZbF2J6MRR7/EhXI8dYgZaWl3IJ2ZmWpwi1J9" crossorigin="anonymous">
 
 <div class="container mt-5">
     <div class="row">
         <div class="col">
             <h2 class="text-primary mb-4"><i class="fas fa-users me-2"></i>Mantener Usuarios</h2>
+
+            <!-- Campo de búsqueda -->
+            <div class="input-group mb-3">
+                <input type="text" id="dniInput" class="form-control" placeholder="Buscar por DNI" />
+                <button type="button" id="searchButton" class="btn btn-primary">
+                    <i class="fas fa-search me-2"></i>Buscar
+                </button>
+            </div>
+
+            <!-- Contenedor para mensajes -->
+            <div id="messageContainer" class="text-center mt-3"></div>
 
             <!-- Botón para agregar un nuevo beneficiario -->
             <div class="d-flex justify-content-end mb-3">
@@ -25,15 +35,16 @@
                 <table class="table table-hover table-bordered align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th scope="col"><i class="fas fa-id-badge"></i> ID</th>
-                            <th scope="col"><i class="fas fa-user"></i> Nombres</th>
-                            <th scope="col"><i class="fas fa-user-tag"></i> Apellido Paterno</th>
-                            <th scope="col"><i class="fas fa-user-tag"></i> Apellido Materno</th>
-                            <th scope="col"><i class="fas fa-id-card"></i> DNI</th>
-                            <th scope="col"><i class="fas fa-phone"></i> Teléfono</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Nombres</th>
+                            <th scope="col">Apellido Paterno</th>
+                            <th scope="col">Apellido Materno</th>
+                            <th scope="col">DNI</th>
+                            <th scope="col">Teléfono</th>
+                            <th scope="col">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="resultTable">
                         @foreach (var beneficiario in Model)
                         {
                             <tr>
@@ -43,11 +54,29 @@
                                 <td>@beneficiario.Apellido2</td>
                                 <td>@beneficiario.Dni</td>
                                 <td>@beneficiario.Telefono</td>
+                                <td>
+                                    <a href="@Url.Action("EditUsuario", "Personal", new { id = beneficiario.Id })" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="@Url.Action("DeleteUsuario", "Personal", new { id = beneficiario.Id })" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
+
+            <!-- Paginación -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item"><a class="page-link" href="#">Anterior</a></li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Siguiente</a></li>
+                </ul>
+            </nav>
 
             <!-- Botón de regreso al Dashboard -->
             <div class="text-center mt-3">
@@ -58,3 +87,55 @@
         </div>
     </div>
 </div>
+
+<!-- Script para búsqueda AJAX -->
+<script>
+    document.getElementById('searchButton').addEventListener('click', async () => {
+        const dni = document.getElementById('dniInput').value;
+        const resultTable = document.getElementById('resultTable');
+        const messageContainer = document.getElementById('messageContainer');
+
+        // Limpiar mensajes y tabla
+        resultTable.innerHTML = '';
+        messageContainer.innerHTML = '';
+
+        if (!dni) {
+            messageContainer.innerHTML = '<p class="text-danger">Por favor, ingresa un DNI.</p>';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/Personal/BuscarUsuarioPorDni?dni=${dni}`);
+            const result = await response.json();
+
+            if (result.success) {
+                // Construir la tabla con los resultados
+                result.data.forEach(usuario => {
+                    const row = `
+                        <tr>
+                            <td>${usuario.id}</td>
+                            <td>${usuario.nombres}</td>
+                            <td>${usuario.apellido1}</td>
+                            <td>${usuario.apellido2}</td>
+                            <td>${usuario.dni}</td>
+                            <td>${usuario.telefono}</td>
+                            <td>
+                                <a href="/Personal/EditUsuario/${usuario.id}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="/Personal/DeleteUsuario/${usuario.id}" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    `;
+                    resultTable.innerHTML += row;
+                });
+            } else {
+                messageContainer.innerHTML = `<p class="text-warning">${result.message}</p>`;
+            }
+        } catch (error) {
+            messageContainer.innerHTML = `<p class="text-danger">Error: ${error.message}</p>`;
+        }
+    });
+</script>

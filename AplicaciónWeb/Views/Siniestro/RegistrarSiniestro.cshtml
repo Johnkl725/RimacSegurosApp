@@ -1,6 +1,8 @@
 ﻿@model SiniestroViewModel
 @using EntidadesProyecto
-
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
 <div class="container mt-4">
     <h2 class="text-center">Registrar Siniestro</h2>
     <form asp-action="RegistrarSiniestro" method="post">

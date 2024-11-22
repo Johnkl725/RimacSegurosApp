@@ -1,0 +1,77 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; /* Heredamos el diseño base que incluye la barra de navegación */
+}
+
+@section Sidebar {
+    <nav class="sidebar">
+        <ul class="nav flex-column">
+            @if (User.FindFirst("TipoUsuario")?.Value == "Administrador")
+            {
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "AdminDashboard" ? "active" : "")" href="@Url.Action("AdminDashboard", "Admin")">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "GestionarPresupuestos" ? "active" : "")" href="@Url.Action("GestionarPresupuestos", "Admin")">
+                        <i class="fas fa-money-check-alt"></i> Gestionar Presupuestos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "GestionarPagosIndemnizacion" ? "active" : "")" href="@Url.Action("GestionarPagosIndemnizacion", "Admin")">
+                        <i class="fas fa-wallet"></i> Gestionar Pagos
+                    </a>
+                </li>
+            }
+            else if (User.FindFirst("TipoUsuario")?.Value == "Personal")
+            {
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "PersonalDashboard" ? "active" : "")" href="@Url.Action("PersonalDashboard", "Personal")">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "MantenerUsuario" ? "active" : "")" href="@Url.Action("MantenerUsuario", "Personal")">
+                        <i class="fas fa-users"></i> Mantener Usuario
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "ValidarPoliza" ? "active" : "")" href="@Url.Action("ValidarPoliza", "Poliza")">
+                        <i class="fas fa-check-circle"></i> Validar Póliza
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "AsignarTaller" ? "active" : "")" href="@Url.Action("AsignarTaller", "Siniestro")">
+                        <i class="fas fa-tools"></i> Gestionar Talleres
+                    </a>
+                </li>
+            }
+            else if (User.FindFirst("TipoUsuario")?.Value == "Beneficiario")
+            {
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "BeneficiarioDashboard" ? "active" : "")" href="@Url.Action("BeneficiarioDashboard", "Beneficiario")">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "RegistrarSiniestro" ? "active" : "")" href="@Url.Action("RegistrarSiniestro", "Siniestro")">
+                        <i class="fas fa-exclamation-circle"></i> Registrar Siniestro
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "IngresarReclamacion" ? "active" : "")" href="@Url.Action("IngresarReclamacion", "Reclamacion")">
+                        <i class="fas fa-file-alt"></i> Ingresar Reclamación
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+@section BodyContent {
+    <main class="main-content">
+        @RenderBody()
+    </main>
+}
+@RenderSection("Scripts", required: false)
+

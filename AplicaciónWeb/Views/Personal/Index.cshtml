@@ -1,0 +1,31 @@
+﻿@using EntidadesProyecto
+@model IEnumerable<Usuario>
+
+<div class="container mt-5">
+    <h2 class="text-primary">Lista de Usuarios</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombres</th>
+                <th>Apellido Paterno</th>
+                <th>Apellido Materno</th>
+                <th>DNI</th>
+                <th>Teléfono</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usuario in Model)
+            {
+                <tr>
+                    <td>@usuario.Id</td>
+                    <td>@usuario.Nombres</td>
+                    <td>@usuario.Apellido1</td>
+                    <td>@usuario.Apellido2</td>
+                    <td>@usuario.Dni</td>
+                    <td>@usuario.Telefono</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
