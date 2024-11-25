@@ -13,6 +13,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+var cloudinaryConfig = builder.Configuration.GetSection("Cloudinary");
+var cloudinary = new Cloudinary(new Account(
+        cloudinaryConfig["CloudName"],
+        cloudinaryConfig["ApiKey"],
+        cloudinaryConfig["ApiSecret"]
+    ));
+
+builder.Services.AddSingleton(cloudinary);
+
+
+
+
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
 builder.Services.AddDbContext<MyDbContext>(options =>
@@ -74,14 +86,5 @@ app.Run();
 
 
 
-// Configuración de Rotativa
-RotativaConfiguration.Setup(app.Environment.WebRootPath, "Rotativa");
 
-// Middlewares
-app.UseRouting();
-app.UseStaticFiles();
-app.UseAuthorization();
-
-app.MapControllers(); // Mapea las rutas de tus controladores
-app.Run();
 

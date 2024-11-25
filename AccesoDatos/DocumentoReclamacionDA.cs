@@ -25,11 +25,11 @@ namespace AccesoDatos
             try
             {
                 _context.Database.ExecuteSqlRaw(
-                    "EXEC sp_RegistrarDocumentoReclamacion @Nombre, @Archivo, @Extension, @IdReclamacion",
+                    "EXEC sp_RegistrarDocumentoReclamacion @Nombre, @Extension, @IdReclamacion, @Url",
                     new SqlParameter("@Nombre", documento.Nombre),
-                    new SqlParameter("@Archivo", documento.Archivo),
                     new SqlParameter("@Extension", documento.Extension),
-                    new SqlParameter("@IdReclamacion", documento.IdReclamacion)
+                    new SqlParameter("@IdReclamacion", documento.IdReclamacion),
+                    new SqlParameter("@Url", documento.Url)
                 );
             }
             catch (Exception ex)

@@ -16,8 +16,6 @@ namespace EntidadesProyecto
         [StringLength(100)]
         public string Nombre { get; set; }
 
-        [Required]
-        public byte[] Archivo { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -27,6 +25,8 @@ namespace EntidadesProyecto
 
         [ForeignKey("Reclamacion")]
         public int IdReclamacion { get; set; }
+
+        public string Url { get; set; }
 
         public Reclamacion Reclamacion { get; set; }
     }
