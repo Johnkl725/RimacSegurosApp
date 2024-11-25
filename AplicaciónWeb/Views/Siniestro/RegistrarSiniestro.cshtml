@@ -1,7 +1,7 @@
 ﻿@model SiniestroViewModel
 @using EntidadesProyecto
 @{
-    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="container mt-4">
     <h2 class="text-center">Registrar Siniestro</h2>
@@ -64,11 +64,13 @@
         </div>
     </form>
 </div>
-
+<!-- Carga de jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         $('#Departamento').change(function () {
             var departamentoId = $(this).val();
+            console.log("Departamento seleccionado: ", departamentoId);
             if (departamentoId) {
                 $.getJSON('/Siniestro/GetProvincias', { departamentoId: departamentoId }, function (data) {
                     $('#Provincia').empty().append('<option value="">Seleccione una provincia</option>');
@@ -82,6 +84,7 @@
                 $('#Distrito').empty().append('<option value="">Seleccione un distrito</option>');
             }
         });
+
 
         $('#Provincia').change(function () {
             var provinciaId = $(this).val();

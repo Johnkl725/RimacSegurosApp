@@ -4,6 +4,7 @@ using EntidadesProyecto;
 using LogicaNegocio;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -96,6 +97,9 @@ namespace AplicaciónWeb.Controllers
             var distritos = await _siniestroLN.ObtenerDistritosPorProvinciaAsync(provinciaId);
             return Json(distritos.Select(d => new { id = d.Id, nombre = d.Descripcion }));
         }
+
+        
+
 
         // Método para cargar la lista de departamentos en la vista
         private async Task CargarListasAsync()
