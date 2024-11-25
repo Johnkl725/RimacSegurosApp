@@ -29,10 +29,11 @@
                     <td>@siniestro.TipoSiniestro</td>
                     <td>@siniestro.Placa</td>
                     <td>
-                        <form asp-action="EditarPresupuesto" method="get">
-                            <input type="hidden" name="idSiniestro" value="@siniestro.IdSiniestro" />
-                            <button type="submit" class="btn btn-primary btn-sm">Seleccionar</button>
-                        </form>
+                        <a href="@Url.Action("GestionarPresupuesto", "Admin", new { idSiniestro = siniestro.IdSiniestro })"
+                           class="btn btn-primary validar-btn"
+                           data-id="@siniestro.IdSiniestro">
+                            Seleccionar
+                        </a>
                     </td>
                 </tr>
             }

@@ -1,0 +1,100 @@
+﻿@using AplicaciónWeb.Models.EntidadesProyecto
+@model List<GenerarReporteViewModel>
+
+<h2>Generar Reporte de Siniestro</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Número de Siniestro</th>
+            <th>Fecha de Registro</th>
+            <th>Estado</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var siniestro in Model)
+        {
+            <tr>
+                <td>@siniestro.NumeroSiniestro</td>
+                <td>@siniestro.FechaRegistro.ToShortDateString()</td>
+                <td>@siniestro.Estado</td>
+                <td>
+                    <a href="@Url.Action("ObtenerDetalleReporte", "Admin", new { idSiniestro = siniestro.IdSiniestro })"
+                       class="btn btn-primary">
+                        Seleccionar
+                    </a>
+
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+<!-- Modal para mostrar el detalle del reporte -->
+<!-- Contenedor para el modal -->
+<div id="modal-container">
+    <div class="modal fade" id="detalleModal" tabindex="-1" aria-labelledby="detalleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- El contenido del modal se cargará aquí dinámicamente -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    function mostrarReporte(idSiniestro) {
+        $.ajax({
+            url: '/Admin/ObtenerDetalleReporte',
+            type: 'GET',
+            data: { idSiniestro: idSiniestro },
+            success: function (data) {
+                // Asegúrate de que este código esté capturando correctamente la respuesta del servidor
+                $('#detalleModal .modal-content').html(data);
+                $('#detalleModal').modal('show');
+            },
+            error: function (xhr, status, error) {
+                alert('Error al obtener el detalle del reporte: ' + error);
+            }
+        });
+    }
+            document.addEventListener("DOMContentLoaded", function () {
+        const botonesSeleccionar = document.querySelectorAll(".btn-seleccionar");
+
+        botonesSeleccionar.forEach(boton => {
+            boton.addEventListener("click", function () {
+                const idSiniestro = this.getAttribute("data-id");
+
+                // Llamada AJAX para obtener los detalles
+                $.ajax({
+                    url: `/Admin/ObtenerDetalleReporte`,
+                    type: "GET",
+                    data: { idSiniestro: idSiniestro },
+                    success: function (html) {
+                        // Insertar contenido en el modal
+                        const modalContainer = document.getElementById("modal-container");
+                        modalContainer.innerHTML = html;
+
+                        // Mostrar el modal
+                        const modal = new bootstrap.Modal(modalContainer.querySelector(".modal"));
+                        modal.show();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error al obtener los detalles:", error);
+                        alert("Ocurrió un error al intentar obtener el detalle del siniestro.");
+                    }
+                });
+            });
+        });
+    });
+
+
+</script>
+

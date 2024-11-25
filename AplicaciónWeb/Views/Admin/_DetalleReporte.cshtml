@@ -1,0 +1,19 @@
+﻿@model DetalleReporteViewModel
+
+<div class="modal-header">
+    <h5 class="modal-title">Detalle del Siniestro</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <p><strong>Número de Siniestro:</strong> @Model.NumeroSiniestro</p>
+    <p><strong>Fecha de Registro:</strong> @Model.FechaRegistro.ToShortDateString()</p>
+    <p><strong>Estado:</strong> @Model.Estado</p>
+    <p><strong>Taller Asignado:</strong> @Model.TallerAsignado</p>
+    <p><strong>Costo de Mantenimiento:</strong> @Model.CostoMantenimiento.ToString("C")</p>
+    <p><strong>Tipo de Siniestro:</strong> @Model.TipoSiniestro</p>
+    <p><strong>Descripción:</strong> @Model.Descripcion</p>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+</div>
+

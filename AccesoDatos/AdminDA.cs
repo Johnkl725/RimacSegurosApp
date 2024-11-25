@@ -90,4 +90,62 @@ public class AdminDA
             _context.SaveChanges();
         }
     }
+
+    // Método para actualizar presupuesto sin interferir con otros métodos
+    public void ActualizarPresupuesto(Presupuesto presupuesto)
+    {
+        var presupuestoExistente = _context.Presupuestos.Find(presupuesto.Id);
+        if (presupuestoExistente != null)
+        {
+            presupuestoExistente.Detalles = presupuesto.Detalles;
+            presupuestoExistente.MontoTotal = presupuesto.MontoTotal;
+            presupuestoExistente.Estado = presupuesto.Estado;
+
+            _context.SaveChanges();
+        }
+    }
+
+    // Método para obtener siniestro con datos de presupuesto y vehículo
+    public SiniestroPresupuestoViewModel ObtenerDetallesSiniestroPresupuesto(int idSiniestro)
+    {
+        return _context.Siniestros
+                       .Where(s => s.IdSiniestro == idSiniestro)
+                       .Join(_context.Polizas,
+                             s => s.IdPoliza,
+                             p => p.Id,
+                             (s, p) => new { Siniestro = s, Poliza = p })
+                       .Join(_context.Beneficiarios,
+                             sp => sp.Poliza.IdBeneficiario,
+                             b => b.Id,
+                             (sp, b) => new { sp.Siniestro, sp.Poliza, Beneficiario = b })
+                       .Join(_context.Vehiculos,
+                             spb => spb.Beneficiario.IdVehiculo,
+                             v => v.Id,
+                             (spb, v) => new { spb.Siniestro, spb.Poliza, spb.Beneficiario, Vehiculo = v })
+                       .Select(spbv => new SiniestroPresupuestoViewModel
+                       {
+                           NumeroSiniestro = $"SIN-{spbv.Siniestro.IdSiniestro:D3}",
+                           TipoSiniestro = spbv.Siniestro.Tipo,
+                           Placa = spbv.Vehiculo.Placa,
+                           IdSiniestro = spbv.Siniestro.IdSiniestro
+                       })
+                       .FirstOrDefault();
+    }
+
+    public int CrearPresupuesto(Presupuesto presupuesto)
+    {
+        _context.Presupuestos.Add(presupuesto);
+        _context.SaveChanges();
+        return presupuesto.Id; // Retorna el ID del nuevo presupuesto
+    }
+
+    public void ActualizarIdPresupuestoEnSiniestro(int idSiniestro, int idPresupuesto)
+    {
+        var siniestro = _context.Siniestros.Find(idSiniestro);
+        if (siniestro != null)
+        {
+            siniestro.IdPresupuesto = idPresupuesto;
+            _context.SaveChanges();
+        }
+    }
 }

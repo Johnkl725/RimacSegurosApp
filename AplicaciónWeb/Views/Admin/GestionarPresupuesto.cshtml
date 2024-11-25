@@ -1,0 +1,38 @@
+﻿@using AplicaciónWeb.Models.EntidadesProyecto
+@model PresupuestoViewModel
+
+
+<h2>Gestionar Presupuesto - Siniestro @Model.IdSiniestro</h2>
+
+
+<form method="post" asp-action="ValidarPresupuesto">
+    <input type="hidden" name="IdSiniestro" value="@Model.IdSiniestro" />
+    <div class="row">
+        <div class="col-md-6">
+            <label for="Detalles">Detalles del Presupuesto</label>
+            <textarea id="Detalles" name="Detalles" class="form-control">@Model.Detalles</textarea>
+        </div>
+        <div class="col-md-6">
+            <label for="MontoTotal">Monto Total</label>
+            <input type="number" id="MontoTotal" name="MontoTotal" class="form-control" value="@Model.MontoTotal" />
+        </div>
+        <div class="col-md-6">
+            <label for="Impuestos">Impuestos</label>
+            <input type="number" id="Impuestos" name="Impuestos" class="form-control" value="@Model.Impuestos" />
+        </div>
+        <div class="col-md-6">
+            <label for="CostoSinImpuestos">Costo Sin Impuestos</label>
+            <input type="number" id="CostoSinImpuestos" name="CostoSinImpuestos" class="form-control" value="@Model.CostoSinImpuestos" />
+        </div>
+        <div class="col-md-6">
+            <label for="Descuento">Descuento</label>
+            <input type="number" id="Descuento" name="Descuento" class="form-control" value="@Model.Descuento" />
+        </div>
+        <div class="col-md-6">
+            <label for="Enlace">Enlace</label>
+            <input type="text" id="Enlace" name="Enlace" class="form-control" value="@Model.Enlace" />
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success mt-3">Validar Presupuesto</button>
+
+</form>
