@@ -8,7 +8,7 @@ namespace EntidadesProyecto
 {
     public class SiniestroPresupuestoViewModel
     {
-        public string NumeroSiniestro { get; set; } // Ejemplo: "SIN-001"
+        public string NumeroSiniestro { get; set; } 
         public DateTime? FechaAsignacion { get; set; }
         public string NombreTaller { get; set; }
         public string TipoSiniestro { get; set; }

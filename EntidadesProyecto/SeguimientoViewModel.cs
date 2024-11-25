@@ -8,14 +8,19 @@ namespace EntidadesProyecto
 {
     public class SeguimientoViewModel
     {
-        public Siniestro Siniestro { get; set; } // Información del siniestro
-        public Presupuesto Presupuesto { get; set; } // Detalles del presupuesto asociado
-        public List<Reclamacion> Reclamaciones { get; set; } // Lista de reclamaciones asociadas al siniestro
-        public string EstadoActual { get; set; } // Estado actual del siniestro o su gestión
+        public int IdSiniestro { get; set; }
+        public string TipoSiniestro { get; set; }
+        public DateTime FechaSiniestro { get; set; }
+        public string Ubicacion { get; set; }
+        public string Descripcion { get; set; }
+        public int? PresupuestoId { get; set; }
+        public string EstadoPresupuesto { get; set; }
+        public decimal? MontoTotalPresupuesto { get; set; }
+        public int? TallerId { get; set; }
+        public string NombreTaller { get; set; }
+        public string DireccionTaller { get; set; }
+        public string TelefonoTaller { get; set; }
+        public ICollection<Reclamacion> Reclamaciones { get; set; } = new List<Reclamacion>();
 
-        public SeguimientoViewModel()
-        {
-            Reclamaciones = new List<Reclamacion>();
-        }
     }
 }

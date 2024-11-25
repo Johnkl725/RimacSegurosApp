@@ -42,6 +42,19 @@ namespace LogicaNegocio
             return _reclamacionDA.ObtenerReclamacionesPorSiniestro(idSiniestro);
         }
 
+        public async Task<List<Reclamacion>> ObtenerReclamacionesPorSiniestroAsync(int idSiniestro)
+        {
+            if (idSiniestro <= 0)
+                throw new ArgumentException("Id del siniestro inválido.");
+
+            var reclamaciones = await _reclamacionDA.ObtenerReclamacionesPorSiniestroAsync(idSiniestro);
+
+            if (reclamaciones == null || !reclamaciones.Any())
+                throw new Exception("No se encontraron reclamaciones para el siniestro especificado.");
+
+            return reclamaciones;
+        }
+
         public int ObtenerIdBeneficiarioPorUsuario(int idUsuario)
         {
             return _reclamacionDA.ObtenerIdBeneficiarioPorUsuario(idUsuario);

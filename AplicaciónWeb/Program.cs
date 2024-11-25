@@ -4,8 +4,11 @@ using LogicaNegocio;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using EntidadesProyecto;
-
+using Rotativa.AspNetCore;
+using CloudinaryDotNet;
+using Microsoft.Extensions.Options;
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -67,5 +70,18 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.Run();
+
+
+
+// Configuración de Rotativa
+RotativaConfiguration.Setup(app.Environment.WebRootPath, "Rotativa");
+
+// Middlewares
+app.UseRouting();
+app.UseStaticFiles();
+app.UseAuthorization();
+
+app.MapControllers(); // Mapea las rutas de tus controladores
 app.Run();
 

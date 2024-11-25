@@ -1,30 +1,126 @@
-﻿@model AplicaciónWeb.Models.SeguimientoViewModel
+﻿@model EntidadesProyecto.SeguimientoViewModel
 
-<h2>Seguimiento del Siniestro</h2>
-<p><strong>Estado Actual:</strong> @Model.EstadoActual</p>
-
-<h4>Presupuesto:</h4>
-@if (Model.Presupuesto != null)
-{
-    <p>Monto Total: @Model.Presupuesto.MontoTotal</p>
-    <p>Detalles: @Model.Presupuesto.Detalles</p>
-}
-else
-{
-    <p>Sin presupuesto asociado.</p>
+@{
+    ViewBag.Title = "Detalle del Seguimiento";
 }
 
-<h4>Reclamaciones:</h4>
-@if (Model.Reclamaciones.Any())
-{
-    <ul>
-        @foreach (var reclamacion in Model.Reclamaciones)
-        {
-            <li>@reclamacion.Descripcion - Estado: @reclamacion.Estado</li>
-        }
-    </ul>
-}
-else
-{
-    <p>No hay reclamaciones.</p>
-}
+<div class="container mt-4">
+    <!-- Botón para regresar -->
+    <div class="d-flex justify-content-between mb-3">
+        <h2 class="text-danger">Detalle del Seguimiento</h2>
+        <a href="@Url.Action("BeneficiarioDashboard", "Beneficiario")" class="btn btn-danger btn-lg">
+            <i class="bi bi-arrow-left-circle"></i> Volver al Dashboard
+        </a>
+    </div>
+
+    <div class="row">
+        <!-- Información General -->
+        <div class="col-md-6 mb-4">
+            <div class="card border-danger shadow">
+                <div class="card-header bg-danger text-white">
+                    <h5><i class="bi bi-info-circle"></i> Información General</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Tipo de Siniestro:</strong> @Model.TipoSiniestro</p>
+                    <p><strong>Fecha del Siniestro:</strong> @Model.FechaSiniestro.ToShortDateString()</p>
+                    <p><strong>Ubicación:</strong> @Model.Ubicacion</p>
+                    <p><strong>Descripción:</strong> @Model.Descripcion</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información del Presupuesto -->
+        <div class="col-md-6 mb-4">
+            <div class="card border-danger shadow">
+                <div class="card-header bg-danger text-white">
+                    <h5><i class="bi bi-currency-dollar"></i> Información del Presupuesto</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.PresupuestoId.HasValue)
+                    {
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>ID del Presupuesto:</strong> @Model.PresupuestoId</li>
+                            <li class="list-group-item"><strong>Estado del Presupuesto:</strong> @Model.EstadoPresupuesto</li>
+                            <li class="list-group-item"><strong>Monto Total:</strong> S/. @Model.MontoTotalPresupuesto</li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-danger">No se encontró información del presupuesto.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Información del Taller -->
+        <div class="col-md-6 mb-4">
+            <div class="card border-danger shadow">
+                <div class="card-header bg-danger text-white">
+                    <h5><i class="bi bi-building"></i> Información del Taller</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.TallerId.HasValue)
+                    {
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>ID del Taller:</strong> @Model.TallerId</li>
+                            <li class="list-group-item"><strong>Nombre del Taller:</strong> @Model.NombreTaller</li>
+                            <li class="list-group-item"><strong>Dirección del Taller:</strong> @Model.DireccionTaller</li>
+                            <li class="list-group-item"><strong>Teléfono del Taller:</strong> @Model.TelefonoTaller</li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-danger">No se encontró información del taller.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Reclamaciones Asociadas -->
+        <div class="col-md-6 mb-4">
+            <div class="card border-danger shadow">
+                <div class="card-header bg-danger text-white">
+                    <h5><i class="bi bi-archive"></i> Reclamaciones Asociadas</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Reclamaciones != null && Model.Reclamaciones.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead class="bg-danger text-white">
+                                    <tr>
+                                        <th>ID de Reclamación</th>
+                                        <th>Fecha</th>
+                                        <th>Estado</th>
+                                        <th>Descripción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var reclamacion in Model.Reclamaciones)
+                                    {
+                                        <tr>
+                                            <td>@reclamacion.Id</td>
+                                            <td>@reclamacion.FechaReclamacion.ToShortDateString()</td>
+                                            <td>@reclamacion.Estado</td>
+                                            <td>@reclamacion.Descripcion</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-danger">No se encontraron reclamaciones asociadas.</p>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    
+    
+</div>
