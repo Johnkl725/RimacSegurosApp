@@ -10,6 +10,7 @@ namespace EntidadesProyecto
 {
     public class Reclamacion
     {
+        [Column("id")]
         public int Id { get; set; }
 
         [Required]

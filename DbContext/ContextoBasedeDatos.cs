@@ -274,15 +274,30 @@ namespace MiAplicacion.Data
                 entity.ToTable("Reclamacion");
                 entity.HasKey(r => r.Id);
 
-                entity.Property(r => r.Estado).HasMaxLength(10).IsRequired().HasDefaultValue("Pendiente");
-                entity.Property(r => r.Tipo).HasMaxLength(20).IsRequired();
-                entity.Property(r => r.Descripcion).IsRequired();
+                entity.Property(r => r.Estado)
+                      .HasMaxLength(10)
+                      .IsRequired()
+                      .HasDefaultValue("Pendiente");
 
-                entity.HasOne<Siniestro>()
-                      .WithMany()
+                entity.Property(r => r.Tipo)
+                      .HasMaxLength(20)
+                      .IsRequired();
+
+                entity.Property(r => r.Descripcion)
+                      .IsRequired();
+
+                entity.HasOne<Siniestro>() // Relación con Siniestro
+                      .WithMany()          // Sin propiedad de navegación inversa
                       .HasForeignKey(r => r.IdSiniestro)
                       .OnDelete(DeleteBehavior.Restrict);
+
+                // Relación explícita con DocumentosReclamacion
+                entity.HasMany(r => r.Documentos)
+                      .WithOne(d => d.Reclamacion)
+                      .HasForeignKey(d => d.IdReclamacion)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
+
 
             // Configuración para DocumentosReclamacion
             modelBuilder.Entity<DocumentosReclamacion>(entity =>
@@ -290,11 +305,20 @@ namespace MiAplicacion.Data
                 entity.ToTable("DocumentosReclamacion");
                 entity.HasKey(d => d.IdDocumento);
 
-                entity.Property(d => d.Nombre).HasMaxLength(100).IsRequired();
-                entity.Property(d => d.Extension).HasMaxLength(50).IsRequired();
-                entity.Property(d => d.FechaSubida).HasDefaultValueSql("GETDATE()");
+                entity.Property(d => d.Nombre)
+                      .HasMaxLength(100)
+                      .IsRequired();
 
-                entity.HasOne<Reclamacion>()
+                entity.Property(d => d.Extension)
+                      .HasMaxLength(50)
+                      .IsRequired();
+
+                entity.Property(d => d.Url)
+                      .HasMaxLength(50)
+                      .IsRequired(); // Verifica que todos los datos existentes en la base de datos cumplan este requisito
+
+                // Relación explícita con Reclamacion
+                entity.HasOne(d => d.Reclamacion)
                       .WithMany(r => r.Documentos)
                       .HasForeignKey(d => d.IdReclamacion)
                       .OnDelete(DeleteBehavior.Cascade);

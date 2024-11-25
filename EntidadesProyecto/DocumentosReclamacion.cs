@@ -10,6 +10,8 @@ namespace EntidadesProyecto
 {
     public class DocumentosReclamacion
     {
+        [Key]
+        [Column("IdDocumento")] // Coincide con el nombre en la base de datos
         public int IdDocumento { get; set; }
 
         [Required]
@@ -21,9 +23,9 @@ namespace EntidadesProyecto
         [StringLength(50)]
         public string Extension { get; set; }
 
-        public DateTime FechaSubida { get; set; } = DateTime.Now;
 
-        [ForeignKey("Reclamacion")]
+        [ForeignKey(nameof(Reclamacion))]
+        [Column("IdReclamacion")] // Coincide con el nombre en la base de datos
         public int IdReclamacion { get; set; }
 
         public string Url { get; set; }

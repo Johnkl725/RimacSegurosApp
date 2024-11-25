@@ -70,8 +70,10 @@ namespace AccesoDatos
         {
             return await _context.Reclamaciones
                 .Where(r => r.IdSiniestro == idSiniestro)
-                .ToListAsync();
+                .Include(r => r.Documentos)
+                .ToListAsync() ?? new List<Reclamacion>(); // Devuelve una lista vacía si es null
         }
+
 
     }
 }

@@ -49,11 +49,10 @@ namespace LogicaNegocio
 
             var reclamaciones = await _reclamacionDA.ObtenerReclamacionesPorSiniestroAsync(idSiniestro);
 
-            if (reclamaciones == null || !reclamaciones.Any())
-                throw new Exception("No se encontraron reclamaciones para el siniestro especificado.");
-
-            return reclamaciones;
+            // Si no se encontraron reclamaciones, devolver una lista vacía en lugar de lanzar una excepción
+            return reclamaciones ?? new List<Reclamacion>();
         }
+
 
         public int ObtenerIdBeneficiarioPorUsuario(int idUsuario)
         {

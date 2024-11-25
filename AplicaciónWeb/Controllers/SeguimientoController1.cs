@@ -3,11 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using EntidadesProyecto;
 using System.Threading.Tasks;
 using AccesoDatos;
-using Rotativa.AspNetCore;
-
-using System.IO;
-using iText.IO.Font.Constants;
-using iText.Kernel.Font;
+using System.Linq;
+using System;
 
 namespace AplicaciónWeb.Controllers
 {
@@ -28,9 +25,14 @@ namespace AplicaciónWeb.Controllers
             try
             {
                 // Obtener el ID del usuario autenticado
-                int idUsuario = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+                int idUsuario = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
                 Console.WriteLine($"ID Usuario autenticado: {idUsuario}");
 
+                if (idUsuario == 0)
+                {
+                    TempData["ErrorMessage"] = "No se pudo identificar al usuario autenticado.";
+                    return RedirectToAction("Error");
+                }
 
                 // Obtener el ID del beneficiario asociado al usuario autenticado
                 var idBeneficiario = _reclamacionLN.ObtenerIdBeneficiarioPorUsuario(idUsuario);
@@ -42,24 +44,22 @@ namespace AplicaciónWeb.Controllers
                     return RedirectToAction("Error");
                 }
 
-                // Obtener los siniestros asociados al beneficiario autenticado de forma asíncrona
                 var siniestros = await _siniestroLN.ObtenerSiniestrosPorBeneficiarioAsync(idBeneficiario);
                 Console.WriteLine($"Número de siniestros encontrados: {siniestros.Count}");
+
                 var siniestrosConNumero = siniestros
-               .Select((siniestro, index) => new
-               {
-                   Numero = index + 1,
-                   IdSiniestro = siniestro.IdSiniestro,
-                   Tipo = siniestro.Tipo,
-                   FechaCreacion = siniestro.FechaCreacion
-               }).ToList();
+                    .Select((siniestro, index) => new
+                    {
+                        Numero = index + 1,
+                        IdSiniestro = siniestro.IdSiniestro,
+                        Tipo = siniestro.Tipo ?? "Tipo no especificado",
+                        FechaCreacion = siniestro.FechaCreacion
+                    })
+                    .ToList();
 
                 ViewBag.Siniestros = siniestrosConNumero;
 
-
                 return View();
-
-
             }
             catch (Exception ex)
             {
@@ -68,13 +68,11 @@ namespace AplicaciónWeb.Controllers
             }
         }
 
-        
         [HttpGet]
         public async Task<IActionResult> DetalleSeguimiento(int idSiniestro)
         {
             try
             {
-                // Obtener el siniestro con todos los detalles asociados
                 var siniestro = await _siniestroLN.ObtenerSeguimientoCompletoPorSiniestroAsync(idSiniestro);
 
                 if (siniestro == null)
@@ -83,25 +81,23 @@ namespace AplicaciónWeb.Controllers
                     return RedirectToAction("Error");
                 }
 
-                // Obtener las reclamaciones relacionadas al siniestro
                 var reclamaciones = await _reclamacionLN.ObtenerReclamacionesPorSiniestroAsync(idSiniestro);
 
-                // Mapear el resultado al modelo de la vista
                 var modelo = new SeguimientoViewModel
                 {
                     IdSiniestro = siniestro.IdSiniestro,
-                    TipoSiniestro = siniestro.Tipo,
+                    TipoSiniestro = siniestro.Tipo ?? "Tipo no especificado",
                     FechaSiniestro = siniestro.FechaSiniestro ?? DateTime.MinValue,
-                    Ubicacion = siniestro.Ubicacion,
-                    Descripcion = siniestro.Descripcion,
-                    PresupuestoId = siniestro.Presupuesto?.Id,
-                    EstadoPresupuesto = siniestro.Presupuesto?.Estado,
-                    MontoTotalPresupuesto = siniestro.Presupuesto?.MontoTotal,
-                    TallerId = siniestro.Taller?.Id,
-                    NombreTaller = siniestro.Taller?.Nombre,
-                    DireccionTaller = siniestro.Taller?.Direccion,
-                    TelefonoTaller = siniestro.Taller?.Telefono,
-                    Reclamaciones = reclamaciones // Asignar las reclamaciones al modelo
+                    Ubicacion = siniestro.Ubicacion ?? "Ubicación no especificada",
+                    Descripcion = siniestro.Descripcion ?? "Sin descripción",
+                    PresupuestoId = siniestro.Presupuesto?.Id ?? 0,
+                    EstadoPresupuesto = siniestro.Presupuesto?.Estado ?? "Estado no definido",
+                    MontoTotalPresupuesto = siniestro.Presupuesto?.MontoTotal ?? 0,
+                    TallerId = siniestro.Taller?.Id ?? 0,
+                    NombreTaller = siniestro.Taller?.Nombre ?? "Taller no especificado",
+                    DireccionTaller = siniestro.Taller?.Direccion ?? "Dirección no disponible",
+                    TelefonoTaller = siniestro.Taller?.Telefono ?? "Teléfono no disponible",
+                    Reclamaciones = reclamaciones // Lista vacía si no hay reclamaciones
                 };
 
                 return View(modelo);
@@ -113,14 +109,12 @@ namespace AplicaciónWeb.Controllers
             }
         }
 
-        
-
         public IActionResult Error()
         {
-            // Acción para manejar errores
-            ViewBag.ErrorMessage = TempData["ErrorMessage"];
+            // Obtener el mensaje de error desde TempData
+            ViewBag.ErrorMessage = TempData["ErrorMessage"] ?? "Ocurrió un error inesperado.";
+
             return View();
         }
     }
-
 }
