@@ -84,11 +84,14 @@ public class AdminDA
         var siniestro = _context.Siniestros
                                .Include(s => s.Presupuesto)
                                .FirstOrDefault(s => s.IdSiniestro == idSiniestro);
-        if (siniestro != null && siniestro.Presupuesto.Estado == "Aprobado")
+
+        if (siniestro == null)
         {
-            siniestro.Presupuesto.Estado = "Pagado";
-            _context.SaveChanges();
+            throw new Exception("No se encontró el siniestro especificado.");
         }
+
+        siniestro.Presupuesto.Estado = "Pagado";
+        _context.SaveChanges();
     }
 
     // Método para actualizar presupuesto sin interferir con otros métodos

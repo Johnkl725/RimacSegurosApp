@@ -18,7 +18,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var siniestro in Model)
+        @foreach (var siniestro in Model.Where(s => s.Presupuesto.MontoTotal > 0)) // Filtra filas con MontoTotal > 0
         {
             <tr>
                 <td>@siniestro.IdSiniestro</td>
@@ -28,7 +28,7 @@
                 </td> <!-- Muestra el monto de indemnización -->
 
                 <td>
-                    @if (siniestro.Presupuesto.Estado == "Aprobado")
+                    @if (siniestro.Presupuesto.Estado == "Pendiente")
                     {
                         <span class="text-warning">Pendiente</span>
                     }
@@ -39,7 +39,7 @@
                 </td>
 
                 <td>
-                    @if (siniestro.Presupuesto?.Estado == "Aprobado")
+                    @if (siniestro.Presupuesto?.Estado == "Pendiente")
                     {
                         <form asp-action="PagarIndemnizacion" method="post" style="display:inline;">
                             <input type="hidden" name="idSiniestro" value="@siniestro.IdSiniestro" />
@@ -48,10 +48,9 @@
                     }
                     else
                     {
-                        <span class="text-muted">Pago no disponible</span>
+                        <span class="text-muted">Pago Realizado</span>
                     }
                 </td>
-
             </tr>
         }
     </tbody>

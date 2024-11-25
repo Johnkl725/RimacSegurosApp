@@ -78,19 +78,19 @@ namespace AplicaciónWeb.Controllers
         [HttpPost]
         public IActionResult PagarIndemnizacion(int idSiniestro)
         {
-            bool resultado = _adminLN.PagarIndemnizacion(idSiniestro);
-
-            if (resultado)
+            try
             {
+                _adminLN.PagarIndemnizacion(idSiniestro); // No devuelve bool, lanza excepciones si hay errores.
                 TempData["SuccessMessage"] = "Pago realizado correctamente.";
             }
-            else
+            catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "No se pudo realizar el pago.";
+                TempData["ErrorMessage"] = ex.Message; // Mensaje detallado del error.
             }
 
             return RedirectToAction("GestionarPagosIndemnizacion");
         }
+
 
         public IActionResult GestionarPresupuesto(int idSiniestro)
         {

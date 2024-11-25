@@ -37,18 +37,20 @@ public class AdminLN
     }
 
     // Procesar pago de indemnización
-    public bool PagarIndemnizacion(int idSiniestro)
+    public void PagarIndemnizacion(int idSiniestro)
     {
+        // Obtener el siniestro desde la capa de datos
         var siniestro = _adminDA.ObtenerSiniestroPorId(idSiniestro);
 
-        if (siniestro == null || siniestro.Presupuesto.Estado != "Aprobado")
+        if (siniestro == null)
         {
-            return false;
+            throw new Exception("El siniestro no existe.");
         }
 
+        // Marcar como pagado
         _adminDA.MarcarSiniestroComoPagado(idSiniestro);
-        return true;
     }
+
 
     public Siniestro ObtenerSiniestroPorId(int id)
     {
