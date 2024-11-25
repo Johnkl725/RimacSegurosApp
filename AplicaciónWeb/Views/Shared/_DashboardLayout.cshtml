@@ -62,6 +62,11 @@
                     <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "IngresarReclamacion" ? "active" : "")" href="@Url.Action("IngresarReclamacion", "Reclamacion")">
                         <i class="fas fa-file-alt"></i> Ingresar Reclamación
                     </a>
+                </li
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "GestionarSeguimiento" ? "active" : "")" href="@Url.Action("GestionarSeguimiento", "Seguimiento")">
+                        <i class="fas fa-file-alt"></i> Gestionar seguimiento de siniestro
+                    </a>
                 </li>
             }
         </ul>

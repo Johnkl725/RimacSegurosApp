@@ -1,6 +1,7 @@
 ﻿using AccesoDatos;
 using EntidadesProyecto;
 using MiAplicacion.Data;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
@@ -75,20 +76,7 @@ namespace LogicaNegocio
 
 
 
-        public async Task<SeguimientoViewModel> ObtenerSeguimientoCompletoAsync(int idSiniestro)
-        {
-            var siniestro = await _siniestroDA.ObtenerSiniestroConDetallesAsync(idSiniestro);
-            var reclamaciones = await _siniestroDA.ObtenerReclamacionesPorSiniestroAsync(idSiniestro);
-
-            return new SeguimientoViewModel
-            {
-                Siniestro = siniestro,
-                Reclamaciones = reclamaciones,
-                Presupuesto = siniestro.Presupuesto,
-                EstadoActual = siniestro.Presupuesto?.Estado ?? "Sin presupuesto"
-            };
-
-        }
+       
 
         public async Task<Poliza> ObtenerPolizaActivaPorUsuarioAsync(int idUsuario)
         {
@@ -112,6 +100,22 @@ namespace LogicaNegocio
 
             return poliza;
         }
+
+        public async Task<Siniestro> ObtenerSeguimientoCompletoPorSiniestroAsync(int idSiniestro)
+        {
+            return await _context.Siniestros
+                .Include(s => s.Presupuesto) // Incluye Presupuesto
+                .Include(s => s.Taller)      // Incluye Taller
+                .FirstOrDefaultAsync(s => s.IdSiniestro == idSiniestro);
+        }
+
+        public async Task<SeguimientoViewModel> ObtenerSeguimientoAsync(int idSiniestro)
+        {
+            return await _siniestroDA.ObtenerSeguimientoConSQLAsync(idSiniestro);
+        }
+
+
+
 
 
 

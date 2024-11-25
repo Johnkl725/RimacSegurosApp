@@ -65,5 +65,13 @@ namespace AccesoDatos
                 .Where(r => r.IdSiniestro == idSiniestro)
                 .ToList();
         }
+
+        public async Task<List<Reclamacion>> ObtenerReclamacionesPorSiniestroAsync(int idSiniestro)
+        {
+            return await _context.Reclamaciones
+                .Where(r => r.IdSiniestro == idSiniestro)
+                .ToListAsync();
+        }
+
     }
 }
