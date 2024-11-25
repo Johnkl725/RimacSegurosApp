@@ -1,27 +1,29 @@
 ﻿using EntidadesProyecto;
 using LogicaNegocio;
 using Microsoft.AspNetCore.Mvc;
+using CloudinaryDotNet.Actions;
+using CloudinaryDotNet;
 using AccesoDatos;
 
 namespace AplicaciónWeb.Controllers
 {
     public class ReclamacionController : Controller
     {
-        
-            private readonly ReclamacionLN _reclamacionLN;
-            private readonly DocumentoReclamacionLN _documentosReclamacionLN;
-            private readonly SiniestroLN _siniestroLN;
 
+        private readonly ReclamacionLN _reclamacionLN;
+        private readonly DocumentoReclamacionLN _documentosReclamacionLN;
+        private readonly SiniestroLN _siniestroLN;
+        private readonly Cloudinary _cloudinary;
 
 
         public ReclamacionController(ReclamacionLN reclamacionLN,
             DocumentoReclamacionLN documentosReclamacionLN,
-            SiniestroLN siniestroLN)
-            {
+            SiniestroLN siniestroLN, Cloudinary cloudinary)
+        {
             _reclamacionLN = reclamacionLN;
             _documentosReclamacionLN = documentosReclamacionLN;
             _siniestroLN = siniestroLN;
-
+            _cloudinary = cloudinary;
 
         }
         [HttpGet]
@@ -56,9 +58,9 @@ namespace AplicaciónWeb.Controllers
                    FechaCreacion = siniestro.FechaCreacion
                }).ToList();
 
-                  ViewBag.Siniestros = siniestrosConNumero;
+                ViewBag.Siniestros = siniestrosConNumero;
 
-                
+
                 return View();
             }
             catch (Exception ex)
@@ -68,9 +70,8 @@ namespace AplicaciónWeb.Controllers
             }
         }
 
-
         [HttpPost]
-        public IActionResult IngresarReclamacion(int idSiniestro, string descripcion, string tipo, List<IFormFile> archivos)
+        public async Task<IActionResult> IngresarReclamacion(int idSiniestro, string descripcion, string tipo, List<IFormFile> archivos)
         {
             if (string.IsNullOrEmpty(descripcion) || string.IsNullOrEmpty(tipo) || idSiniestro <= 0)
             {
@@ -87,6 +88,7 @@ namespace AplicaciónWeb.Controllers
 
             try
             {
+                // Crear una nueva reclamación
                 var reclamacion = new Reclamacion
                 {
                     IdSiniestro = idSiniestro,
@@ -97,23 +99,40 @@ namespace AplicaciónWeb.Controllers
                 };
 
                 _reclamacionLN.RegistrarReclamacion(reclamacion);
+                int idReclamacion = reclamacion.Id;
 
+                // Procesar archivos si existen
                 if (archivos != null && archivos.Count > 0)
                 {
                     foreach (var archivo in archivos)
                     {
-                        using var memoryStream = new MemoryStream();
-                        archivo.CopyTo(memoryStream);
-
-                        var documento = new DocumentosReclamacion
+                        var validacionResultado = ValidarArchivo(archivo);
+                        if (!validacionResultado.IsValid)
                         {
-                            IdReclamacion = reclamacion.Id,
-                            Nombre = archivo.FileName,
-                            Archivo = memoryStream.ToArray(),
-                            Extension = Path.GetExtension(archivo.FileName)
-                        };
+                            ModelState.AddModelError("archivos", validacionResultado.Message);
+                            continue;
+                        }
 
-                        _documentosReclamacionLN.RegistrarDocumento(documento);
+                        try
+                        {
+                            // Subir archivo a Cloudinary
+                            var uploadResult = await SubirArchivoACloudinary(archivo, idSiniestro, idReclamacion);
+
+                            // Registrar en la base de datos
+                            var documento = new DocumentosReclamacion
+                            {
+                                IdReclamacion = reclamacion.Id,
+                                Nombre = archivo.FileName,
+                                Extension = Path.GetExtension(archivo.FileName).ToLower(),
+                                Url = uploadResult.SecureUrl.ToString()
+                            };
+
+                            _documentosReclamacionLN.RegistrarDocumento(documento);
+                        }
+                        catch (Exception ex)
+                        {
+                            ModelState.AddModelError("archivos", $"Error al subir {archivo.FileName}: {ex.Message}");
+                        }
                     }
                 }
 
@@ -127,13 +146,70 @@ namespace AplicaciónWeb.Controllers
             }
         }
 
+        private (bool IsValid, string Message) ValidarArchivo(IFormFile archivo)
+        {
+            var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".pdf", ".docx", ".xlsx" };
+            const long maxSizeInBytes = 5 * 1024 * 1024; // Cambiado a 5 MB
 
-        public IActionResult Confirmacion()
+            var fileExtension = Path.GetExtension(archivo.FileName).ToLower();
+
+            if (!extensionesPermitidas.Contains(fileExtension))
             {
-                ViewBag.Message = TempData["SuccessMessage"];
-                return View();
+                return (false, $"El formato del archivo {archivo.FileName} no está permitido.");
             }
 
-        
+            if (archivo.Length > maxSizeInBytes)
+            {
+                return (false, $"El archivo {archivo.FileName} excede el tamaño máximo permitido (5 MB).");
+            }
+
+            return (true, "");
         }
+
+        private async Task<UploadResult> SubirArchivoACloudinary(IFormFile archivo, int idSiniestro, int IdReclamacion)
+        {
+            var fileExtension = Path.GetExtension(archivo.FileName).ToLower();
+            var isImage = archivo.ContentType.StartsWith("image/");
+            // Generar el nombre de la carpeta
+            var carpetaNombre = $"Siniestro_{idSiniestro}-Reclamacion_{IdReclamacion}";
+            var uploadParams = isImage
+                ? new ImageUploadParams
+                {
+                    File = new FileDescription(archivo.FileName, archivo.OpenReadStream()),
+                    Folder = $"RimacSeguros/{carpetaNombre}",
+                    PublicId = $"{Path.GetFileNameWithoutExtension(archivo.FileName)}"
+                }
+                : new RawUploadParams
+                {
+                    File = new FileDescription(archivo.FileName, archivo.OpenReadStream()),
+                    Folder = $"RimacSeguros/{carpetaNombre}", 
+                    PublicId = $"{Path.GetFileNameWithoutExtension(archivo.FileName)}"
+                };
+
+            return await _cloudinary.UploadAsync(uploadParams);
+        }
+
+
+
+
+
+
+        public IActionResult Confirmacion()
+        {
+            ViewBag.Message = TempData["SuccessMessage"];
+            return View();
+        }
+
+
+        
+
+
+
+    }
+
 }
+
+
+
+
+

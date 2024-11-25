@@ -4,14 +4,7 @@ using EntidadesProyecto;
 using System.Threading.Tasks;
 using AccesoDatos;
 using Rotativa.AspNetCore;
-using iText.Kernel.Pdf;
-using iText.Layout.Element;
-using iText.Layout.Properties;
-using iText.Kernel.Pdf;
-using iText.Layout;
-using iText.Layout.Element;
-using iText.Layout.Properties;
-using Microsoft.AspNetCore.Mvc;
+
 using System.IO;
 using iText.IO.Font.Constants;
 using iText.Kernel.Font;
@@ -120,57 +113,7 @@ namespace AplicaciónWeb.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> DescargarPDF(int idSiniestro)
-        {
-            try
-            {
-                // Obtener el siniestro con todos los detalles asociados
-                var siniestro = await _siniestroLN.ObtenerSeguimientoCompletoPorSiniestroAsync(idSiniestro);
-
-                if (siniestro == null)
-                {
-                    TempData["ErrorMessage"] = "No se encontró el siniestro solicitado.";
-                    return RedirectToAction("Error");
-                }
-
-                // Obtener las reclamaciones relacionadas al siniestro
-                var reclamaciones = await _reclamacionLN.ObtenerReclamacionesPorSiniestroAsync(idSiniestro);
-
-                // Crear un modelo para la vista
-                var modelo = new SeguimientoViewModel
-                {
-                    IdSiniestro = siniestro.IdSiniestro,
-                    TipoSiniestro = siniestro.Tipo,
-                    FechaSiniestro = siniestro.FechaSiniestro ?? DateTime.MinValue,
-                    Ubicacion = siniestro.Ubicacion,
-                    Descripcion = siniestro.Descripcion,
-                    PresupuestoId = siniestro.Presupuesto?.Id,
-                    EstadoPresupuesto = siniestro.Presupuesto?.Estado,
-                    MontoTotalPresupuesto = siniestro.Presupuesto?.MontoTotal,
-                    TallerId = siniestro.Taller?.Id,
-                    NombreTaller = siniestro.Taller?.Nombre,
-                    DireccionTaller = siniestro.Taller?.Direccion,
-                    TelefonoTaller = siniestro.Taller?.Telefono,
-                    Reclamaciones = reclamaciones // Asignar las reclamaciones al modelo
-                };
-
-                // Renderizar la vista como PDF usando Rotativa
-                return new ViewAsPdf("DetalleSeguimientoPDF", modelo)
-                {
-                    FileName = $"DetalleSeguimiento_{idSiniestro}.pdf",
-                    PageSize = Rotativa.AspNetCore.Options.Size.A4,
-                    PageOrientation = Rotativa.AspNetCore.Options.Orientation.Portrait
-                };
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = $"Error al generar el PDF: {ex.Message}";
-                return RedirectToAction("Error");
-            }
-        }
-
-
+        
 
         public IActionResult Error()
         {
