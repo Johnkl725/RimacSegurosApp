@@ -47,17 +47,20 @@
 </div>
 
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $('.btn-seleccionar').click(function () {
-            var siniestroId = $(this).data('id');
-            $.get('/Siniestro/DetalleSiniestro/' + siniestroId, function (data) {
-                $('#modalAsignarTaller .modal-body').html(data);
-            }).fail(function () {
-                alert("Error al cargar los detalles del siniestro.");
+        $(document).ready(function () {
+            $('.btn-seleccionar').click(function () {
+                var siniestroId = $(this).data('id');
+                $.get('/Siniestro/DetalleSiniestro/' + siniestroId, function (data) {
+                    $('#modalAsignarTaller .modal-body').html(data);
+                }).fail(function () {
+                    alert("Error al cargar los detalles del siniestro.");
+                });
             });
         });
     </script>
-
 }
+
 
 
