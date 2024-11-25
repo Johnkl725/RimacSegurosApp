@@ -5,6 +5,7 @@ using MiAplicacion.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using BCrypt.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AplicaciónWeb.Controllers
 {

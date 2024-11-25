@@ -1,70 +1,74 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EntidadesProyecto;
 using System.Collections.Generic;
-
-public class AdminController : Controller
+using Microsoft.AspNetCore.Authorization;
+namespace AplicaciónWeb.Controllers
 {
-    private readonly AdminLN _adminLN;
-
-    public AdminController(AdminLN adminLN)
+    public class AdminController : Controller
     {
-        _adminLN = adminLN;
-    }
-    public IActionResult AdminDashboard()
-    {
-        return View();
-    }
-    public IActionResult GestionarPresupuestos()
-    {
-        // Obtiene la lista de siniestros con presupuestos
-        List<SiniestroPresupuestoViewModel> siniestros = _adminLN.ObtenerSiniestrosConPresupuestos();
 
-        // Pasa la lista a la vista
-        return View(siniestros);
-    }
+        private readonly AdminLN _adminLN;
 
-    // Aprobar presupuesto de un siniestro
-    [HttpPost]
-    public IActionResult AprobarPresupuesto(int idPresupuesto)
-    {
-        bool resultado = _adminLN.AprobarPresupuesto(idPresupuesto);
-
-        if (resultado)
+        public AdminController(AdminLN adminLN)
         {
-            TempData["SuccessMessage"] = "Presupuesto aprobado correctamente.";
+            _adminLN = adminLN;
         }
-        else
+        public IActionResult AdminDashboard()
         {
-            TempData["ErrorMessage"] = "No se pudo aprobar el presupuesto.";
+            return View();
+        }
+        public IActionResult GestionarPresupuestos()
+        {
+            // Obtiene la lista de siniestros con presupuestos
+            List<SiniestroPresupuestoViewModel> siniestros = _adminLN.ObtenerSiniestrosConPresupuestos();
+
+            // Pasa la lista a la vista
+            return View(siniestros);
         }
 
-        return RedirectToAction("GestionarPresupuestos");
-    }
-
-    public IActionResult GestionarPagosIndemnizacion()
-    {
-        var siniestros = _adminLN.ObtenerSiniestrosParaPago()
-                                 .Where(s => s.Presupuesto != null)
-                                 .ToList();
-        return View(siniestros);
-    }
-
-
-    [HttpPost]
-    public IActionResult PagarIndemnizacion(int idSiniestro)
-    {
-        bool resultado = _adminLN.PagarIndemnizacion(idSiniestro);
-
-        if (resultado)
+        // Aprobar presupuesto de un siniestro
+        [HttpPost]
+        public IActionResult AprobarPresupuesto(int idPresupuesto)
         {
-            TempData["SuccessMessage"] = "Pago realizado correctamente.";
-        }
-        else
-        {
-            TempData["ErrorMessage"] = "No se pudo realizar el pago.";
+            bool resultado = _adminLN.AprobarPresupuesto(idPresupuesto);
+
+            if (resultado)
+            {
+                TempData["SuccessMessage"] = "Presupuesto aprobado correctamente.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "No se pudo aprobar el presupuesto.";
+            }
+
+            return RedirectToAction("GestionarPresupuestos");
         }
 
-        return RedirectToAction("GestionarPagosIndemnizacion");
-    }
+        public IActionResult GestionarPagosIndemnizacion()
+        {
+            var siniestros = _adminLN.ObtenerSiniestrosParaPago()
+                                     .Where(s => s.Presupuesto != null)
+                                     .ToList();
+            return View(siniestros);
+        }
 
+
+        [HttpPost]
+        public IActionResult PagarIndemnizacion(int idSiniestro)
+        {
+            bool resultado = _adminLN.PagarIndemnizacion(idSiniestro);
+
+            if (resultado)
+            {
+                TempData["SuccessMessage"] = "Pago realizado correctamente.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "No se pudo realizar el pago.";
+            }
+
+            return RedirectToAction("GestionarPagosIndemnizacion");
+        }
+
+    }
 }

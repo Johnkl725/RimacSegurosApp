@@ -2,6 +2,7 @@
 using EntidadesProyecto;
 using LogicaNegocio;
 using MiAplicacion.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;

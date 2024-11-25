@@ -179,6 +179,8 @@ namespace AccesoDatos
                 .Where(p => p.IdBeneficiario == idBeneficiario)
                 .Select(p => p.Id)
                 .ToListAsync();
+            Console.WriteLine($"Pólizas encontradas: {string.Join(", ", polizas)}");
+
 
             return await _context.Siniestros
                 .Where(s => polizas.Contains(s.IdPoliza.Value))
