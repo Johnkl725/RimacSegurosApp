@@ -5,6 +5,7 @@ namespace EntidadesProyecto
 {
     public class Siniestro
     {
+        [Column("id_siniestro")]
         public int IdSiniestro { get; set; } // Clave primaria
 
         public int? IdDepartamento { get; set; }
@@ -16,21 +17,27 @@ namespace EntidadesProyecto
         public int? IdTaller { get; set; }
         public int? IdPresupuesto { get; set; } // Clave foránea hacia Presupuesto
 
+        [Column("tipo")]
         public string Tipo { get; set; }
+        [Column("fecha_siniestro")]
         public DateTime? FechaSiniestro { get; set; }
         public DateTime? FechaCreacion { get; set; }
         public DateTime? FechaActualizacion { get; set; }
+        [Column("ubicacion")]
         public string Ubicacion { get; set; }
+        [Column("descripcion")]
         public string Descripcion { get; set; }
 
         // Propiedades de navegación
-        public Presupuesto Presupuesto { get; set; }
+        public Presupuesto? Presupuesto { get; set; }
         public Poliza Poliza { get; set; }
 
         //[NotMapped]  Esto asegura que la propiedad no se considere en consultas SQL directas
-        public Taller Taller { get; set; } // Propiedad de navegación
+        public Taller? Taller { get; set; } // Propiedad de navegación
+        
 
 
+        public ICollection<Reclamacion> Reclamaciones { get; set; } = new List<Reclamacion>();
 
     }
 

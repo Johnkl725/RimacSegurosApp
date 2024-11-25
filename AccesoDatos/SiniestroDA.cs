@@ -202,7 +202,48 @@ namespace AccesoDatos
                 .Include(r => r.Documentos)
                 .ToListAsync();
         }
+        public async Task<Siniestro> ObtenerSiniestroConDetallesYReclamacionesAsync(int idSiniestro)
+        {
+            return await _context.Siniestros
+                .Include(s => s.Presupuesto)
+                .Include(s => s.Taller)
+                .Include(s => s.Reclamaciones) // Incluye las reclamaciones relacionadas
+                .FirstOrDefaultAsync(s => s.IdSiniestro == idSiniestro);
+        }
 
+        public async Task<SeguimientoViewModel> ObtenerSeguimientoConSQLAsync(int idSiniestro)
+        {
+            var query = @"
+            SELECT 
+                s.id_siniestro AS IdSiniestro,
+                s.tipo AS TipoSiniestro,
+                s.fecha_siniestro AS FechaSiniestro,
+                s.ubicacion AS Ubicacion,
+                s.descripcion AS Descripcion,
+                p.id AS PresupuestoId,
+                p.estado AS EstadoPresupuesto,
+                p.monto_total AS MontoTotalPresupuesto,
+                t.id AS TallerId,
+                t.nombre AS NombreTaller,
+                t.direccion AS DireccionTaller,
+                t.telefono AS TelefonoTaller
+            FROM 
+                Siniestro s
+            LEFT JOIN 
+                Presupuesto p ON s.id_presupuesto = p.id
+            LEFT JOIN 
+                Taller t ON s.id_taller = t.id
+            WHERE 
+                s.id_siniestro = @idSiniestro";
+
+            // Ejecuta la consulta
+            var resultado = await _context.SeguimientoViewModel
+                .FromSqlRaw(query, new SqlParameter("@idSiniestro", idSiniestro))
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            return resultado;
+        }
 
     }
 }

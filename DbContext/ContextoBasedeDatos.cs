@@ -28,12 +28,16 @@ namespace MiAplicacion.Data
         public DbSet<Taller> Talleres { get; set; }
         public DbSet<Reclamacion> Reclamaciones { get; set; }
         public DbSet<DocumentosReclamacion> DocumentosReclamacion { get; set; }
-
-
+        public DbSet<SeguimientoViewModel> SeguimientoViewModel { get; set; }
+        
 
         // Configuración del modelo
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Configurar SeguimientoViewModel como entidad sin clave
+            modelBuilder.Entity<SeguimientoViewModel>().HasNoKey();
+
+            base.OnModelCreating(modelBuilder);
             // Configuración de Vehiculo
             modelBuilder.Entity<Vehiculo>().ToTable("Vehiculo");
 
@@ -296,8 +300,32 @@ namespace MiAplicacion.Data
                       .OnDelete(DeleteBehavior.Cascade);
             });
 
+            // Configurar las relaciones explícitamente
+            modelBuilder.Entity<Siniestro>()
+                .HasMany(s => s.Reclamaciones)
+                .WithOne(r => r.Siniestro)
+                .HasForeignKey(r => r.IdSiniestro);
+
+            modelBuilder.Entity<Siniestro>()
+                .HasOne(s => s.Presupuesto)
+                .WithOne()
+                .HasForeignKey<Siniestro>(s => s.IdPresupuesto);
+
+            modelBuilder.Entity<Siniestro>()
+                .HasOne(s => s.Taller)
+                .WithMany(t => t.Siniestros)
+                .HasForeignKey(s => s.IdTaller);
+
+            modelBuilder.Entity<Siniestro>()
+                .HasOne(s => s.Poliza)
+                .WithMany()
+                .HasForeignKey(s => s.IdPoliza);
+
 
             base.OnModelCreating(modelBuilder);
         }
+
+
+
     }
 }
