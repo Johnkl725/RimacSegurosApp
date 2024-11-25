@@ -1,0 +1,17 @@
+﻿@model DetalleReporteViewModel
+
+<h2>Detalle del Siniestro: @Model.NumeroSiniestro</h2>
+
+<div>
+    <p><strong>Fecha de Registro:</strong> @Model.FechaRegistro.ToShortDateString()</p>
+    <p><strong>Estado:</strong> @Model.Estado</p>
+    <p><strong>Taller Asignado:</strong> @Model.TallerAsignado</p>
+    <p><strong>Costo de Mantenimiento:</strong> @Model.CostoMantenimiento</p>
+    <p><strong>Tipo de Siniestro:</strong> @Model.TipoSiniestro</p>
+    <p><strong>Descripción:</strong> @Model.Descripcion</p>
+    <a href="@Url.Action("DescargarReportePDF", "Admin", new { idSiniestro = Model.NumeroSiniestro.Split('-')[1] })"
+       class="btn btn-danger">
+        Descargar PDF
+    </a>
+
+</div>

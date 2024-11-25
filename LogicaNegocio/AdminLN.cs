@@ -49,4 +49,29 @@ public class AdminLN
         _adminDA.MarcarSiniestroComoPagado(idSiniestro);
         return true;
     }
+
+    public Siniestro ObtenerSiniestroPorId(int id)
+    {
+        return _adminDA.ObtenerSiniestroPorId(id);
+    }
+
+    public SiniestroPresupuestoViewModel ObtenerDetallesSiniestroPresupuesto(int idSiniestro)
+    {
+        return _adminDA.ObtenerDetallesSiniestroPresupuesto(idSiniestro);
+    }
+
+    public void ActualizarPresupuesto(Presupuesto presupuesto)
+    {
+        _adminDA.ActualizarPresupuesto(presupuesto);
+    }
+
+    public int CrearPresupuesto(Presupuesto presupuesto)
+    {
+        return _adminDA.CrearPresupuesto(presupuesto);
+    }
+
+    public void ActualizarIdPresupuestoEnSiniestro(int idSiniestro, int idPresupuesto)
+    {
+        _adminDA.ActualizarIdPresupuestoEnSiniestro(idSiniestro, idPresupuesto);
+    }
 }
