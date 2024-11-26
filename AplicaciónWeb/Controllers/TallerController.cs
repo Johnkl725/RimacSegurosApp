@@ -86,8 +86,6 @@ namespace AplicacionWeb.Controllers
             ViewBag.Proveedores = await proveedorLN.ObtenerProveedoresAsync();
             return View(taller);
         }
-
-        // Acción para mostrar el formulario de confirmación de eliminación
         [HttpGet]
         public async Task<IActionResult> Eliminar(int id)
         {
@@ -96,16 +94,35 @@ namespace AplicacionWeb.Controllers
             {
                 return NotFound();
             }
+
+            // Pasar mensaje de error (si existe) a la vista
+            ViewBag.ErrorMessage = TempData["ErrorMessage"];
             return View(taller);
         }
 
-        // Acción para manejar la eliminación del taller
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EliminarConfirmado(int id)
         {
-            await Task.Run(() => tallerLN.EliminarTaller(id));
-            return RedirectToAction("ProveedoresYTalleres", "Proveedor");
+            if (tallerLN.TallerTieneSiniestrosAsociados(id))
+            {
+                TempData["ErrorMessage"] = "No se puede eliminar el taller porque está asociado a uno o más siniestros.";
+                return RedirectToAction("Eliminar", new { id });
+            }
+
+            try
+            {
+                await Task.Run(() => tallerLN.EliminarTaller(id));
+                return RedirectToAction("ProveedoresYTalleres", "Proveedor");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Eliminar", new { id });
+            }
         }
+
+
     }
 }

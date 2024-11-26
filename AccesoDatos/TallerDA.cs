@@ -47,7 +47,6 @@ namespace AccesoDatos
                 return (int)outputId.Value;
             }
         }
-
         public void ActualizarTaller(Taller taller)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -55,7 +54,9 @@ namespace AccesoDatos
                 SqlCommand cmd = new SqlCommand("spActualizarTaller", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
+                // Agrega todos los parámetros, incluido id_proveedor
                 cmd.Parameters.AddWithValue("@Id", taller.Id);
+                cmd.Parameters.AddWithValue("@id_proveedor", taller.IdProveedor); // Proveedor asociado
                 cmd.Parameters.AddWithValue("@nombre", taller.Nombre);
                 cmd.Parameters.AddWithValue("@direccion", taller.Direccion);
                 cmd.Parameters.AddWithValue("@telefono", taller.Telefono);
@@ -76,14 +77,28 @@ namespace AccesoDatos
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                SqlCommand cmd = new SqlCommand("spEliminarTaller", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Id", id);
+                try
+                {
+                    SqlCommand cmd = new SqlCommand("spEliminarTaller", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Id", id);
 
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    // Capturar el mensaje de error lanzado por el procedimiento almacenado
+                    if (ex.Number == 50000) // Código de RAISERROR
+                    {
+                        throw new InvalidOperationException(ex.Message);
+                    }
+
+                    throw; // Re-lanzar otras excepciones no controladas
+                }
             }
         }
+
 
         public Taller ObtenerTallerPorId(int id)
         {
@@ -118,6 +133,20 @@ namespace AccesoDatos
                 }
             }
         }
+        public bool TieneSiniestrosAsociados(int idTaller)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT COUNT(1) FROM Siniestro WHERE id_taller = @id_taller", conn);
+                cmd.Parameters.AddWithValue("@id_taller", idTaller);
+
+                conn.Open();
+                int count = (int)cmd.ExecuteScalar();
+
+                return count > 0; // Retorna true si hay siniestros asociados
+            }
+        }
+
 
         public async Task<List<Taller>> ObtenerTodosLosTalleresAsync()
         {

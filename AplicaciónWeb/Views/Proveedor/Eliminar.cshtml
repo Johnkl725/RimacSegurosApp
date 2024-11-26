@@ -2,6 +2,13 @@
 
 <h2>Eliminar Proveedor</h2>
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <p>¿Está seguro de que desea eliminar el proveedor <strong>@Model.Nombre</strong>?</p>
 
 <form asp-action="Eliminar" method="post">
@@ -14,6 +21,6 @@
         <button type="submit" class="btn btn-danger">Eliminar</button>
 
         <!-- Enlace para cancelar -->
-        <a href="@Url.Action("Index", "Proveedor")" class="btn btn-secondary">Cancelar</a>
+        <a href="/Personal/proveedor/ProveedoresYTalleres" class="btn btn-secondary">Cancelar</a>
     </div>
 </form>

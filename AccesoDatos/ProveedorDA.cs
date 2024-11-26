@@ -16,6 +16,21 @@ public class ProveedorDA
         _context = context;
     }
 
+    // Método para verificar si un proveedor tiene talleres asociados
+    public bool TieneTalleresAsociados(int idProveedor)
+    {
+        using (var connection = _context.Database.GetDbConnection())
+        {
+            var command = connection.CreateCommand();
+            command.CommandText = "SELECT COUNT(*) FROM Taller WHERE id_proveedor = @IdProveedor";
+            command.Parameters.Add(new SqlParameter("@IdProveedor", idProveedor));
+            connection.Open();
+
+            int count = (int)command.ExecuteScalar();
+            return count > 0; // Devuelve true si hay talleres asociados
+        }
+    }
+
     // Método para obtener todos los proveedores
     public async Task<List<Proveedor>> ObtenerProveedoresAsync()
     {
@@ -37,24 +52,19 @@ public class ProveedorDA
     {
         var parameters = new[]
         {
-        new SqlParameter("@Nombre", proveedor.Nombre),
-        new SqlParameter("@Ruc", proveedor.Ruc),
-        new SqlParameter("@Telefono", proveedor.Telefono),
-        new SqlParameter("@Correo", proveedor.Correo),
-        new SqlParameter("@Calificacion", proveedor.Calificacion ?? (object)DBNull.Value),
-        new SqlParameter("@Descripcion", proveedor.Descripcion),
-        new SqlParameter("@Id", SqlDbType.Int) { Direction = ParameterDirection.Output }  // Parámetro de salida
-    };
+            new SqlParameter("@Nombre", proveedor.Nombre),
+            new SqlParameter("@Ruc", proveedor.Ruc),
+            new SqlParameter("@Telefono", proveedor.Telefono),
+            new SqlParameter("@Correo", proveedor.Correo),
+            new SqlParameter("@Calificacion", proveedor.Calificacion ?? (object)DBNull.Value),
+            new SqlParameter("@Descripcion", proveedor.Descripcion),
+            new SqlParameter("@Id", SqlDbType.Int) { Direction = ParameterDirection.Output }
+        };
 
         await _context.Database.ExecuteSqlRawAsync(
             "EXEC spAgregarProveedor @Nombre, @Ruc, @Telefono, @Correo, @Calificacion, @Descripcion, @Id OUTPUT",
             parameters);
-
-        // Obtener el ID generado (opcional)
-        var generatedId = (int)parameters[6].Value;
-        Console.WriteLine($"Nuevo ID de proveedor: {generatedId}");
     }
-
 
     // Método para actualizar un proveedor existente
     public async Task ActualizarProveedorAsync(Proveedor proveedor)
@@ -77,6 +87,12 @@ public class ProveedorDA
     // Método para eliminar un proveedor por ID
     public async Task EliminarProveedorAsync(int id)
     {
+        // Verificar si hay talleres asociados antes de intentar eliminar
+        if (TieneTalleresAsociados(id))
+        {
+            throw new InvalidOperationException("No se puede eliminar el proveedor porque tiene talleres asociados.");
+        }
+
         await _context.Database.ExecuteSqlRawAsync("EXEC spEliminarProveedor @Id", new SqlParameter("@Id", id));
     }
 }

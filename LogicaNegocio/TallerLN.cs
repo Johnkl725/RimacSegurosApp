@@ -24,13 +24,26 @@ namespace LogicaNegocio
         public void ActualizarTaller(Taller taller)
         {
             tallerDA.ActualizarTaller(taller);
+        }    // Método para verificar si un taller tiene siniestros asociados
+        public bool TallerTieneSiniestrosAsociados(int idTaller)
+        {
+            return tallerDA.TieneSiniestrosAsociados(idTaller);
         }
 
         // Método para eliminar un taller
         public void EliminarTaller(int id)
         {
-            tallerDA.EliminarTaller(id);
+            try
+            {
+                tallerDA.EliminarTaller(id);
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Re-lanzar la excepción con un mensaje claro
+                throw new InvalidOperationException($"No se puede eliminar el taller: {ex.Message}");
+            }
         }
+
 
         // Método para obtener un taller por su ID
         public Taller ObtenerTallerPorId(int id)

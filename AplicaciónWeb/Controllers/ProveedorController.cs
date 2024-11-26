@@ -139,7 +139,33 @@ namespace AplicaciónWeb.Controllers
             return View(proveedor);
         }
 
-        // GET: Muestra la vista de confirmación para eliminar un proveedor
+        [HttpPost("eliminar/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EliminarConfirmado(int id)
+        {
+            try
+            {
+                // Verificar si tiene talleres asociados
+                if (_proveedorLN.TieneTalleresAsociados(id))
+                {
+                    // Guardar mensaje de error en TempData
+                    TempData["ErrorMessage"] = "No se puede eliminar el proveedor porque tiene talleres asociados.";
+                    return RedirectToAction("Eliminar", new { id });
+                }
+
+                // Eliminar el proveedor si no tiene talleres asociados
+                await _proveedorLN.EliminarProveedorAsync(id);
+                Console.WriteLine("Proveedor eliminado exitosamente.");
+                return RedirectToAction("ProveedoresYTalleres", new { view = "Ambos" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al eliminar proveedor: {ex.Message}");
+                ModelState.AddModelError("", "No se pudo eliminar el proveedor. Intente nuevamente.");
+                return View("Error");
+            }
+        }
+
         [HttpGet("eliminar/{id}")]
         public async Task<IActionResult> Eliminar(int id)
         {
@@ -148,9 +174,11 @@ namespace AplicaciónWeb.Controllers
                 var proveedor = await _proveedorLN.ObtenerProveedorPorIdAsync(id);
                 if (proveedor == null)
                 {
-                    Console.WriteLine("Proveedor no encontrado para eliminación.");
                     return NotFound();
                 }
+
+                // Recuperar el mensaje de error si existe
+                ViewBag.ErrorMessage = TempData["ErrorMessage"];
                 return View(proveedor);
             }
             catch (Exception ex)
@@ -161,30 +189,5 @@ namespace AplicaciónWeb.Controllers
             }
         }
 
-        // POST: Confirma la eliminación del proveedor
-        [HttpPost("eliminar/{id}")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EliminarConfirmado(int id)
-        {
-            try
-            {
-                var proveedor = await _proveedorLN.ObtenerProveedorPorIdAsync(id);
-                if (proveedor == null)
-                {
-                    return NotFound();
-                }
-
-                await _proveedorLN.EliminarProveedorAsync(id);
-                Console.WriteLine("Proveedor eliminado exitosamente.");
-
-                return RedirectToAction("ProveedoresYTalleres", "Proveedor");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al eliminar proveedor: {ex.Message}");
-                ModelState.AddModelError("", "No se pudo eliminar el proveedor. Intente nuevamente.");
-                return View("Error");
-            }
-        }
     }
 }
