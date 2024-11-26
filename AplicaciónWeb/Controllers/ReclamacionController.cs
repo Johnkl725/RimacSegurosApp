@@ -176,13 +176,13 @@ namespace AplicaciónWeb.Controllers
                 ? new ImageUploadParams
                 {
                     File = new FileDescription(archivo.FileName, archivo.OpenReadStream()),
-                    Folder = $"RimacSeguros/{carpetaNombre}",
+                    Folder = $"Reclamaciones/{carpetaNombre}",
                     PublicId = $"{Path.GetFileNameWithoutExtension(archivo.FileName)}"
                 }
                 : new RawUploadParams
                 {
                     File = new FileDescription(archivo.FileName, archivo.OpenReadStream()),
-                    Folder = $"RimacSeguros/{carpetaNombre}", 
+                    Folder = $"Reclamaciones/{carpetaNombre}", 
                     PublicId = $"{Path.GetFileNameWithoutExtension(archivo.FileName)}"
                 };
 
