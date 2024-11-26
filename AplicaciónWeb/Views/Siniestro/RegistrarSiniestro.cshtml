@@ -5,7 +5,7 @@
 }
 <div class="container mt-4">
     <h2 class="text-center">Registrar Siniestro</h2>
-    <form asp-action="RegistrarSiniestro" method="post">
+    <form asp-action="RegistrarSiniestro" method="post" enctype="multipart/form-data">
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label>Tipo de Siniestro</label>
@@ -56,6 +56,15 @@
                 <label>Descripción del Siniestro</label>
                 <textarea asp-for="Descripcion" class="form-control"></textarea>
             </div>
+
+            <!-- Campo para subir documentos -->
+            <div class="form-group col-md-12">
+                <label>Documentos Asociados</label>
+                <input type="file" name="archivos" multiple class="form-control" />
+                <small class="form-text text-muted">
+                    Puedes subir hasta 5 archivos. Tamaño máximo por archivo: 5 MB.
+                </small>
+            </div>
         </div>
 
         <div class="form-group text-center">
@@ -85,7 +94,6 @@
             }
         });
 
-
         $('#Provincia').change(function () {
             var provinciaId = $(this).val();
             if (provinciaId) {
@@ -114,9 +122,9 @@
         margin-bottom: 15px;
     }
 
-        .form-group.col-md-12 {
-            flex: 0 0 100%;
-        }
+    .form-group.col-md-12 {
+        flex: 0 0 100%;
+    }
 
     .btn-block {
         width: 100%;

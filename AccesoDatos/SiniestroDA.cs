@@ -25,7 +25,7 @@ namespace AccesoDatos
                 siniestro.IdDocumento = siniestro.IdDocumento ?? 1;
                 siniestro.IdPoliza = siniestro.IdPoliza ?? 1;
                 siniestro.IdTaller = siniestro.IdTaller ?? 1;
-                siniestro.IdPresupuesto = siniestro.IdPresupuesto ?? 1;
+              
 
                 // Crear los parámetros para el procedimiento almacenado
                 var idParam = new SqlParameter("@IdSiniestro", SqlDbType.Int)
@@ -46,7 +46,7 @@ namespace AccesoDatos
                     new SqlParameter("@IdDocumento", siniestro.IdDocumento),
                     new SqlParameter("@IdPoliza", siniestro.IdPoliza),
                     new SqlParameter("@IdTaller", siniestro.IdTaller),
-                    new SqlParameter("@IdPresupuesto", siniestro.IdPresupuesto),
+                   new SqlParameter("@IdPresupuesto", siniestro.IdPresupuesto ?? (object)DBNull.Value),
                     idParam
                 );
 
@@ -212,6 +212,23 @@ namespace AccesoDatos
                 .Include(s => s.Reclamaciones) // Incluye las reclamaciones relacionadas
                 .FirstOrDefaultAsync(s => s.IdSiniestro == idSiniestro);
         }
+        public async Task RegistrarDocumento(DocumentosReclamacion documento)
+        {
+            try
+            {
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC sp_RegistrarDocumento @IdReclamacion, @Nombre, @Extension, @Url",
+                    new SqlParameter("@IdReclamacion", documento.IdReclamacion),
+                    new SqlParameter("@Nombre", documento.Nombre),
+                    new SqlParameter("@Extension", documento.Extension),
+                    new SqlParameter("@Url", documento.Url)
+                );
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al registrar el documento: {ex.Message}");
+            }
+        }
 
         public async Task<SeguimientoViewModel> ObtenerSeguimientoConSQLAsync(int idSiniestro)
         {
@@ -246,6 +263,7 @@ namespace AccesoDatos
 
             return resultado;
         }
+
 
     }
 }

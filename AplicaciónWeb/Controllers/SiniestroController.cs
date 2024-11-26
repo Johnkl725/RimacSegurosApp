@@ -1,5 +1,7 @@
 ﻿using AccesoDatos;
 using AplicaciónWeb.Models;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using EntidadesProyecto;
 using LogicaNegocio;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +16,14 @@ namespace AplicaciónWeb.Controllers
     public class SiniestroController : Controller
     {
         private readonly SiniestroLN _siniestroLN;
-        private readonly TallerLN _tallerLN; // Para trabajar con los talleres
+        private readonly TallerLN _tallerLN;
+        private readonly Cloudinary _cloudinary;
 
-        public SiniestroController(SiniestroLN siniestroLN, TallerLN tallerLN)
+        public SiniestroController(SiniestroLN siniestroLN, TallerLN tallerLN, Cloudinary cloudinary)
         {
             _siniestroLN = siniestroLN;
             _tallerLN = tallerLN;
+            _cloudinary = cloudinary;
         }
 
         // GET: Muestra la vista para registrar un siniestro
@@ -29,49 +33,76 @@ namespace AplicaciónWeb.Controllers
             return View();
         }
 
-        // POST: Procesa el formulario de registro de siniestro
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RegistrarSiniestro(SiniestroViewModel model)
+        public async Task<IActionResult> RegistrarSiniestro(SiniestroViewModel model, List<IFormFile> archivos)
         {
             if (ModelState.IsValid)
             {
-                int idUsuario = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
-
-                // Obtener la póliza activa del beneficiario
-                var poliza = await _siniestroLN.ObtenerPolizaActivaPorUsuarioAsync(idUsuario);
-
-                if (poliza == null)
-                {
-                    ModelState.AddModelError("", "No se encontró una póliza activa para este beneficiario.");
-                    await CargarListasAsync();
-                    return View(model);
-                }
-
-                var siniestro = new Siniestro
-                {
-                    IdDepartamento = model.IdDepartamento,
-                    IdProvincia = model.IdProvincia,
-                    IdDistrito = model.IdDistrito,
-                    IdDocumento = 1,
-                    IdPoliza = poliza.Id,
-                    IdTaller = 1,
-                    IdPresupuesto = 1,
-                    Tipo = model.Tipo,
-                    FechaSiniestro = model.FechaSiniestro,
-                    Ubicacion = model.Ubicacion,
-                    Descripcion = model.Descripcion
-                };
-
                 try
                 {
+                    int idUsuario = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
+
+                    // Obtener la póliza activa del beneficiario
+                    var poliza = await _siniestroLN.ObtenerPolizaActivaPorUsuarioAsync(idUsuario);
+                    if (poliza == null)
+                    {
+                        ModelState.AddModelError("", "No se encontró una póliza activa para este beneficiario.");
+                        await CargarListasAsync();
+                        return View(model);
+                    }
+
+                    // Crear y registrar el siniestro
+                    var siniestro = new Siniestro
+                    {
+                        IdDepartamento = model.IdDepartamento,
+                        IdProvincia = model.IdProvincia,
+                        IdDistrito = model.IdDistrito,
+                        IdPoliza = poliza.Id,
+                        Tipo = model.Tipo,
+                        FechaSiniestro = model.FechaSiniestro,
+                        Ubicacion = model.Ubicacion,
+                        Descripcion = model.Descripcion
+                    };
+
                     await _siniestroLN.RegistrarSiniestro(siniestro);
-                    ViewBag.Message = "Siniestro registrado con éxito.";
+
+                    // Procesar y subir los documentos asociados al siniestro
+                    if (archivos != null && archivos.Any())
+                    {
+                        foreach (var archivo in archivos)
+                        {
+                            // Validar archivo
+                            var validacion = ValidarArchivo(archivo);
+                            if (!validacion.IsValid)
+                            {
+                                ModelState.AddModelError("archivos", validacion.Message);
+                                continue;
+                            }
+
+                            // Subir a Cloudinary
+                            var uploadResult = await SubirArchivoACloudinary(archivo, siniestro.IdSiniestro);
+
+                            // Registrar el documento en la base de datos
+                            var documento = new DocumentosReclamacion
+                            {
+                                IdReclamacion = siniestro.IdSiniestro,
+                                Nombre = archivo.FileName,
+                                Extension = Path.GetExtension(archivo.FileName).ToLower(),
+                                Url = uploadResult.SecureUrl.ToString()
+                            };
+
+                            await _siniestroLN.RegistrarDocumento(documento);
+                        }
+                    }
+
+                    TempData["SuccessMessage"] = "Siniestro y documentos registrados exitosamente.";
                     return RedirectToAction("Confirmacion");
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", $"Error: {ex.Message}");
+                    ModelState.AddModelError("", $"Error al registrar el siniestro: {ex.Message}");
                 }
             }
 
@@ -79,8 +110,47 @@ namespace AplicaciónWeb.Controllers
             return View(model);
         }
 
+        private (bool IsValid, string Message) ValidarArchivo(IFormFile archivo)
+        {
+            var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".pdf", ".docx", ".xlsx" };
+            const long maxSizeInBytes = 5 * 1024 * 1024; // 5 MB
 
+            var fileExtension = Path.GetExtension(archivo.FileName).ToLower();
 
+            if (!extensionesPermitidas.Contains(fileExtension))
+            {
+                return (false, $"El formato del archivo {archivo.FileName} no está permitido.");
+            }
+
+            if (archivo.Length > maxSizeInBytes)
+            {
+                return (false, $"El archivo {archivo.FileName} excede el tamaño máximo permitido (5 MB).");
+            }
+
+            return (true, "");
+        }
+        private async Task<UploadResult> SubirArchivoACloudinary(IFormFile archivo, int idSiniestro)
+        {
+            var fileExtension = Path.GetExtension(archivo.FileName).ToLower();
+            var isImage = archivo.ContentType.StartsWith("image/");
+
+            var carpetaNombre = $"Siniestros/Siniestro_{idSiniestro}";
+            var uploadParams = isImage
+                ? new ImageUploadParams
+                {
+                    File = new FileDescription(archivo.FileName, archivo.OpenReadStream()),
+                    Folder = carpetaNombre,
+                    PublicId = Path.GetFileNameWithoutExtension(archivo.FileName)
+                }
+                : new RawUploadParams
+                {
+                    File = new FileDescription(archivo.FileName, archivo.OpenReadStream()),
+                    Folder = carpetaNombre,
+                    PublicId = Path.GetFileNameWithoutExtension(archivo.FileName)
+                };
+
+            return await _cloudinary.UploadAsync(uploadParams);
+        }
 
         // Método AJAX para obtener provincias por departamento seleccionado
         [HttpGet]
