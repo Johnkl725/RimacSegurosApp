@@ -47,7 +47,6 @@ namespace AccesoDatos
                 return (int)outputId.Value;
             }
         }
-
         public void ActualizarTaller(Taller taller)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -55,7 +54,9 @@ namespace AccesoDatos
                 SqlCommand cmd = new SqlCommand("spActualizarTaller", conn);
                 cmd.CommandType = CommandType.StoredProcedure;
 
+                // Agrega todos los parámetros, incluido id_proveedor
                 cmd.Parameters.AddWithValue("@Id", taller.Id);
+                cmd.Parameters.AddWithValue("@id_proveedor", taller.IdProveedor); // Proveedor asociado
                 cmd.Parameters.AddWithValue("@nombre", taller.Nombre);
                 cmd.Parameters.AddWithValue("@direccion", taller.Direccion);
                 cmd.Parameters.AddWithValue("@telefono", taller.Telefono);
@@ -71,6 +72,7 @@ namespace AccesoDatos
                 cmd.ExecuteNonQuery();
             }
         }
+
 
         public void EliminarTaller(int id)
         {
