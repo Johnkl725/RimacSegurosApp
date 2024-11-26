@@ -29,7 +29,7 @@ namespace MiAplicacion.Data
         public DbSet<Reclamacion> Reclamaciones { get; set; }
         public DbSet<DocumentosReclamacion> DocumentosReclamacion { get; set; }
         public DbSet<SeguimientoViewModel> SeguimientoViewModel { get; set; }
-        
+
 
         // Configuración del modelo
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -246,11 +246,11 @@ namespace MiAplicacion.Data
                 entity.Property(b => b.Contraseña).HasColumnName("contraseña");
             });
 
-                    modelBuilder.Entity<Beneficiario>()
-            .HasOne<Usuario>() // Beneficiario está relacionado con Usuario
-            .WithMany()
-            .HasForeignKey(b => b.IdUsuario)
-            .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Beneficiario>()
+    .HasOne<Usuario>() // Beneficiario está relacionado con Usuario
+    .WithMany()
+    .HasForeignKey(b => b.IdUsuario)
+    .OnDelete(DeleteBehavior.Restrict);
 
 
             // Configuración de Personal
