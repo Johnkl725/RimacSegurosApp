@@ -4,11 +4,63 @@
     ViewData["Title"] = "Gestión de Seguimiento";
 }
 
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #f9f9f9, #ffffff);
+    }
+
+    .header-section {
+        background: linear-gradient(90deg, #d32f2f, #9a0007);
+        color: white;
+        padding: 2.5rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+        .header-section h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        .header-section p {
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+        }
+
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0;
+    }
+
+    .btn-custom {
+        background: linear-gradient(90deg, #d32f2f, #f44336);
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        border-radius: 30px;
+        box-shadow: 0 6px 15px rgba(243, 67, 54, 0.4);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .btn-custom:hover {
+            background: linear-gradient(90deg, #f44336, #d32f2f);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(243, 67, 54, 0.6);
+        }
+</style>
+
 <div class="container mt-5">
     <!-- Título Principal -->
-    <div class="text-center mb-4">
-        <h1 class="text-danger display-4">Gestión de Seguimiento</h1>
-        <p class="text-muted">Por favor, seleccione un siniestro de la lista para ver el seguimiento detallado.</p>
+    <div class="header-section text-center mb-5">
+        <h1 class="display-4">Gestión de Seguimiento</h1>
+        <p>Por favor, seleccione un siniestro de la lista para ver el seguimiento detallado.</p>
     </div>
 
     <!-- Formulario -->
@@ -17,10 +69,10 @@
             <h4 class="mb-0">Seleccionar Siniestro</h4>
         </div>
         <div class="card-body">
-            <form asp-controller="Seguimiento" asp-action="DetalleSeguimiento" method="get">
+            <form id="seguimientoForm" asp-controller="Seguimiento" asp-action="DetalleSeguimiento" method="get">
                 <div class="form-group">
                     <label for="siniestroSeleccionado" class="text-danger font-weight-bold">Siniestro</label>
-                    <select id="siniestroSeleccionado" name="idSiniestro" class="form-control">
+                    <select id="siniestroSeleccionado" name="idSiniestro" class="form-control" required>
                         <option value="" disabled selected>Seleccione un siniestro</option>
                         @foreach (var siniestro in ViewBag.Siniestros)
                         {
@@ -31,7 +83,7 @@
                     </select>
                 </div>
                 <div class="mt-3 text-right">
-                    <button type="submit" class="btn btn-danger btn-lg">
+                    <button type="submit" class="btn btn-custom btn-lg">
                         <i class="bi bi-search"></i> Ver Seguimiento
                     </button>
                 </div>
@@ -39,3 +91,14 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Validación del formulario antes de enviarlo
+    document.getElementById("seguimientoForm").addEventListener("submit", function (event) {
+        const siniestroSeleccionado = document.getElementById("siniestroSeleccionado").value;
+        if (!siniestroSeleccionado) {
+            event.preventDefault(); // Evitar envío del formulario
+            alert("Por favor, seleccione un siniestro antes de continuar.");
+        }
+    });
+</script>
