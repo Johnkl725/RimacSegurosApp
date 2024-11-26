@@ -2,18 +2,18 @@
 
 <h2>Eliminar Taller</h2>
 
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
 <p>¿Está seguro de que desea eliminar el taller <strong>@Model.Nombre</strong>?</p>
 
 <form asp-action="EliminarConfirmado" method="post">
-    @Html.AntiForgeryToken() <!-- Protección contra CSRF -->
-    <!-- Campo oculto para enviar el ID del taller -->
     <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a href="/Personal/proveedor/ProveedoresYTalleres" class="btn btn-secondary">Cancelar</a>
 
-    <div class="mt-3">
-        <!-- Botón de eliminación -->
-        <button type="submit" class="btn btn-danger">Eliminar</button>
-
-        <!-- Enlace para cancelar -->
-        <a href="@Url.Action("Index", "Taller")" class="btn btn-secondary">Cancelar</a>
-    </div>
 </form>

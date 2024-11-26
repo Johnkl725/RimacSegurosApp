@@ -20,7 +20,6 @@ namespace LogicaNegocio
         // Método para obtener proveedores usando la propiedad estática
         public async Task<List<Proveedor>> ObtenerProveedoresAsync()
         {
-            // Solo consulta la base de datos si el caché está vacío
             if (_proveedoresCache == null)
             {
                 _proveedoresCache = await _context.Proveedor.ToListAsync();
@@ -53,15 +52,32 @@ namespace LogicaNegocio
             _proveedoresCache = null; // Limpiar el caché para actualizar la próxima vez
         }
 
+        // Método para verificar si el proveedor tiene talleres asociados
+        public bool TieneTalleresAsociados(int idProveedor)
+        {
+            // Usar LINQ para consultar la base de datos
+            return _context.Talleres.Any(t => t.IdProveedor == idProveedor);
+        }
+
+        // Método para eliminar un proveedor con validación previa
         public async Task EliminarProveedorAsync(int id)
         {
             var proveedor = await ObtenerProveedorPorIdAsync(id);
-            if (proveedor != null)
+            if (proveedor == null)
             {
-                _context.Proveedor.Remove(proveedor);
-                await _context.SaveChangesAsync();
-                _proveedoresCache = null; // Limpiar el caché para actualizar la próxima vez
+                throw new InvalidOperationException("El proveedor no existe.");
             }
+
+            // Verificar si tiene talleres asociados
+            if (TieneTalleresAsociados(id))
+            {
+                throw new InvalidOperationException("No se puede eliminar el proveedor porque tiene talleres asociados.");
+            }
+
+            // Eliminar proveedor
+            _context.Proveedor.Remove(proveedor);
+            await _context.SaveChangesAsync();
+            _proveedoresCache = null; // Limpiar el caché para actualizar la próxima vez
         }
     }
 }

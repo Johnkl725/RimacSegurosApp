@@ -73,19 +73,32 @@ namespace AccesoDatos
             }
         }
 
-
         public void EliminarTaller(int id)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                SqlCommand cmd = new SqlCommand("spEliminarTaller", conn);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Id", id);
+                try
+                {
+                    SqlCommand cmd = new SqlCommand("spEliminarTaller", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Id", id);
 
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    // Capturar el mensaje de error lanzado por el procedimiento almacenado
+                    if (ex.Number == 50000) // Código de RAISERROR
+                    {
+                        throw new InvalidOperationException(ex.Message);
+                    }
+
+                    throw; // Re-lanzar otras excepciones no controladas
+                }
             }
         }
+
 
         public Taller ObtenerTallerPorId(int id)
         {
@@ -120,6 +133,20 @@ namespace AccesoDatos
                 }
             }
         }
+        public bool TieneSiniestrosAsociados(int idTaller)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT COUNT(1) FROM Siniestro WHERE id_taller = @id_taller", conn);
+                cmd.Parameters.AddWithValue("@id_taller", idTaller);
+
+                conn.Open();
+                int count = (int)cmd.ExecuteScalar();
+
+                return count > 0; // Retorna true si hay siniestros asociados
+            }
+        }
+
 
         public async Task<List<Taller>> ObtenerTodosLosTalleresAsync()
         {
