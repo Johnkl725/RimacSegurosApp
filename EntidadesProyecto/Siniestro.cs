@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EntidadesProyecto;
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EntidadesProyecto
@@ -68,4 +69,16 @@ namespace EntidadesProyecto
         public int id_provincia { get; set; } // Cambiado a id_provincia para coincidir con la base de datos
         public Provincia Provincia { get; set; }
     }
+}
+public class documentos
+{
+    public int Id { get; set; }
+    public int IdSiniestro { get; set; } // Clave foránea
+    public string Nombre { get; set; }
+    public string Extension { get; set; }
+    public string Url { get; set; }
+    public DateTime FechaCreacion { get; set; }
+
+    // Propiedad de navegación
+    public Siniestro Siniestro { get; set; }
 }

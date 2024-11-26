@@ -7,6 +7,7 @@ using EntidadesProyecto;
 using Rotativa.AspNetCore;
 using CloudinaryDotNet;
 using Microsoft.Extensions.Options;
+
 var builder = WebApplication.CreateBuilder(args);
 
 

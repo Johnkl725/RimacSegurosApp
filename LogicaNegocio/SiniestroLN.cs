@@ -113,6 +113,13 @@ namespace LogicaNegocio
         {
             return await _siniestroDA.ObtenerSeguimientoConSQLAsync(idSiniestro);
         }
+        public async Task RegistrarDocumento(DocumentosReclamacion documento)
+        {
+            if (documento == null)
+                throw new ArgumentNullException(nameof(documento));
+
+            await _siniestroDA.RegistrarDocumento(documento);
+        }
 
 
 
