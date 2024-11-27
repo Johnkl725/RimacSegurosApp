@@ -67,7 +67,7 @@
         </div>
 
         <div class="form-group text-center">
-            <button type="submit" class="btn btn-primary">Registrar Siniestro</button>
+            <button type="submit" class="btn btn-danger">Registrar Siniestro</button>
             <a href="@Url.Action("BeneficiarioDashboard", "Beneficiario")" class="btn btn-secondary ml-2">Volver al Dashboard</a>
         </div>
     </form>
@@ -76,67 +76,87 @@
 <!-- Carga de jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('#Departamento').change(function () {
-            var departamentoId = $(this).val();
+    document.addEventListener("DOMContentLoaded", function () {
+        // Funcionalidad para cargar las provincias según el departamento
+        document.getElementById("Departamento").addEventListener("change", function () {
+            var departamentoId = this.value;
             if (departamentoId) {
-                $.getJSON('/Siniestro/GetProvincias', { departamentoId: departamentoId }, function (data) {
-                    $('#Provincia').empty().append('<option value="">Seleccione una provincia</option>');
-                    $.each(data, function (index, item) {
-                        $('#Provincia').append('<option value="' + item.id + '">' + item.nombre + '</option>');
+                fetch(`/Siniestro/GetProvincias?departamentoId=${departamentoId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const provinciaSelect = document.getElementById("Provincia");
+                        provinciaSelect.innerHTML = '<option value="">Seleccione una provincia</option>';
+                        data.forEach(item => {
+                            provinciaSelect.innerHTML += `<option value="${item.id}">${item.nombre}</option>`;
+                        });
+                        // Resetear distritos
+                        document.getElementById("Distrito").innerHTML = '<option value="">Seleccione un distrito</option>';
                     });
-                    $('#Distrito').empty().append('<option value="">Seleccione un distrito</option>');
-                });
             }
         });
 
-        $('#Provincia').change(function () {
-            var provinciaId = $(this).val();
+        // Funcionalidad para cargar los distritos según la provincia
+        document.getElementById("Provincia").addEventListener("change", function () {
+            var provinciaId = this.value;
             if (provinciaId) {
-                $.getJSON('/Siniestro/GetDistritos', { provinciaId: provinciaId }, function (data) {
-                    $('#Distrito').empty().append('<option value="">Seleccione un distrito</option>');
-                    $.each(data, function (index, item) {
-                        $('#Distrito').append('<option value="' + item.id + '">' + item.nombre + '</option>');
+                fetch(`/Siniestro/GetDistritos?provinciaId=${provinciaId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const distritoSelect = document.getElementById("Distrito");
+                        distritoSelect.innerHTML = '<option value="">Seleccione un distrito</option>';
+                        data.forEach(item => {
+                            distritoSelect.innerHTML += `<option value="${item.id}">${item.nombre}</option>`;
+                        });
                     });
-                });
             }
+        });
+
+        // Aplicar sombra dinámica a los campos de entrada
+        const formControls = document.querySelectorAll('.form-control');
+        formControls.forEach(control => {
+            control.addEventListener('focus', function () {
+                this.style.boxShadow = "0 0 15px rgba(220, 53, 69, 0.5)";
+                this.style.borderColor = "#dc3545"; // Rojo fuerte al enfocarse
+            });
+            control.addEventListener('blur', function () {
+                this.style.boxShadow = "none";
+                this.style.borderColor = "#ced4da"; // Restaurar color original al perder el foco
+            });
         });
     });
 </script>
 
 <style>
+    /* Contenedor del Formulario */
     .container {
-        background-color: #f9f9f9;
+        background-color: #fff7f7; /* Fondo blanco suave con un toque rojo */
         border-radius: 15px;
         padding: 30px;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
 
     h2 {
-        color: #007bff;
+        color: #dc3545; /* Tono rojo fuerte */
         font-weight: bold;
     }
 
+    /* Estilos para los inputs y selects */
     .form-control {
         border-radius: 8px;
         border: 1px solid #ced4da;
         transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     }
 
-    .form-control:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
+    /* Estilo para los botones */
+    .btn-danger {
+        background-color: #dc3545; /* Rojo para el botón principal */
+        border-color: #dc3545;
         padding: 12px 25px;
         transition: background-color 0.3s, transform 0.2s;
     }
 
-    .btn-primary:hover {
-        background-color: #0056b3;
+    .btn-danger:hover {
+        background-color: #c82333; /* Rojo oscuro al pasar el cursor */
         transform: scale(1.05);
     }
 
@@ -152,6 +172,7 @@
         transform: scale(1.05);
     }
 
+    /* Estilos para el formulario */
     .form-row {
         display: flex;
         flex-wrap: wrap;
@@ -167,9 +188,20 @@
         flex: 0 0 100%;
     }
 
+    /* Media query para pantallas pequeñas */
     @@media (max-width: 768px) {
         .form-group {
             flex: 0 0 100%;
         }
+    }
+
+    /* Estilo para el campo de archivos */
+    .form-group input[type="file"] {
+        padding: 6px;
+    }
+
+    .form-text.text-muted {
+        font-size: 0.875rem;
+        color: #6c757d;
     }
 </style>
