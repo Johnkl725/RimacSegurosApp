@@ -16,7 +16,7 @@ public class AdminDA
     public List<SiniestroPresupuestoViewModel> ObtenerSiniestrosConPresupuestos()
     {
         return _context.Siniestros
-                       .Where(s => s.IdPresupuesto != null) // Solo siniestros con presupuesto asignado
+                       .Where(s => s.IdPresupuesto == null) // Solo siniestros con presupuesto asignado
                        .Join(_context.Polizas,
                              s => s.IdPoliza,
                              p => p.Id,
