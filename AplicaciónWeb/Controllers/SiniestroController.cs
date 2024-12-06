@@ -4,10 +4,11 @@ using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using EntidadesProyecto;
 using LogicaNegocio;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -32,7 +33,6 @@ namespace AplicaciónWeb.Controllers
             await CargarListasAsync();
             return View();
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -84,7 +84,7 @@ namespace AplicaciónWeb.Controllers
                             // Subir a Cloudinary
                             var uploadResult = await SubirArchivoACloudinary(archivo, siniestro.IdSiniestro);
 
-                            // Registrar el documento en la base de datos
+                            // Registrar el documento en la base de datos y obtener el ID generado
                             var documento = new DocumentosReclamacion
                             {
                                 IdReclamacion = siniestro.IdSiniestro,
@@ -93,9 +93,15 @@ namespace AplicaciónWeb.Controllers
                                 Url = uploadResult.SecureUrl.ToString()
                             };
 
-                            await _siniestroLN.RegistrarDocumento(documento);
+                            int idDocumento = await _siniestroLN.RegistrarDocumentoYObtenerId(documento);
+
+                            // Asignar el ID del documento al siniestro
+                            siniestro.IdDocumento = idDocumento;
                         }
                     }
+
+                    // Actualizar el siniestro con el ID del documento registrado
+                    await _siniestroLN.ActualizarSiniestroAsync(siniestro);
 
                     TempData["SuccessMessage"] = "Siniestro y documentos registrados exitosamente.";
                     return RedirectToAction("Confirmacion");
@@ -129,6 +135,7 @@ namespace AplicaciónWeb.Controllers
 
             return (true, "");
         }
+
         private async Task<UploadResult> SubirArchivoACloudinary(IFormFile archivo, int idSiniestro)
         {
             var fileExtension = Path.GetExtension(archivo.FileName).ToLower();
@@ -157,6 +164,10 @@ namespace AplicaciónWeb.Controllers
         public async Task<JsonResult> GetProvincias(int departamentoId)
         {
             var provincias = await _siniestroLN.ObtenerProvinciasPorDepartamentoAsync(departamentoId);
+            if (provincias == null)
+            {
+                provincias = new List<Provincia>();
+            }
             return Json(provincias.Select(p => new { id = p.Id, nombre = p.Descripcion }));
         }
 
@@ -165,19 +176,23 @@ namespace AplicaciónWeb.Controllers
         public async Task<JsonResult> GetDistritos(int provinciaId)
         {
             var distritos = await _siniestroLN.ObtenerDistritosPorProvinciaAsync(provinciaId);
+            if (distritos == null)
+            {
+                distritos = new List<Distrito>();
+            }
             return Json(distritos.Select(d => new { id = d.Id, nombre = d.Descripcion }));
         }
-
-        
-
 
         // Método para cargar la lista de departamentos en la vista
         private async Task CargarListasAsync()
         {
             var departamentos = await _siniestroLN.ObtenerDepartamentosAsync();
-            ViewBag.Departamentos = new SelectList(departamentos, "Id", "Descripcion");
-
+            if (departamentos == null || !departamentos.Any())
+            {
+                departamentos = new List<Departamento>();
+            }
             ViewBag.Departamentos = departamentos;
+
             ViewBag.Provincias = new List<SelectListItem> { new SelectListItem { Text = "Seleccione una provincia", Value = "" } };
             ViewBag.Distritos = new List<SelectListItem> { new SelectListItem { Text = "Seleccione un distrito", Value = "" } };
         }
@@ -186,11 +201,8 @@ namespace AplicaciónWeb.Controllers
         public IActionResult Confirmacion()
         {
             TempData["SuccessMessage"] = "Siniestro registrado exitosamente";
-
             return View();
         }
-
-
 
         // GET: Asignar taller a un siniestro
         public async Task<IActionResult> AsignarTaller()
@@ -200,7 +212,6 @@ namespace AplicaciónWeb.Controllers
 
             return View(siniestros); // Renderiza vista con siniestros filtrados
         }
-
 
         // GET: Detalles del siniestro para asignar taller
         public async Task<IActionResult> DetalleSiniestro(int id)
@@ -228,10 +239,6 @@ namespace AplicaciónWeb.Controllers
             return PartialView("_DetalleSiniestro", siniestro);
         }
 
-
-
-
-        // POST: Confirmar asignación de taller
         // POST: Confirmar asignación de taller
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -264,11 +271,5 @@ namespace AplicaciónWeb.Controllers
 
             return RedirectToAction("AsignarTaller");
         }
-
-
-
-
-
-
     }
 }

@@ -1,8 +1,8 @@
 ﻿using AccesoDatos;
 using EntidadesProyecto;
 using MiAplicacion.Data;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace LogicaNegocio
@@ -15,8 +15,7 @@ namespace LogicaNegocio
         public SiniestroLN(MyDbContext context)
         {
             _siniestroDA = new SiniestroDA(context);
-            _context = context; // Inyecta el DbContext
-
+            _context = context;
         }
 
         public async Task RegistrarSiniestro(Siniestro siniestro)
@@ -30,7 +29,20 @@ namespace LogicaNegocio
             // Registrar el siniestro en la base de datos
             await _siniestroDA.RegistrarSiniestro(siniestro);
         }
-        // SiniestroLN.cs
+
+        public async Task<int> RegistrarDocumentoYObtenerId(DocumentosReclamacion documento)
+        {
+            if (documento == null)
+                throw new ArgumentNullException(nameof(documento));
+
+            return await _siniestroDA.RegistrarDocumentoYObtenerId(documento);
+        }
+
+        public async Task ActualizarSiniestroAsync(Siniestro siniestro)
+        {
+            await _siniestroDA.ActualizarSiniestroAsync(siniestro);
+        }
+
         public Task<List<Departamento>> ObtenerDepartamentosAsync()
         {
             return _siniestroDA.ObtenerDepartamentosAsync();
@@ -45,10 +57,12 @@ namespace LogicaNegocio
         {
             return _siniestroDA.ObtenerDistritosPorProvinciaAsync(provinciaId);
         }
+
         public async Task<List<Siniestro>> ObtenerTodosLosSiniestros()
         {
             return await _siniestroDA.ObtenerTodosLosSiniestrosAsync();
         }
+
         public async Task<List<Siniestro>> ObtenerSiniestrosPorBeneficiarioAsync(int idBeneficiario)
         {
             return await _siniestroDA.ObtenerSiniestrosPorBeneficiarioAsync(idBeneficiario);
@@ -64,25 +78,15 @@ namespace LogicaNegocio
             return _siniestroDA.ObtenerSiniestroPorIdAsync(idSiniestro);
         }
 
-        public async Task ActualizarSiniestroAsync(Siniestro siniestro)
-        {
-            await _siniestroDA.ActualizarSiniestroAsync(siniestro);
-        }
-
         public async Task<List<Reclamacion>> ObtenerReclamacionesPorSiniestroAsync(int idSiniestro)
         {
             return await _siniestroDA.ObtenerReclamacionesPorSiniestroAsync(idSiniestro);
         }
 
-
-
-       
-
         public async Task<Poliza> ObtenerPolizaActivaPorUsuarioAsync(int idUsuario)
         {
             var beneficiario = await _context.Beneficiarios
-                .Where(b => b.IdUsuario == idUsuario)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(b => b.IdUsuario == idUsuario);
 
             if (beneficiario == null)
             {
@@ -90,8 +94,7 @@ namespace LogicaNegocio
             }
 
             var poliza = await _context.Polizas
-                .Where(p => p.IdBeneficiario == beneficiario.Id && p.Estado == "Activo")
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(p => p.IdBeneficiario == beneficiario.Id && p.Estado == "Activo");
 
             if (poliza == null)
             {
@@ -113,18 +116,5 @@ namespace LogicaNegocio
         {
             return await _siniestroDA.ObtenerSeguimientoConSQLAsync(idSiniestro);
         }
-        public async Task RegistrarDocumento(DocumentosReclamacion documento)
-        {
-            if (documento == null)
-                throw new ArgumentNullException(nameof(documento));
-
-            await _siniestroDA.RegistrarDocumento(documento);
-        }
-
-
-
-
-
-
     }
 }
