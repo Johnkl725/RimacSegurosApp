@@ -34,6 +34,8 @@ namespace AplicaciónWeb.Controllers
             return View();
         }
 
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegistrarSiniestro(SiniestroViewModel model, List<IFormFile> archivos)
@@ -209,11 +211,12 @@ namespace AplicaciónWeb.Controllers
         // GET: Asignar taller a un siniestro
         public async Task<IActionResult> AsignarTaller()
         {
-            int idTallerPorDefecto = 1; // Taller por defecto
-            var siniestros = await _siniestroLN.ObtenerSiniestrosConTallerPorDefectoAsync(idTallerPorDefecto);
+            // Obtener los siniestros sin taller asignado
+            var siniestrosSinTaller = await _siniestroLN.ObtenerSiniestrosSinTallerAsync();
 
-            return View(siniestros); // Renderiza vista con siniestros filtrados
+            return View(siniestrosSinTaller); // Renderiza la vista con los siniestros
         }
+
 
         // GET: Detalles del siniestro para asignar taller
         public async Task<IActionResult> DetalleSiniestro(int id)
@@ -224,7 +227,6 @@ namespace AplicaciónWeb.Controllers
                 return NotFound("Siniestro no encontrado.");
             }
 
-            // Llamada asincrónica al método ObtenerTodosLosTalleresAsync
             var talleres = await _tallerLN.ObtenerTodosLosTalleresAsync();
             if (talleres == null || !talleres.Any())
             {
@@ -240,6 +242,7 @@ namespace AplicaciónWeb.Controllers
 
             return PartialView("_DetalleSiniestro", siniestro);
         }
+
 
         // POST: Confirmar asignación de taller
         [HttpPost]
@@ -263,7 +266,7 @@ namespace AplicaciónWeb.Controllers
 
                 siniestro.IdTaller = idTaller;
 
-                await _siniestroLN.ActualizarSiniestroAsync(siniestro);
+                await _siniestroLN.ActualizarSiniestroAsync(siniestro); // Aquí se actualiza
                 TempData["SuccessMessage"] = "Taller asignado correctamente.";
             }
             catch (Exception ex)
@@ -273,5 +276,6 @@ namespace AplicaciónWeb.Controllers
 
             return RedirectToAction("AsignarTaller");
         }
+
     }
 }

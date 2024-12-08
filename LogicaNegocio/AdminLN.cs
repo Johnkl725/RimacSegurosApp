@@ -17,6 +17,11 @@ public class AdminLN
         return _adminDA.ObtenerSiniestrosConPresupuestos();
     }
 
+    public List<SiniestroPresupuestoViewModel> ObtenerSiniestrosSinPresupuesto()
+    {
+        return _adminDA.ObtenerSiniestrosSinPresupuesto();
+    }
+
     // Aprobar el presupuesto de un siniestro
     public bool AprobarPresupuesto(int idPresupuesto)
     {
@@ -76,4 +81,6 @@ public class AdminLN
     {
         _adminDA.ActualizarIdPresupuestoEnSiniestro(idSiniestro, idPresupuesto);
     }
+
+
 }

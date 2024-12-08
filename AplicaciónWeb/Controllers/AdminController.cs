@@ -42,7 +42,7 @@ namespace AplicaciónWeb.Controllers
         public IActionResult GestionarPresupuestos()
         {
             // Obtiene la lista de siniestros con presupuestos
-            List<SiniestroPresupuestoViewModel> siniestros = _adminLN.ObtenerSiniestrosConPresupuestos();
+            List<SiniestroPresupuestoViewModel> siniestros = _adminLN.ObtenerSiniestrosSinPresupuesto();
 
             // Pasa la lista a la vista
             return View(siniestros);

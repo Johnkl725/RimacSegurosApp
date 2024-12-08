@@ -116,5 +116,13 @@ namespace LogicaNegocio
         {
             return await _siniestroDA.ObtenerSeguimientoConSQLAsync(idSiniestro);
         }
+
+        public async Task<List<Siniestro>> ObtenerSiniestrosSinTallerAsync()
+        {
+            return await _siniestroDA.ObtenerSiniestrosSinTallerAsync();
+        }
+
+
+
     }
 }

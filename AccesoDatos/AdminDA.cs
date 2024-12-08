@@ -44,6 +44,33 @@ public class AdminDA
                        .ToList();
     }
 
+    public List<SiniestroPresupuestoViewModel> ObtenerSiniestrosSinPresupuesto()
+    {
+        return _context.Siniestros
+                       .Where(s => s.IdPresupuesto == null) // Filtrar siniestros sin presupuesto
+                       .Join(_context.Polizas,
+                             s => s.IdPoliza,
+                             p => p.Id,
+                             (s, p) => new { Siniestro = s, Poliza = p })
+                       .Join(_context.Beneficiarios,
+                             sp => sp.Poliza.IdBeneficiario,
+                             b => b.Id,
+                             (sp, b) => new { sp.Siniestro, sp.Poliza, Beneficiario = b })
+                       .Join(_context.Vehiculos,
+                             spb => spb.Beneficiario.IdVehiculo,
+                             v => v.Id,
+                             (spb, v) => new SiniestroPresupuestoViewModel
+                             {
+                                 NumeroSiniestro = $"SIN-{spb.Siniestro.IdSiniestro:D3}", // Formato "SIN-001"
+                                 FechaAsignacion = spb.Siniestro.FechaSiniestro, // Fecha de registro del siniestro
+                                 NombreTaller = spb.Siniestro.Taller != null ? spb.Siniestro.Taller.Nombre : "No asignado",
+                                 TipoSiniestro = spb.Siniestro.Tipo,
+                                 Placa = v.Placa, // Obteniendo la placa del vehículo
+                                 IdSiniestro = spb.Siniestro.IdSiniestro
+                             })
+                       .ToList();
+    }
+
 
 
 
@@ -151,4 +178,6 @@ public class AdminDA
             _context.SaveChanges();
         }
     }
+
+
 }
