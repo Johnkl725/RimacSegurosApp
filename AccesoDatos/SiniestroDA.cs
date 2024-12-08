@@ -30,22 +30,24 @@ namespace AccesoDatos
                     Direction = ParameterDirection.Output
                 };
 
-                // Ejecutar el procedimiento para registrar el siniestro
                 await _context.Database.ExecuteSqlRawAsync(
-                    "EXEC sp_RegistrarSiniestro @Tipo, @FechaSiniestro, @Departamento, @Provincia, @Distrito, @Ubicacion, @Descripcion, @IdDocumento, @IdPoliza, @IdTaller, @IdPresupuesto, @IdSiniestro OUTPUT",
-                    new SqlParameter("@Tipo", siniestro.Tipo),
-                    new SqlParameter("@FechaSiniestro", siniestro.FechaSiniestro),
-                    new SqlParameter("@Departamento", siniestro.IdDepartamento),
-                    new SqlParameter("@Provincia", siniestro.IdProvincia),
-                    new SqlParameter("@Distrito", siniestro.IdDistrito),
-                    new SqlParameter("@Ubicacion", siniestro.Ubicacion),
-                    new SqlParameter("@Descripcion", siniestro.Descripcion),
-                    new SqlParameter("@IdDocumento", siniestro.IdDocumento ?? (object)DBNull.Value),
-                    new SqlParameter("@IdPoliza", siniestro.IdPoliza),
-                    new SqlParameter("@IdTaller", siniestro.IdTaller ?? (object)DBNull.Value),
-                    new SqlParameter("@IdPresupuesto", siniestro.IdPresupuesto ?? (object)DBNull.Value),
-                    idParam
-                );
+     "EXEC sp_RegistrarSiniestro @Tipo, @FechaSiniestro, @FechaCreacion, @FechaActualizacion, @Departamento, @Provincia, @Distrito, @Ubicacion, @Descripcion, @IdDocumento, @IdPoliza, @IdTaller, @IdPresupuesto, @IdSiniestro OUTPUT",
+     new SqlParameter("@Tipo", siniestro.Tipo),
+     new SqlParameter("@FechaSiniestro", siniestro.FechaSiniestro),
+     new SqlParameter("@FechaCreacion", siniestro.FechaCreacion ?? DateTime.Now), // Nuevo parámetro
+     new SqlParameter("@FechaActualizacion", siniestro.FechaActualizacion ?? DateTime.Now), // Nuevo parámetro
+     new SqlParameter("@Departamento", siniestro.IdDepartamento),
+     new SqlParameter("@Provincia", siniestro.IdProvincia),
+     new SqlParameter("@Distrito", siniestro.IdDistrito),
+     new SqlParameter("@Ubicacion", siniestro.Ubicacion),
+     new SqlParameter("@Descripcion", siniestro.Descripcion),
+     new SqlParameter("@IdDocumento", siniestro.IdDocumento ?? (object)DBNull.Value),
+     new SqlParameter("@IdPoliza", siniestro.IdPoliza),
+     new SqlParameter("@IdTaller", siniestro.IdTaller ?? (object)DBNull.Value),
+     new SqlParameter("@IdPresupuesto", siniestro.IdPresupuesto ?? (object)DBNull.Value),
+     idParam
+ );
+
 
                 // Obtener el ID del siniestro insertado
                 siniestro.IdSiniestro = (int)idParam.Value;

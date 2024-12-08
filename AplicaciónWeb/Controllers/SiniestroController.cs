@@ -63,7 +63,9 @@ namespace AplicaciónWeb.Controllers
                         Tipo = model.Tipo,
                         FechaSiniestro = model.FechaSiniestro,
                         Ubicacion = model.Ubicacion,
-                        Descripcion = model.Descripcion
+                        Descripcion = model.Descripcion,
+                        FechaCreacion = DateTime.Now, // Asigna la fecha actual
+                        FechaActualizacion = DateTime.Now // Asigna la fecha actual
                     };
 
                     await _siniestroLN.RegistrarSiniestro(siniestro);
