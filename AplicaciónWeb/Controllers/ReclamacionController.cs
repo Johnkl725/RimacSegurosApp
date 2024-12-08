@@ -146,25 +146,7 @@ namespace AplicaciónWeb.Controllers
             }
         }
 
-        private (bool IsValid, string Message) ValidarArchivo(IFormFile archivo)
-        {
-            var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".pdf", ".docx", ".xlsx" };
-            const long maxSizeInBytes = 5 * 1024 * 1024; // Cambiado a 5 MB
-
-            var fileExtension = Path.GetExtension(archivo.FileName).ToLower();
-
-            if (!extensionesPermitidas.Contains(fileExtension))
-            {
-                return (false, $"El formato del archivo {archivo.FileName} no está permitido.");
-            }
-
-            if (archivo.Length > maxSizeInBytes)
-            {
-                return (false, $"El archivo {archivo.FileName} excede el tamaño máximo permitido (5 MB).");
-            }
-
-            return (true, "");
-        }
+        
 
         private async Task<UploadResult> SubirArchivoACloudinary(IFormFile archivo, int idSiniestro, int IdReclamacion)
         {
@@ -192,7 +174,25 @@ namespace AplicaciónWeb.Controllers
 
 
 
+        private (bool IsValid, string Message) ValidarArchivo(IFormFile archivo)
+        {
+            var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".pdf", ".docx", ".xlsx" };
+            const long maxSizeInBytes = 5 * 1024 * 1024; // Cambiado a 5 MB
 
+            var fileExtension = Path.GetExtension(archivo.FileName).ToLower();
+
+            if (!extensionesPermitidas.Contains(fileExtension))
+            {
+                return (false, $"El formato del archivo {archivo.FileName} no está permitido.");
+            }
+
+            if (archivo.Length > maxSizeInBytes)
+            {
+                return (false, $"El archivo {archivo.FileName} excede el tamaño máximo permitido (5 MB).");
+            }
+
+            return (true, "");
+        }
 
         public IActionResult Confirmacion()
         {

@@ -300,8 +300,11 @@ namespace AccesoDatos
         }
         public IEnumerable<Usuario> ObtenerUsuariosPorDni(string dni)
         {
-            return _context.Usuarios.Where(u => u.Dni == dni).ToList();
+            return _context.Usuarios
+                .Where(u => u.Dni.Contains(dni)) // Coincidencia parcial
+                .ToList();
         }
+
 
         public Usuario ObtenerUsuarioPorId(int id)
         {
