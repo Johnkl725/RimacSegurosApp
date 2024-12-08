@@ -10,7 +10,7 @@
         public decimal Impuestos { get; set; }
         public decimal CostoSinImpuestos { get; set; }
         public string Estado { get; set; } = "Pendiente"; // Estado inicial
-        public decimal Descuento { get; set; }
-        public string Enlace { get; set; } // Enlace opcional para referencia
+        public decimal Descuento { get; set; } = 0;
+        public string Enlace { get; set; } = "presupuesto.com";// Enlace opcional para referencia
     }
 }

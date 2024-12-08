@@ -47,7 +47,7 @@ public class AdminDA
     public List<SiniestroPresupuestoViewModel> ObtenerSiniestrosSinPresupuesto()
     {
         return _context.Siniestros
-                       .Where(s => s.IdPresupuesto == null) // Filtrar siniestros sin presupuesto
+                       .Where(s => s.IdPresupuesto == null && s.IdTaller != null) // Filtrar siniestros sin presupuesto pero con taller asignado
                        .Join(_context.Polizas,
                              s => s.IdPoliza,
                              p => p.Id,
@@ -70,6 +70,7 @@ public class AdminDA
                              })
                        .ToList();
     }
+
 
 
 

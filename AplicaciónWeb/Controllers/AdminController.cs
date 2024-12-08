@@ -133,8 +133,8 @@ namespace AplicaciónWeb.Controllers
                     Impuestos = model.Impuestos,
                     CostoSinImpuestos = model.CostoSinImpuestos,
                     Estado = "Pendiente",
-                    Descuento = model.Descuento,
-                    Enlace = model.Enlace
+                    Descuento = 0, // Siempre 0
+                    Enlace = "presupuesto.com" // Valor predeterminado
                 };
 
                 _context.Presupuestos.Add(presupuesto);
@@ -145,7 +145,6 @@ namespace AplicaciónWeb.Controllers
 
                 // Actualizar el campo id_presupuesto en la tabla Siniestro
                 var siniestro = _context.Siniestros.FirstOrDefault(s => s.IdSiniestro == model.IdSiniestro);
-                // Modificar esta línea
                 if (siniestro != null)
                 {
                     siniestro.IdPresupuesto = nuevoIdPresupuesto;
@@ -161,6 +160,7 @@ namespace AplicaciónWeb.Controllers
                 return View(model);
             }
         }
+
 
 
         // otra funcion nueva para el reporte
