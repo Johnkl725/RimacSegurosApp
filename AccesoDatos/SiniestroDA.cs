@@ -266,5 +266,13 @@ namespace AccesoDatos
 
             return resultado;
         }
+
+        public async Task<List<Siniestro>> ObtenerSiniestrosSinTallerAsync()
+        {
+            return await _context.Siniestros
+                .Where(s => s.IdTaller == null) // Filtrar siniestros sin taller asignado
+                .ToListAsync();
+        }
+
     }
 }
