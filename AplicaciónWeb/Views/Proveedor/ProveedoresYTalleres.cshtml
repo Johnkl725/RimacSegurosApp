@@ -10,6 +10,7 @@
     </div>
 </div>
 
+
 <div class="mb-3">
     <label for="viewSelection" class="form-label">Seleccionar vista:</label>
     <select id="viewSelection" class="form-select" onchange="location = this.value;">
@@ -43,51 +44,60 @@
 </div>
 
 <div class="row">
-    <!-- Vista de Proveedores -->
-    @if (ViewData["SelectedView"]?.ToString() == "Proveedores" || ViewData["SelectedView"]?.ToString() == "Ambos")
-    {
-        <div class="col-12 col-md-6 mb-4">
-            <h3 class="text-danger mb-3">Proveedores</h3>
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered">
-                    <thead class="table-danger">
-                        <tr>
-                            <th>Nombre</th>
-                            <th>RUC</th>
-                            <th>Teléfono</th>
-                            <th>Correo</th>
-                            <th>Calificación</th>
-                            <th class="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var proveedor in Model.Proveedores)
-                        {
-                            <tr>
-                                <td>@proveedor.Nombre</td>
-                                <td>@proveedor.Ruc</td>
-                                <td>@proveedor.Telefono</td>
-                                <td>@proveedor.Correo</td>
-                                <td>@proveedor.Calificacion</td>
-                                <td class="text-center">
-                                    <a href="@Url.Action("Editar", "Proveedor", new { id = proveedor.Id })" class="btn btn-sm btn-warning">Editar</a>
-                                    <a href="@Url.Action("Eliminar", "Proveedor", new { id = proveedor.Id })" class="btn btn-sm btn-danger">Eliminar</a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+ <!-- Vista de Proveedores -->
+@if (ViewData["SelectedView"]?.ToString() == "Proveedores" || ViewData["SelectedView"]?.ToString() == "Ambos")
+{
+    <div class="col-12 col-md-6 mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="text-danger mb-0">Proveedores</h3>
+            <input type="text" id="searchProveedor" class="form-control form-control-sm w-50" placeholder="Buscar Proveedor" onkeyup="searchProveedores()" />
         </div>
-    }
+        <div class="table-responsive">
+            <table id="proveedorTable" class="table table-striped table-bordered">
+                <thead class="table-danger">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>RUC</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
+                        <th>Calificación</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var proveedor in Model.Proveedores)
+                    {
+                        <tr>
+                            <td>@proveedor.Nombre</td>
+                            <td>@proveedor.Ruc</td>
+                            <td>@proveedor.Telefono</td>
+                            <td>@proveedor.Correo</td>
+                            <td>@proveedor.Calificacion</td>
+                            <td class="text-center">
+                                <a href="@Url.Action("Editar", "Proveedor", new { id = proveedor.Id })" class="btn btn-sm btn-warning">Editar</a>
+                                <a href="@Url.Action("Eliminar", "Proveedor", new { id = proveedor.Id })" class="btn btn-sm btn-danger">Eliminar</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
 
-    <!-- Vista de Talleres -->
+<!-- Vista de Talleres -->
     @if (ViewData["SelectedView"]?.ToString() == "Talleres" || ViewData["SelectedView"]?.ToString() == "Ambos")
     {
         <div class="col-12 col-md-6 mb-4">
-            <h3 class="text-danger mb-3">Talleres</h3>
+            <!-- Título y barra de búsqueda alineados -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="text-danger mb-0">Talleres</h3>
+                <!-- Barra de búsqueda -->
+                <input type="text" id="searchTaller" class="form-control form-control-sm w-50" placeholder="Buscar Taller" onkeyup="searchTalleres()" />
+            </div>
+            <!-- Tabla de Talleres -->
             <div class="table-responsive">
-                <table class="table table-striped table-bordered">
+                <table id="tallerTable" class="table table-striped table-bordered">
                     <thead class="table-danger">
                         <tr>
                             <th>Nombre</th>
@@ -100,24 +110,24 @@
                     <tbody>
                         @foreach (var taller in Model.Talleres)
                         {
-                            <tr>
-                                <td>@taller.Nombre</td>
-                                <td>@taller.Direccion</td>
-                                <td>@taller.Ciudad</td>
-                                <td>@taller.Capacidad</td>
-                                <td class="text-center">
-                                    <a href="@Url.Action("Detalle", "Taller", new { id = taller.Id })" class="btn btn-sm btn-info">Ver</a>
-                                    <a href="@Url.Action("Editar", "Taller", new { id = taller.Id })" class="btn btn-sm btn-warning">Editar</a>
-                                    <a href="@Url.Action("Eliminar", "Taller", new { id = taller.Id })" class="btn btn-sm btn-danger">Eliminar</a>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td>@taller.Nombre</td>
+                                    <td>@taller.Direccion</td>
+                                    <td>@taller.Ciudad</td>
+                                    <td>@taller.Capacidad</td>
+                                    <td class="text-center">
+                                        <a href="@Url.Action("Detalle", "Taller", new { id = taller.Id })" class="btn btn-sm btn-info">Ver</a>
+                                        <a href="@Url.Action("Editar", "Taller", new { id = taller.Id })" class="btn btn-sm btn-warning">Editar</a>
+                                        <a href="@Url.Action("Eliminar", "Taller", new { id = taller.Id })" class="btn btn-sm btn-danger">Eliminar</a>
+                                    </td>
+                                </tr>
                         }
                     </tbody>
                 </table>
             </div>
         </div>
     }
-</div>
+
 
 <!-- Botón de volver al Dashboard -->
 <div class="text-center mt-4">
@@ -164,6 +174,26 @@
                 });
             }
         });
+
+                function searchProveedores() {
+        var query = document.getElementById('searchProveedor').value.toLowerCase(); // Captura el valor de la búsqueda
+        var rowsProveedor = document.querySelectorAll('#proveedorTable tbody tr'); // Obtiene todas las filas de la tabla de proveedores
+
+        rowsProveedor.forEach(function(row) {
+            var cells = row.querySelectorAll('td'); // Obtiene todas las celdas de la fila
+            var match = Array.from(cells).some(cell => cell.innerText.toLowerCase().includes(query)); // Compara cada celda con el término de búsqueda
+            row.style.display = match ? '' : 'none'; // Muestra u oculta la fila
+        });
+    }
+            function searchTalleres() {
+                var query = document.getElementById('searchTaller').value.toLowerCase();
+                var rowsTaller = document.querySelectorAll('#tallerTable tbody tr');
+                rowsTaller.forEach(function(row) {
+                    var cells = row.querySelectorAll('td');
+                    var match = Array.from(cells).some(cell => cell.innerText.toLowerCase().includes(query));
+                    row.style.display = match ? '' : 'none';
+                });
+            }
     </script>
 }
 
@@ -183,7 +213,7 @@
 
     /* Ajustes en la tabla */
     .table {
-        font-size: 0.9em; /* Reduce el tamaño de la fuente de la tabla */
+        font-size: 0.6em; /* Reduce el tamaño de la fuente de la tabla */
         border-collapse: separate;
         border-spacing: 0;
         background-color: #fff;
@@ -195,7 +225,7 @@
     }
 
     .btn-outline-danger {
-        font-size: 0.9em; /* Reducir tamaño de botón */
+        font-size: 0.6em; /* Reducir tamaño de botón */
         color: #c0392b;
         border-color: #c0392b;
     }
@@ -206,7 +236,7 @@
         }
 
     .btn-danger {
-        font-size: 0.9em; /* Reducir tamaño de botón */
+        font-size: 0.6em; /* Reducir tamaño de botón */
         background-color: #e74c3c;
         border-color: #e74c3c;
     }
@@ -216,7 +246,7 @@
         }
 
     .btn-warning {
-        font-size: 0.9em; /* Reducir tamaño de botón */
+        font-size: 0.6em; /* Reducir tamaño de botón */
         background-color: #f39c12;
         border-color: #f39c12;
     }
@@ -226,7 +256,7 @@
         }
 
     .btn-info {
-        font-size: 0.9em; /* Reducir tamaño de botón */
+        font-size: 0.6em; /* Reducir tamaño de botón */
         background-color: #3498db;
         border-color: #3498db;
     }
@@ -237,7 +267,7 @@
 
     /* Formulario y select */
     .form-select {
-        font-size: 0.9em; /* Reducir tamaño del select */
+        font-size: 0.6em; /* Reducir tamaño del select */
         width: auto;
         min-width: 200px;
         border: 1px solid #c0392b;
@@ -263,4 +293,26 @@
     .d-flex {
         gap: 1rem;
     }
+
+    .form-control-sm {
+    font-size: 0.6rem; /* Ajustar el tamaño de la fuente */
+    padding: 0.375rem 0.75rem; /* Espaciado interno para una mejor apariencia */
+    height: auto; /* Asegurarse de que la altura sea adecuada */
+    border-radius: 0.4rem; /* Bordes redondeados */
+    border: 1px solid #ccc; /* Borde claro para el campo de búsqueda */
+    width: 100%; /* Ancho del campo de búsqueda */
+    max-width: 300px; /* Limitar el ancho para que no ocupe toda la fila */
+}
+
+/* Efecto cuando el campo de búsqueda recibe el foco (borde rojo) */
+.form-control-sm:focus {
+    border-color: #e74c3c; /* Cambiar el color del borde a rojo */
+    box-shadow: 0 0 5px rgba(231, 76, 60, 0.5); /* Agregar una sombra suave de color rojo */
+}
+
+/* Estilo para el contenedor donde está la barra de búsqueda */
+.d-flex {
+    gap: 1rem; /* Espaciado entre los elementos del contenedor */
+    align-items: center; /* Asegurar que los elementos estén centrados verticalmente */
+}
 </style>
