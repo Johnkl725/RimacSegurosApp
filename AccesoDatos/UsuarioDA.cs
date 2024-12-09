@@ -326,18 +326,18 @@ namespace AccesoDatos
             return true;
         }
 
-        public bool EliminarUsuario(int id)
+        public void EliminarUsuario(int id)
         {
             var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == id);
             if (usuario == null)
             {
-                return false;
+                throw new InvalidOperationException("El usuario no existe.");
             }
 
             _context.Usuarios.Remove(usuario);
             _context.SaveChanges();
-            return true;
         }
+
 
 
 

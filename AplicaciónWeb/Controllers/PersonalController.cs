@@ -172,24 +172,28 @@ namespace AplicaciónWeb.Controllers
         {
             try
             {
-                var eliminado = _usuarioLN.EliminarUsuario(id);
-                if (eliminado)
-                {
-                    TempData["Mensaje"] = "El usuario fue eliminado correctamente.";
-                    return RedirectToAction(nameof(MantenerUsuario));
-                }
-                else
-                {
-                    TempData["Error"] = "No se pudo eliminar el usuario.";
-                }
+                // Llamar a la capa de negocio para eliminar
+                _usuarioLN.EliminarUsuario(id);
+
+                // Si la eliminación fue exitosa, mostrar mensaje de éxito
+                TempData["Mensaje"] = "El usuario fue eliminado correctamente.";
+                return RedirectToAction(nameof(MantenerUsuario));
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Si no se encuentra el usuario, mostrar un mensaje de error específico
+                TempData["Error"] = ex.Message;
             }
             catch (Exception ex)
             {
+                // Si ocurre cualquier otro error, mostrar el mensaje de error genérico
                 TempData["Error"] = $"Error: {ex.Message}";
             }
 
+            // En cualquier caso de error, redirigir de vuelta a la vista de mantenimiento de usuarios
             return RedirectToAction(nameof(MantenerUsuario));
         }
+
 
     }
 }
