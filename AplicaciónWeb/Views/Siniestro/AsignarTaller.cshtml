@@ -8,19 +8,18 @@
 <!-- Bloque de mensajes -->
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show auto-dismiss" role="alert">
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
         <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 @if (TempData["ErrorMessage"] != null)
 {
-    <div class="alert alert-danger alert-dismissible fade show auto-dismiss" role="alert">
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <i class="fas fa-exclamation-triangle"></i> @TempData["ErrorMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
-
 
 <table class="table">
     <thead>
@@ -86,7 +85,7 @@
                 alert.classList.add('fade'); // Agrega animación fade
                 setTimeout(() => alert.remove(), 300); // Remueve el elemento después de la animación
             });
-        }, 2000); /
+        }, 2000); // 2000 ms = 2 segundos
     </script>
 }
 
