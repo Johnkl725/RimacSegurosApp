@@ -7,10 +7,11 @@ using EntidadesProyecto;
 using Rotativa.AspNetCore;
 using CloudinaryDotNet;
 using Microsoft.Extensions.Options;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
-// Add services to the container.
+// Add 
 builder.Services.AddControllersWithViews();
 
 var cloudinaryConfig = builder.Configuration.GetSection("Cloudinary");

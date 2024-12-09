@@ -1,19 +1,23 @@
 ﻿@using EntidadesProyecto
 @model PolizaConTipo
 
-<div>
-    <p><strong>Número de Póliza:</strong> @Model.IdPoliza</p>
-    <p><strong>Vigencia:</strong> @Model.Vigencia</p>
-    <p><strong>Estado:</strong> @Model.Estado</p>
-    <p><strong>Cobertura:</strong> @Model.Cobertura</p>
+<div class="container mt-3">
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            <h5>Detalles de la Póliza</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Número de Póliza:</strong> @Model.IdPoliza</p>
+            <p><strong>Vigencia:</strong> @Model.Vigencia</p>
+            <p><strong>Estado:</strong> @Model.Estado</p>
+            <p><strong>Cobertura:</strong> @Model.Cobertura</p>
+        </div>
+        <div class="card-footer text-end">
+            <button type="button" class="btn btn-success" onclick="cambiarEstadoPoliza(@Model.IdPoliza, 'validar')">Validar</button>
+            <button type="button" class="btn btn-danger" onclick="cambiarEstadoPoliza(@Model.IdPoliza, 'no-validar')">No Validar</button>
+        </div>
+    </div>
 </div>
-
-<div class="modal-footer">
-    <button type="button" class="btn btn-success" onclick="cambiarEstadoPoliza(@Model.IdPoliza, 'validar')">Validar</button>
-    <button type="button" class="btn btn-danger" onclick="cambiarEstadoPoliza(@Model.IdPoliza, 'no-validar')">No Validar</button>
-</div>
-
-
 
 <script>
     document.querySelectorAll('button[data-bs-target="#modalDetallePoliza"]').forEach(btn => {
@@ -27,4 +31,14 @@
         });
     });
 </script>
+
+<style>
+    .card.border-danger {
+        border-color: #b71c1c !important;
+    }
+
+    .card-header.bg-danger {
+        background-color: #b71c1c !important;
+    }
+</style>
 

@@ -1,38 +1,51 @@
 ﻿@using AplicaciónWeb.Models.EntidadesProyecto
 @model PresupuestoViewModel
 
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
 
 <h2>Gestionar Presupuesto - Siniestro @Model.IdSiniestro</h2>
 
-
 <form method="post" asp-action="ValidarPresupuesto">
     <input type="hidden" name="IdSiniestro" value="@Model.IdSiniestro" />
+    <input type="hidden" name="Descuento" value="0" />
+    <input type="hidden" name="Enlace" value="presupuesto.com" />
+
     <div class="row">
-        <div class="col-md-6">
-            <label for="Detalles">Detalles del Presupuesto</label>
-            <textarea id="Detalles" name="Detalles" class="form-control">@Model.Detalles</textarea>
+        <div class="col-md-6 mb-3">
+            <label for="Detalles" class="form-label">Detalles del Presupuesto</label>
+            <textarea class="form-control" id="Detalles" name="Detalles">@Model.Detalles</textarea>
         </div>
-        <div class="col-md-6">
-            <label for="MontoTotal">Monto Total</label>
-            <input type="number" id="MontoTotal" name="MontoTotal" class="form-control" value="@Model.MontoTotal" />
+        <div class="col-md-6 mb-3">
+            <label for="CostoReparacion" class="form-label">Costo de Reparación</label>
+            <input type="number" class="form-control" id="CostoReparacion" name="MontoTotal" value="@Model.MontoTotal" />
         </div>
-        <div class="col-md-6">
-            <label for="Impuestos">Impuestos</label>
-            <input type="number" id="Impuestos" name="Impuestos" class="form-control" value="@Model.Impuestos" />
+        <div class="col-md-6 mb-3">
+            <label for="CostoPiezas" class="form-label">Costo de Piezas y Mano de Obra</label>
+            <input type="number" class="form-control" id="CostoPiezas" name="CostoSinImpuestos" value="@Model.CostoSinImpuestos" />
         </div>
-        <div class="col-md-6">
-            <label for="CostoSinImpuestos">Costo Sin Impuestos</label>
-            <input type="number" id="CostoSinImpuestos" name="CostoSinImpuestos" class="form-control" value="@Model.CostoSinImpuestos" />
-        </div>
-        <div class="col-md-6">
-            <label for="Descuento">Descuento</label>
-            <input type="number" id="Descuento" name="Descuento" class="form-control" value="@Model.Descuento" />
-        </div>
-        <div class="col-md-6">
-            <label for="Enlace">Enlace</label>
-            <input type="text" id="Enlace" name="Enlace" class="form-control" value="@Model.Enlace" />
+        <div class="col-md-6 mb-3">
+            <label for="Impuestos" class="form-label">Impuestos</label>
+            <input type="number" class="form-control" id="Impuestos" name="Impuestos" value="@Model.Impuestos" readonly />
         </div>
     </div>
-    <button type="submit" class="btn btn-success mt-3">Validar Presupuesto</button>
 
+    <button type="submit" class="btn btn-success mt-3">Validar Presupuesto</button>
 </form>
+
+@section Scripts {
+    <script>
+        // Script para calcular impuestos automáticamente
+        document.querySelector("#CostoReparacion").addEventListener("input", calcularImpuestos);
+        document.querySelector("#CostoPiezas").addEventListener("input", calcularImpuestos);
+
+        function calcularImpuestos() {
+            const costoReparacion = parseFloat(document.querySelector("#CostoReparacion").value) || 0;
+            const costoPiezas = parseFloat(document.querySelector("#CostoPiezas").value) || 0;
+            const impuestos = costoReparacion - costoPiezas;
+
+            document.querySelector("#Impuestos").value = impuestos > 0 ? impuestos : 0;
+        }
+    </script>
+}

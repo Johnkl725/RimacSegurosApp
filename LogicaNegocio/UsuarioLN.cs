@@ -107,6 +107,18 @@ namespace LogicaNegocio
             return _usuarioDA.ObtenerUsuariosPorDni(dni);
         }
 
+        public int ObtenerBeneficiarios()
+        {
+            return _usuarioDA.ObtenerBeneficiarios();
+        }
+        public int ObtenerPolizas()
+        {
+            return _usuarioDA.ObtenerPolizas();
+        }
+        public int ObtenerTalleres()
+        {
+            return _usuarioDA.ObtenerTalleres();
+        }
         public Usuario ObtenerUsuarioPorId(int id)
         {
             return _usuarioDA.ObtenerUsuarioPorId(id);

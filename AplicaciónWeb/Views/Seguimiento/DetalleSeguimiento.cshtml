@@ -167,18 +167,20 @@
                     <i class="bi bi-currency-dollar me-2"></i> Información del Presupuesto
                 </div>
                 <div class="card-body">
-                    @if (Model.PresupuestoId.HasValue)
+                    @if (Model.PresupuestoId.HasValue && Model.PresupuestoId != 0)
                     {
                         <ul>
-                            <li><i class="bi bi-cash-stack"></i><strong>ID del Presupuesto:</strong> @Model.PresupuestoId.</li>
-                            <li><i class="bi bi-shield-check"></i><strong>Estado del Presupuesto:</strong> @(Model.EstadoPresupuesto ?? "Estado no definido").</li>
-                            <li><i class="bi bi-wallet"></i><strong>Monto Total:</strong> S/. @(Model.MontoTotalPresupuesto ?? 0).</li>
+                            <li><i class="bi bi-cash-stack"></i> <strong>ID del Presupuesto:</strong> @Model.PresupuestoId</li>
+                            <li><i class="bi bi-shield-check"></i> <strong>Estado del Presupuesto:</strong> @(Model.EstadoPresupuesto ?? "Estado no definido")</li>
+                            <li><i class="bi bi-wallet"></i> <strong>Monto Total:</strong> S/. @(Model.MontoTotalPresupuesto ?? 0)</li>
                         </ul>
                     }
                     else
                     {
-                        <p class="text-danger">No se encontró información del presupuesto.</p>
+                        <p class="text-danger">No se encontró un presupuesto asociado al siniestro.</p>
                     }
+
+
                 </div>
             </div>
         </div>
@@ -190,7 +192,7 @@
                     <i class="bi bi-building me-2"></i> Información del Taller
                 </div>
                 <div class="card-body">
-                    @if (Model.TallerId.HasValue)
+                    @if (Model.TallerId.HasValue && Model.PresupuestoId != 0)
                     {
                         <ul>
                             <li><i class="bi bi-building"></i><strong>ID del Taller:</strong> @Model.TallerId.</li>

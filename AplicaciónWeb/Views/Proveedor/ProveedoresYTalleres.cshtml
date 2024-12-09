@@ -3,14 +3,13 @@
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
 <div class="d-flex justify-content-between align-items-center my-4">
-    <h2>Proveedores y Talleres</h2>
+    <h2 class="text-danger">Proveedores y Talleres</h2>
     <div>
-        <a href="@Url.Action("Crear", "Proveedor")" class="btn btn-primary me-2">Agregar nuevo Proveedor</a>
-        <a href="@Url.Action("Crear", "Taller")" class="btn btn-primary">Agregar Taller</a>
+        <a href="@Url.Action("Crear", "Proveedor")" class="btn btn-outline-danger me-2">Agregar nuevo Proveedor</a>
+        <a href="@Url.Action("Crear", "Taller")" class="btn btn-outline-danger">Agregar Taller</a>
     </div>
 </div>
 
-<!-- Menú desplegable para filtrar la vista -->
 <div class="mb-3">
     <label for="viewSelection" class="form-label">Seleccionar vista:</label>
     <select id="viewSelection" class="form-select" onchange="location = this.value;">
@@ -43,80 +42,83 @@
     </select>
 </div>
 
-<!-- Sección de Proveedores -->
-@if (ViewData["SelectedView"]?.ToString() == "Proveedores" || ViewData["SelectedView"]?.ToString() == "Ambos")
-{
-    <h3>Proveedores</h3>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>RUC</th>
-                <th>Teléfono</th>
-                <th>Correo</th>
-                <th>Calificación</th>
-                <th>Descripción</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var proveedor in Model.Proveedores)
-            {
-                <tr>
-                    <td>@proveedor.Nombre</td>
-                    <td>@proveedor.Ruc</td>
-                    <td>@proveedor.Telefono</td>
-                    <td>@proveedor.Correo</td>
-                    <td>@proveedor.Calificacion</td>
-                    <td>@proveedor.Descripcion</td>
-                    <td>
-                        <a href="@Url.Action("Editar", "Proveedor", new { id = proveedor.Id })" class="btn btn-warning">Editar</a>
-                        <a href="@Url.Action("Eliminar", "Proveedor", new { id = proveedor.Id })" class="btn btn-danger">Eliminar</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
 
-<!-- Sección de Talleres -->
-@if (ViewData["SelectedView"]?.ToString() == "Talleres" || ViewData["SelectedView"]?.ToString() == "Ambos")
-{
-    <h3>Talleres</h3>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Dirección</th>
-                <th>Ciudad</th>
-                <th>Capacidad</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var taller in Model.Talleres)
-            {
-                <tr>
-                    <td>@taller.Nombre</td>
-                    <td>@taller.Direccion</td>
-                    <td>@taller.Ciudad</td>
-                    <td>@taller.Capacidad</td>
-                    <td>
-                        <a href="@Url.Action("Detalle", "Taller", new { id = taller.Id })" class="btn btn-info">Ver</a>
-                        <a href="@Url.Action("Editar", "Taller", new { id = taller.Id })" class="btn btn-warning">Editar</a>
-                        <a href="@Url.Action("Eliminar", "Taller", new { id = taller.Id })" class="btn btn-danger">Eliminar</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+<div class="row">
+    <!-- Vista de Proveedores -->
+    @if (ViewData["SelectedView"]?.ToString() == "Proveedores" || ViewData["SelectedView"]?.ToString() == "Ambos")
+    {
+        <div class="col-md-6">
+            <h3 class="text-danger mb-3">Proveedores</h3>
+            <table class="table table-striped table-bordered">
+                <thead class="table-danger">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>RUC</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
+                        <th>Calificación</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var proveedor in Model.Proveedores)
+                    {
+                        <tr>
+                            <td>@proveedor.Nombre</td>
+                            <td>@proveedor.Ruc</td>
+                            <td>@proveedor.Telefono</td>
+                            <td>@proveedor.Correo</td>
+                            <td>@proveedor.Calificacion</td>
+                            <td class="text-center">
+                                <a href="@Url.Action("Editar", "Proveedor", new { id = proveedor.Id })" class="btn btn-sm btn-warning">Editar</a>
+                                <a href="@Url.Action("Eliminar", "Proveedor", new { id = proveedor.Id })" class="btn btn-sm btn-danger">Eliminar</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
 
-<h3 class="mt-5">Relación entre Proveedores y Talleres</h3>
-<canvas id="stackedBarChart" width="400" height="200"></canvas>
+    <!-- Vista de Talleres -->
+    @if (ViewData["SelectedView"]?.ToString() == "Talleres" || ViewData["SelectedView"]?.ToString() == "Ambos")
+    {
+        <div class="col-md-6">
+            <h3 class="text-danger mb-3">Talleres</h3>
+            <table class="table table-striped table-bordered">
+                <thead class="table-danger">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Dirección</th>
+                        <th>Ciudad</th>
+                        <th>Capacidad</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var taller in Model.Talleres)
+                    {
+                        <tr>
+                            <td>@taller.Nombre</td>
+                            <td>@taller.Direccion</td>
+                            <td>@taller.Ciudad</td>
+                            <td>@taller.Capacidad</td>
+                            <td class="text-center">
+                                <a href="@Url.Action("Detalle", "Taller", new { id = taller.Id })" class="btn btn-sm btn-info">Ver</a>
+                                <a href="@Url.Action("Editar", "Taller", new { id = taller.Id })" class="btn btn-sm btn-warning">Editar</a>
+                                <a href="@Url.Action("Eliminar", "Taller", new { id = taller.Id })" class="btn btn-sm btn-danger">Eliminar</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
 <!-- Botón de volver al Dashboard -->
 <div class="text-center mt-4">
-    <a href="@Url.Action("PersonalDashboard", "Personal")" class="btn btn-outline-secondary btn-sm">
+    <a href="@Url.Action("PersonalDashboard", "Personal")" class="btn btn-outline-danger btn-sm">
         <i class="fas fa-arrow-left me-2"></i> Volver al Dashboard
     </a>
 </div>
@@ -124,39 +126,119 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Datos dinámicos de proveedores y talleres
-        var proveedores = @Html.Raw(Json.Serialize(Model.Proveedores.Select(p => p.Nombre))); // Nombres de proveedores
-        var talleresPorProveedor = @Html.Raw(Json.Serialize(Model.Proveedores.Select(p => Model.Talleres.Count(t => t.IdProveedor == p.Id)))); // Cantidad de talleres por proveedor
+        document.addEventListener("DOMContentLoaded", function () {
+            var canvas = document.getElementById('stackedBarChart');
+            if (canvas) {
+                var ctx = canvas.getContext('2d');
 
-        // Crear gráfico
-        var ctx = document.getElementById('stackedBarChart').getContext('2d');
-        var stackedBarChart = new Chart(ctx, {
-            type: 'bar', // Gráfico de barras
-            data: {
-                labels: proveedores, // Nombres de los proveedores
-                datasets: [{
-                    label: 'Talleres por Proveedor',
-                    data: talleresPorProveedor, // Número de talleres asociados a cada proveedor
-                    backgroundColor: '#42A5F5', // Color de las barras
-                    borderColor: '#1E88E5', // Color del borde
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false } // Ocultar la leyenda si no es necesaria
-                },
-                scales: {
-                    x: {
-                        stacked: true // Barras apiladas
+                // Datos dinámicos de proveedores y talleres
+                var proveedores = @Html.Raw(Json.Serialize(Model.Proveedores.Select(p => p.Nombre)));
+                var talleresPorProveedor = @Html.Raw(Json.Serialize(Model.Proveedores.Select(p => Model.Talleres.Count(t => t.IdProveedor == p.Id))));
+
+                // Crear gráfico
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: proveedores,
+                        datasets: [{
+                            label: 'Talleres por Proveedor',
+                            data: talleresPorProveedor,
+                            backgroundColor: '#e74c3c',
+                            borderColor: '#c0392b',
+                            borderWidth: 1
+                        }]
                     },
-                    y: {
-                        beginAtZero: true,
-                        stacked: true // Eje Y apilado
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: { stacked: true },
+                            y: { beginAtZero: true, stacked: true }
+                        }
                     }
-                }
+                });
             }
         });
     </script>
 }
+<style>
+
+   
+ 
+    /* Mejora de la tabla */
+    .table {
+        border-collapse: separate;
+        border-spacing: 0;
+        background-color: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 0 auto; /* Centra la tabla */
+        width: 100%;
+    }
+    .btn-outline-danger {
+        color: #c0392b;
+        border-color: #c0392b;
+    }
+
+        .btn-outline-danger:hover {
+            background-color: #c0392b;
+            color: #fff;
+        }
+
+    .btn-danger {
+        background-color: #e74c3c;
+        border-color: #e74c3c;
+    }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+    .btn-warning {
+        background-color: #f39c12;
+        border-color: #f39c12;
+    }
+
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+
+    .btn-info {
+        background-color: #3498db;
+        border-color: #3498db;
+    }
+
+        .btn-info:hover {
+            background-color: #2980b9;
+        }
+
+    /* Formulario y select */
+    .form-select {
+        width: auto;
+        min-width: 200px;
+        border: 1px solid #c0392b;
+        color: #c0392b;
+        font-weight: bold;
+        border-radius: 0.3rem;
+    }
+
+        .form-select:hover,
+        .form-select:focus {
+            box-shadow: 0 0 5px rgba(192, 57, 43, 0.4);
+            border-color: #e74c3c;
+        }
+
+    /* Títulos */
+    h2, h3 {
+        color: #c0392b; /* Rojo oscuro */
+        text-align: center; /* Centrar los títulos */
+    }
+    /* Espaciado */
+    .d-flex {
+        gap: 1rem;
+    }
+</style>
+

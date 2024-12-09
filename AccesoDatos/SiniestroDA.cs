@@ -1,9 +1,12 @@
-﻿using MiAplicacion.Data;
+﻿using AccesoDatos;
 using EntidadesProyecto;
+using MiAplicacion.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace AccesoDatos
 {
@@ -21,34 +24,30 @@ namespace AccesoDatos
         {
             try
             {
-                // Asignar valores por defecto si están null
-                siniestro.IdDocumento = siniestro.IdDocumento ?? 1;
-                siniestro.IdPoliza = siniestro.IdPoliza ?? 1;
-                siniestro.IdTaller = siniestro.IdTaller ?? 1;
-                siniestro.IdPresupuesto = siniestro.IdPresupuesto ?? 1;
-
                 // Crear los parámetros para el procedimiento almacenado
                 var idParam = new SqlParameter("@IdSiniestro", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
 
-                // Ejecutar el procedimiento para registrar el siniestro
                 await _context.Database.ExecuteSqlRawAsync(
-                    "EXEC sp_RegistrarSiniestro @Tipo, @FechaSiniestro, @Departamento, @Provincia, @Distrito, @Ubicacion, @Descripcion, @IdDocumento, @IdPoliza, @IdTaller, @IdPresupuesto, @IdSiniestro OUTPUT",
-                    new SqlParameter("@Tipo", siniestro.Tipo),
-                    new SqlParameter("@FechaSiniestro", siniestro.FechaSiniestro),
-                    new SqlParameter("@Departamento", siniestro.IdDepartamento),
-                    new SqlParameter("@Provincia", siniestro.IdProvincia),
-                    new SqlParameter("@Distrito", siniestro.IdDistrito),
-                    new SqlParameter("@Ubicacion", siniestro.Ubicacion),
-                    new SqlParameter("@Descripcion", siniestro.Descripcion),
-                    new SqlParameter("@IdDocumento", siniestro.IdDocumento),
-                    new SqlParameter("@IdPoliza", siniestro.IdPoliza),
-                    new SqlParameter("@IdTaller", siniestro.IdTaller),
-                    new SqlParameter("@IdPresupuesto", siniestro.IdPresupuesto),
-                    idParam
-                );
+     "EXEC sp_RegistrarSiniestro @Tipo, @FechaSiniestro, @FechaCreacion, @FechaActualizacion, @Departamento, @Provincia, @Distrito, @Ubicacion, @Descripcion, @IdDocumento, @IdPoliza, @IdTaller, @IdPresupuesto, @IdSiniestro OUTPUT",
+     new SqlParameter("@Tipo", siniestro.Tipo),
+     new SqlParameter("@FechaSiniestro", siniestro.FechaSiniestro),
+     new SqlParameter("@FechaCreacion", siniestro.FechaCreacion ?? DateTime.Now), // Nuevo parámetro
+     new SqlParameter("@FechaActualizacion", siniestro.FechaActualizacion ?? DateTime.Now), // Nuevo parámetro
+     new SqlParameter("@Departamento", siniestro.IdDepartamento),
+     new SqlParameter("@Provincia", siniestro.IdProvincia),
+     new SqlParameter("@Distrito", siniestro.IdDistrito),
+     new SqlParameter("@Ubicacion", siniestro.Ubicacion),
+     new SqlParameter("@Descripcion", siniestro.Descripcion),
+     new SqlParameter("@IdDocumento", siniestro.IdDocumento ?? (object)DBNull.Value),
+     new SqlParameter("@IdPoliza", siniestro.IdPoliza),
+     new SqlParameter("@IdTaller", siniestro.IdTaller ?? (object)DBNull.Value),
+     new SqlParameter("@IdPresupuesto", siniestro.IdPresupuesto ?? (object)DBNull.Value),
+     idParam
+ );
+
 
                 // Obtener el ID del siniestro insertado
                 siniestro.IdSiniestro = (int)idParam.Value;
@@ -59,6 +58,34 @@ namespace AccesoDatos
                 throw new Exception("Error al registrar el siniestro.");
             }
         }
+
+        // Método para registrar un documento y obtener su ID
+        public async Task<int> RegistrarDocumentoYObtenerId(DocumentosReclamacion documento)
+        {
+            try
+            {
+                var idDocumentoParam = new SqlParameter("@IdDocumento", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                await _context.Database.ExecuteSqlRawAsync(
+                    "EXEC sp_RegistrarDocumento @IdReclamacion, @Nombre, @Extension, @Url, @IdDocumento OUTPUT",
+                    new SqlParameter("@IdReclamacion", documento.IdReclamacion),
+                    new SqlParameter("@Nombre", documento.Nombre),
+                    new SqlParameter("@Extension", documento.Extension),
+                    new SqlParameter("@Url", documento.Url),
+                    idDocumentoParam
+                );
+
+                return (int)idDocumentoParam.Value;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al registrar el documento: {ex.Message}");
+            }
+        }
+
         public async Task<List<Departamento>> ObtenerDepartamentosAsync()
         {
             return await _context.Departamento.ToListAsync();
@@ -96,9 +123,6 @@ namespace AccesoDatos
                 }) // Selección explícita de propiedades
                 .ToListAsync();
         }
-
-
-
 
         public async Task<Siniestro?> ObtenerSiniestroPorIdAsync(int idSiniestro)
         {
@@ -140,9 +164,6 @@ namespace AccesoDatos
                 .FirstOrDefaultAsync();
         }
 
-
-
-
         public async Task ActualizarSiniestroAsync(Siniestro siniestro)
         {
             try
@@ -171,7 +192,6 @@ namespace AccesoDatos
         {
             return await _context.Siniestros.ToListAsync();
         }
-        
 
         public async Task<List<Siniestro>> ObtenerSiniestrosPorBeneficiarioAsync(int idBeneficiario)
         {
@@ -180,7 +200,6 @@ namespace AccesoDatos
                 .Select(p => p.Id)
                 .ToListAsync();
             Console.WriteLine($"Pólizas encontradas: {string.Join(", ", polizas)}");
-
 
             return await _context.Siniestros
                 .Where(s => polizas.Contains(s.IdPoliza.Value))
@@ -204,6 +223,7 @@ namespace AccesoDatos
                 .Include(r => r.Documentos)
                 .ToListAsync();
         }
+
         public async Task<Siniestro> ObtenerSiniestroConDetallesYReclamacionesAsync(int idSiniestro)
         {
             return await _context.Siniestros
@@ -245,6 +265,13 @@ namespace AccesoDatos
                 .FirstOrDefaultAsync();
 
             return resultado;
+        }
+
+        public async Task<List<Siniestro>> ObtenerSiniestrosSinTallerAsync()
+        {
+            return await _context.Siniestros
+                .Where(s => s.IdTaller == null) // Filtrar siniestros sin taller asignado
+                .ToListAsync();
         }
 
     }

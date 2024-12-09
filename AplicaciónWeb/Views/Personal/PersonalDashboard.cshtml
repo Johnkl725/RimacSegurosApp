@@ -1,7 +1,68 @@
 ﻿@{
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
-<div class="box">
-    <h1>Dashboard de Personal</h1>
-    <p>Bienvenido al panel de control del personal.</p>
+<div class="container mt-4">
+    <div class="box text-center">
+        <h1 class="text-danger">Dashboard de Personal</h1>
+        <p>Bienvenido al panel de control del personal.</p>
+    </div>
+
+    <div class="row mt-4" id="dashboard">
+        <!-- Las tarjetas se llenarán dinámicamente con JavaScript -->
+    </div>
 </div>
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dashboard = document.getElementById('dashboard');
+
+            const createCard = (header, iconClass, data, description) => `
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card border-danger">
+                                <div class="card-header bg-danger text-white">${header}</div>
+                                <div class="card-body text-center">
+                                    <i class="${iconClass} display-4 mb-3 text-danger"></i>
+                                    <h3 class="text-danger">${data}</h3>
+                                    <p>${description}</p>
+                                </div>
+                            </div>
+                        </div>`;
+
+            fetch('/Personal/beneficiariosTotales')
+                .then(response => response.json())
+                .then(data => {
+                    dashboard.innerHTML += createCard(
+                        'Beneficiarios Totales',
+                        'bi bi-people-fill',
+                        data.data,
+                        'Total de Beneficiarios en el sistema.'
+                    );
+                })
+                .catch(error => console.error('Error:', error));
+
+            fetch('/Personal/polizasTotales')
+                .then(response => response.json())
+                .then(data => {
+                    dashboard.innerHTML += createCard(
+                        'Pólizas Totales',
+                        'bi bi-file-earmark-text-fill',
+                        data.data,
+                        'Total de Pólizas en el sistema.'
+                    );
+                })
+                .catch(error => console.error('Error:', error));
+
+            fetch('/Personal/talleresTotales')
+                .then(response => response.json())
+                .then(data => {
+                    dashboard.innerHTML += createCard(
+                        'Talleres Totales',
+                        'bi bi-tools',
+                        data.data,
+                        'Total de talleres en el sistema.'
+                    );
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+}

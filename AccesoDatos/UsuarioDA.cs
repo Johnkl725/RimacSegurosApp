@@ -202,10 +202,17 @@ namespace AccesoDatos
             .ToList();
         }
 
+        public int ObtenerBeneficiarios() {             
+            return _context.Beneficiarios.Count();
+        }
 
-
-
-
+        public int ObtenerPolizas() {
+            return _context.Polizas.Count();
+        }
+        public int ObtenerTalleres()
+            {
+            return _context.Talleres.Count();
+        }
         public string AuthenticateUser(string dni, string password)
         {
             // Paso 1: Obtener el ID del usuario
@@ -300,8 +307,11 @@ namespace AccesoDatos
         }
         public IEnumerable<Usuario> ObtenerUsuariosPorDni(string dni)
         {
-            return _context.Usuarios.Where(u => u.Dni == dni).ToList();
+            return _context.Usuarios
+                .Where(u => u.Dni.Contains(dni)) // Coincidencia parcial
+                .ToList();
         }
+
 
         public Usuario ObtenerUsuarioPorId(int id)
         {

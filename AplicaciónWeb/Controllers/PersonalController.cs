@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using BCrypt.Net;
 using Microsoft.AspNetCore.Authorization;
+using MiAplicacion.Models;
 
 namespace AplicaciónWeb.Controllers
 {
@@ -43,7 +44,24 @@ namespace AplicaciónWeb.Controllers
             return Json(new { success = true, data = usuarios });
         }
 
-
+        [HttpGet]
+        public IActionResult beneficiariosTotales()
+        {
+            int data = _usuarioLN.ObtenerBeneficiarios();
+            return Json(new { success = true, data = data });
+        }
+        [HttpGet]
+        public IActionResult polizasTotales()
+        {
+            int data = _usuarioLN.ObtenerPolizas();
+            return Json(new { success = true, data = data });
+        }
+        [HttpGet]
+        public IActionResult talleresTotales()
+        {
+            int data = _usuarioLN.ObtenerTalleres();
+            return Json(new { success = true, data = data });
+        }
 
         // GET: PersonalController/Details/5
         public ActionResult Details(int id)

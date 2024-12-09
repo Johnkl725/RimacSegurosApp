@@ -21,6 +21,10 @@ using System.IO;
 using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
+using iText.Kernel.Font;
+using iText.Kernel.Pdf.Canvas.Draw;
+//using iText.Layout.Draw;
+
 
 namespace AplicaciónWeb.Controllers
 {
@@ -42,7 +46,7 @@ namespace AplicaciónWeb.Controllers
         public IActionResult GestionarPresupuestos()
         {
             // Obtiene la lista de siniestros con presupuestos
-            List<SiniestroPresupuestoViewModel> siniestros = _adminLN.ObtenerSiniestrosConPresupuestos();
+            List<SiniestroPresupuestoViewModel> siniestros = _adminLN.ObtenerSiniestrosSinPresupuesto();
 
             // Pasa la lista a la vista
             return View(siniestros);
@@ -133,8 +137,8 @@ namespace AplicaciónWeb.Controllers
                     Impuestos = model.Impuestos,
                     CostoSinImpuestos = model.CostoSinImpuestos,
                     Estado = "Pendiente",
-                    Descuento = model.Descuento,
-                    Enlace = model.Enlace
+                    Descuento = 0, // Siempre 0
+                    Enlace = "presupuesto.com" // Valor predeterminado
                 };
 
                 _context.Presupuestos.Add(presupuesto);
@@ -145,7 +149,6 @@ namespace AplicaciónWeb.Controllers
 
                 // Actualizar el campo id_presupuesto en la tabla Siniestro
                 var siniestro = _context.Siniestros.FirstOrDefault(s => s.IdSiniestro == model.IdSiniestro);
-                // Modificar esta línea
                 if (siniestro != null)
                 {
                     siniestro.IdPresupuesto = nuevoIdPresupuesto;
@@ -161,6 +164,7 @@ namespace AplicaciónWeb.Controllers
                 return View(model);
             }
         }
+
 
 
         // otra funcion nueva para el reporte
@@ -264,22 +268,22 @@ namespace AplicaciónWeb.Controllers
         {
             // Consulta SQL para obtener los datos del siniestro
             string query = @"
-    SELECT 
-        s.id_siniestro AS IdSiniestro,
-        s.fecha_creacion AS FechaRegistro,
-        p.estado AS Estado,
-        t.nombre AS TallerAsignado,
-        p.monto_total AS CostoMantenimiento,
-        s.tipo AS TipoSiniestro,
-        s.descripcion AS Descripcion
-    FROM 
-        siniestro s
-    LEFT JOIN 
-        taller t ON s.id_taller = t.id
-    LEFT JOIN 
-        presupuesto p ON s.id_presupuesto = p.id
-    WHERE 
-        s.id_siniestro = @Id";
+        SELECT 
+            s.id_siniestro AS IdSiniestro,
+            s.fecha_creacion AS FechaRegistro,
+            p.estado AS Estado,
+            t.nombre AS TallerAsignado,
+            p.monto_total AS CostoMantenimiento,
+            s.tipo AS TipoSiniestro,
+            s.descripcion AS Descripcion
+        FROM 
+            siniestro s
+        LEFT JOIN 
+            taller t ON s.id_taller = t.id
+        LEFT JOIN 
+            presupuesto p ON s.id_presupuesto = p.id
+        WHERE 
+            s.id_siniestro = @Id";
 
             DetalleReporteViewModel detalleViewModel = null;
 
@@ -334,20 +338,75 @@ namespace AplicaciónWeb.Controllers
                 var pdf = new PdfDocument(writer);
                 var document = new Document(pdf);
 
-                // Agregar contenido al PDF
-                document.Add(new Paragraph($"Detalle del Siniestro: {detalleViewModel.NumeroSiniestro}"));
-                document.Add(new Paragraph($"Fecha de Registro: {detalleViewModel.FechaRegistro:dd/MM/yyyy}"));
-                document.Add(new Paragraph($"Estado: {detalleViewModel.Estado}"));
-                document.Add(new Paragraph($"Taller Asignado: {detalleViewModel.TallerAsignado}"));
-                document.Add(new Paragraph($"Costo de Mantenimiento: {detalleViewModel.CostoMantenimiento:C}"));
-                document.Add(new Paragraph($"Tipo de Siniestro: {detalleViewModel.TipoSiniestro}"));
-                document.Add(new Paragraph($"Descripción: {detalleViewModel.Descripcion}"));
+                // Definir fuentes (necesitas tener acceso a las fuentes, puede usar fuentes estándar)
+                var boldFont = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA_BOLD);
+                var normalFont = PdfFontFactory.CreateFont(iText.IO.Font.Constants.StandardFonts.HELVETICA);
+
+                // Título principal
+                var titulo = new Paragraph("Detalle del Siniestro")
+                    .SetFont(boldFont)
+                    .SetFontSize(18)
+                    .SetTextAlignment(iText.Layout.Properties.TextAlignment.CENTER)
+                    .SetMarginBottom(20);
+
+                document.Add(titulo);
+
+                // Puede agregar una línea divisoria
+                var linea = new LineSeparator(new SolidLine());
+                document.Add(linea);
+
+                // Crear una tabla con dos columnas para mostrar label y valor
+                var table = new iText.Layout.Element.Table(new float[] { 1, 2 }).UseAllAvailableWidth();
+                table.SetMarginTop(15);
+                table.SetMarginBottom(15);
+
+                // Opcional: Color de fondo para las celdas de encabezado
+                var headerBackgroundColor = new iText.Kernel.Colors.DeviceRgb(230, 230, 230);
+
+                // Añadir filas a la tabla (Encabezados)
+                table.AddHeaderCell(new iText.Layout.Element.Cell().Add(new Paragraph("Campo").SetFont(boldFont)).SetBackgroundColor(headerBackgroundColor));
+                table.AddHeaderCell(new iText.Layout.Element.Cell().Add(new Paragraph("Valor").SetFont(boldFont)).SetBackgroundColor(headerBackgroundColor));
+
+                // Añadir datos del siniestro
+                table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph("Número de Siniestro:").SetFont(normalFont)));
+                table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph(detalleViewModel.NumeroSiniestro).SetFont(normalFont)));
+
+                table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph("Fecha de Registro:").SetFont(normalFont)));
+                table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph(detalleViewModel.FechaRegistro.ToString("dd/MM/yyyy")).SetFont(normalFont)));
+
+                table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph("Estado:").SetFont(normalFont)));
+                table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph(detalleViewModel.Estado).SetFont(normalFont)));
+
+                table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph("Taller Asignado:").SetFont(normalFont)));
+                table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph(detalleViewModel.TallerAsignado).SetFont(normalFont)));
+
+                table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph("Costo de Mantenimiento:").SetFont(normalFont)));
+                table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph($"{detalleViewModel.CostoMantenimiento:C}").SetFont(normalFont)));
+
+                table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph("Tipo de Siniestro:").SetFont(normalFont)));
+                table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph(detalleViewModel.TipoSiniestro).SetFont(normalFont)));
+
+                table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph("Descripción:").SetFont(normalFont)));
+                // Para la descripción, si es muy larga, el párrafo se ajustará de manera automática.
+                table.AddCell(new iText.Layout.Element.Cell().Add(new Paragraph(detalleViewModel.Descripcion).SetFont(normalFont)));
+
+                document.Add(table);
+
+                // Agregar una imagen, logo o pie de página (opcional)
+                // Ejemplo: Incluir un pie de página:
+                document.ShowTextAligned(
+                    new Paragraph("Reporte generado el " + DateTime.Now.ToString("dd/MM/yyyy HH:mm"))
+                        .SetFont(normalFont)
+                        .SetFontSize(10),
+                    550, 20, pdf.GetNumberOfPages(),
+                    iText.Layout.Properties.TextAlignment.RIGHT,
+                    iText.Layout.Properties.VerticalAlignment.BOTTOM, 0);
 
                 document.Close();
 
                 return File(stream.ToArray(), "application/pdf", $"Siniestro_{detalleViewModel.NumeroSiniestro}.pdf");
             }
-
         }
+
     }
 }

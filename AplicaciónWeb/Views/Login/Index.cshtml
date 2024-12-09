@@ -2,12 +2,11 @@
     ViewData["Title"] = "Login";
 }
 
-<!-- Vinculamos los estilos de Bootstrap, Google Fonts y Font Awesome -->
+<!-- Estilos de Bootstrap y personalizados -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
-<!-- Estilos personalizados -->
 <style>
     body {
         font-family: 'Roboto', sans-serif;
@@ -23,13 +22,6 @@
         box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .card {
-        border-radius: 10px;
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
-        background: linear-gradient(135deg, #ffffff, #f1f1f1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
     .card-header {
         background: linear-gradient(135deg, #ff6f61, #b71c1c);
         color: white;
@@ -38,51 +30,18 @@
         font-size: 1.8rem;
     }
 
-    .card-body {
-        padding: 30px;
-    }
-
     .btn-block {
-        font-size: 1.1rem;
-        padding: 10px;
         background-color: #b71c1c;
-        border-color: #b71c1c;
-        color: #fff;
+        color: white;
     }
 
-        .btn-block:hover {
-            background-color: #ff6f61;
-            border-color: #ff6f61;
-        }
-
-    .btn-link {
-        font-size: 1rem;
-        color: #0d6efd; /* Azul para el enlace */
-        text-decoration: none;
+    .alert-danger {
+        font-weight: bold;
     }
 
-        .btn-link:hover {
-            text-decoration: underline;
-        }
-
-    .footer {
-        background-color: #b71c1c;
-        color: #ffffff;
-        padding: 20px;
-        text-align: center;
-        position: absolute;
-        bottom: 0;
-        width: 100%;
+    .spinner-border {
+        display: none;
     }
-
-        .footer a {
-            color: #ff8a80;
-            text-decoration: none;
-        }
-
-            .footer a:hover {
-                text-decoration: underline;
-            }
 </style>
 
 <div class="container d-flex justify-content-center align-items-center h-100">
@@ -92,7 +51,15 @@
                 <h3><i class="fas fa-user-lock"></i> Iniciar sesión</h3>
             </div>
             <div class="card-body">
-                <form asp-controller="Login" asp-action="Index" method="post">
+
+                @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                {
+                        <div class="alert alert-danger text-center">
+                        @ViewBag.ErrorMessage
+                        </div>
+                }
+
+                <form asp-controller="Login" asp-action="Index" method="post" id="loginForm">
                     <div class="form-group">
                         <label for="username"><i class="fas fa-id-card"></i> DNI</label>
                         <input type="text" class="form-control" id="username" name="username" placeholder="Ingresa tu DNI" required>
@@ -101,10 +68,19 @@
                         <label for="password"><i class="fas fa-lock"></i> Contraseña</label>
                         <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese su contraseña" required>
                     </div>
-                    <button type="submit" class="btn btn-block"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</button>
+                    <button type="submit" class="btn btn-block" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+                    </button>
+                    <!-- Spinner de carga -->
+                    <div class="text-center mt-3">
+                        <div class="spinner-border text-danger" id="loadingSpinner" role="status">
+                            <span class="sr-only">Cargando...</span>
+                        </div>
+                    </div>
                 </form>
+
                 <div class="text-center mt-3">
-                    <a href="@Url.Action("Index", "Register")" class="btn btn-block" style="background-color: #b71c1c; color: white; border-color: #b71c1c;">
+                    <a href="@Url.Action("Index", "Register")" class="btn btn-block" style="background-color: #b71c1c; color: white;">
                         <i class="fas fa-user-plus"></i> Registro
                     </a>
                 </div>
@@ -113,6 +89,23 @@
     </div>
 </div>
 
+<!-- Scripts de validación y carga -->
+<script>
+    document.getElementById("loginForm").addEventListener("submit", function (event) {
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        if (username === "" || password === "") {
+            alert("Por favor, completa todos los campos.");
+            event.preventDefault();
+            return;
+        }
+
+        // Deshabilita el botón y muestra el spinner
+        document.getElementById("loginBtn").disabled = true;
+        document.getElementById("loadingSpinner").style.display = "inline-block";
+    });
+</script>
 
 <!-- Scripts de Bootstrap -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

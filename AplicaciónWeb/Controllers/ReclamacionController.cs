@@ -146,6 +146,34 @@ namespace AplicaciónWeb.Controllers
             }
         }
 
+        
+
+        private async Task<UploadResult> SubirArchivoACloudinary(IFormFile archivo, int idSiniestro, int IdReclamacion)
+        {
+            var fileExtension = Path.GetExtension(archivo.FileName).ToLower();
+            var isImage = archivo.ContentType.StartsWith("image/");
+            // Generar el nombre de la carpeta
+            var carpetaNombre = $"Siniestro_{idSiniestro}-Reclamacion_{IdReclamacion}";
+            var uploadParams = isImage
+                ? new ImageUploadParams
+                {
+                    File = new FileDescription(archivo.FileName, archivo.OpenReadStream()),
+                    Folder = $"Reclamaciones/{carpetaNombre}",
+                    PublicId = $"{Path.GetFileNameWithoutExtension(archivo.FileName)}"
+                }
+                : new RawUploadParams
+                {
+                    File = new FileDescription(archivo.FileName, archivo.OpenReadStream()),
+                    Folder = $"Reclamaciones/{carpetaNombre}", 
+                    PublicId = $"{Path.GetFileNameWithoutExtension(archivo.FileName)}"
+                };
+
+            return await _cloudinary.UploadAsync(uploadParams);
+        }
+
+
+
+
         private (bool IsValid, string Message) ValidarArchivo(IFormFile archivo)
         {
             var extensionesPermitidas = new[] { ".jpg", ".jpeg", ".png", ".pdf", ".docx", ".xlsx" };
@@ -165,34 +193,6 @@ namespace AplicaciónWeb.Controllers
 
             return (true, "");
         }
-
-        private async Task<UploadResult> SubirArchivoACloudinary(IFormFile archivo, int idSiniestro, int IdReclamacion)
-        {
-            var fileExtension = Path.GetExtension(archivo.FileName).ToLower();
-            var isImage = archivo.ContentType.StartsWith("image/");
-            // Generar el nombre de la carpeta
-            var carpetaNombre = $"Siniestro_{idSiniestro}-Reclamacion_{IdReclamacion}";
-            var uploadParams = isImage
-                ? new ImageUploadParams
-                {
-                    File = new FileDescription(archivo.FileName, archivo.OpenReadStream()),
-                    Folder = $"RimacSeguros/{carpetaNombre}",
-                    PublicId = $"{Path.GetFileNameWithoutExtension(archivo.FileName)}"
-                }
-                : new RawUploadParams
-                {
-                    File = new FileDescription(archivo.FileName, archivo.OpenReadStream()),
-                    Folder = $"RimacSeguros/{carpetaNombre}", 
-                    PublicId = $"{Path.GetFileNameWithoutExtension(archivo.FileName)}"
-                };
-
-            return await _cloudinary.UploadAsync(uploadParams);
-        }
-
-
-
-
-
 
         public IActionResult Confirmacion()
         {

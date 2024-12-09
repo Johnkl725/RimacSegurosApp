@@ -90,7 +90,7 @@ namespace AplicaciónWeb.Controllers
                     FechaSiniestro = siniestro.FechaSiniestro ?? DateTime.MinValue,
                     Ubicacion = siniestro.Ubicacion ?? "Ubicación no especificada",
                     Descripcion = siniestro.Descripcion ?? "Sin descripción",
-                    PresupuestoId = siniestro.Presupuesto?.Id ?? 0,
+                    PresupuestoId = siniestro.Presupuesto?.Id ??0,
                     EstadoPresupuesto = siniestro.Presupuesto?.Estado ?? "Estado no definido",
                     MontoTotalPresupuesto = siniestro.Presupuesto?.MontoTotal ?? 0,
                     TallerId = siniestro.Taller?.Id ?? 0,
