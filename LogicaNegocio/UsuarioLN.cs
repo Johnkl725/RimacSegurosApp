@@ -107,6 +107,18 @@ namespace LogicaNegocio
             return _usuarioDA.ObtenerUsuariosPorDni(dni);
         }
 
+        public int ObtenerBeneficiarios()
+        {
+            return _usuarioDA.ObtenerBeneficiarios();
+        }
+        public int ObtenerPolizas()
+        {
+            return _usuarioDA.ObtenerPolizas();
+        }
+        public int ObtenerTalleres()
+        {
+            return _usuarioDA.ObtenerTalleres();
+        }
         public Usuario ObtenerUsuarioPorId(int id)
         {
             return _usuarioDA.ObtenerUsuarioPorId(id);
@@ -124,7 +136,7 @@ namespace LogicaNegocio
             return _usuarioDA.ActualizarUsuario(usuario);
         }
 
-        public bool EliminarUsuario(int id)
+        public void EliminarUsuario(int id)
         {
             // Verificar si el usuario existe antes de intentar eliminarlo
             var usuario = _usuarioDA.ObtenerUsuarioPorId(id);
@@ -134,8 +146,9 @@ namespace LogicaNegocio
             }
 
             // Llamar a la capa de datos para eliminar
-            return _usuarioDA.EliminarUsuario(id);
+            _usuarioDA.EliminarUsuario(id);
         }
+
 
 
     }

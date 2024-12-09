@@ -93,7 +93,7 @@ namespace AplicaciónWeb.Controllers
                     _logger.LogInformation("Póliza con ID: {IdPoliza} asignada al beneficiario con ID: {IdBeneficiario}", idPoliza, idBeneficiario);
 
                     TempData["SuccessMessage"] = "Póliza creada y asignada correctamente.";
-                    return RedirectToAction("PersonalDashboard", "Personal");
+                    return RedirectToAction("SuccessMessage");
                 }
                 catch (SqlException ex)
                 {
@@ -128,6 +128,12 @@ namespace AplicaciónWeb.Controllers
             return Json(new { success = true });
         }
 
+        public IActionResult SuccessMessage()
+        {
+            // Recuperar el mensaje de TempData
+            ViewBag.Message = TempData["SuccessMessage"];
+            return View();
+        }
 
     }
 }

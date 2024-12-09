@@ -5,22 +5,22 @@
 @model List<PolizaConTipo>
 
 <div class="container">
-    <h2>Validar Póliza</h2>
+    <h2 class="text-danger">Validar Póliza</h2>
     <form method="get" asp-action="ValidarPoliza">
-        <input type="text" name="filtro" placeholder="Ingrese número de póliza o DNI" class="form-control mb-3" />
-        <button type="submit" class="btn btn-primary">Buscar</button>
+        <input type="text" name="filtro" placeholder="Ingrese número de póliza o DNI" class="form-control mb-3 border-danger" />
+        <button type="submit" class="btn btn-danger">Buscar</button>
     </form>
 
     @if (Model != null && Model.Count > 0)
     {
-        <table class="table">
-            <thead>
+        <table class="table table-striped table-hover mt-4" style="border-color: #b71c1c;">
+            <thead class="table-danger">
                 <tr>
-                    <th>Número de Póliza</th>
-                    <th>Vigencia</th>
-                    <th>Cobertura</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
+                    <th scope="col">Número de Póliza</th>
+                    <th scope="col">Vigencia</th>
+                    <th scope="col">Cobertura</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -45,7 +45,6 @@
     }
 </div>
 
-
 <!-- Modal -->
 <div class="modal fade" id="modalDetallePoliza" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -57,7 +56,6 @@
             <div class="modal-body">
                 <!-- Detalles de la póliza se cargarán aquí -->
             </div>
-            
         </div>
     </div>
 </div>
@@ -84,16 +82,42 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(polizaId) // Enviar solo el ID como JSON
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(`Póliza ${accion === 'validar' ? 'validada' : 'no validada'} con éxito.`);
-                location.reload(); // Recargar la página para reflejar los cambios
-            } else {
-                alert('Ocurrió un error al cambiar el estado.');
-            }
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Póliza ${accion === 'validar' ? 'validada' : 'no validada'} con éxito.`);
+                    location.reload(); // Recargar la página para reflejar los cambios
+                } else {
+                    alert('Ocurrió un error al cambiar el estado.');
+                }
+            });
     }
 </script>
 
+<style>
+    .text-danger {
+        color: #b71c1c !important;
+    }
 
+    .border-danger {
+        border-color: #b71c1c !important;
+    }
+
+    .btn-danger {
+        background-color: #b71c1c;
+        border-color: #b71c1c;
+    }
+
+    table-danger {
+        background-color: #f8d7da;
+        color: #b71c1c;
+    }
+
+    .table-danger th {
+        color: #b71c1c;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f5c6cb;
+    }
+</style>

@@ -24,7 +24,7 @@ namespace EntidadesProyecto
         public String Calificacion { get; set; }
         public string Estado { get; set; }
         [ForeignKey("IdProveedor")]
-        public Proveedor Proveedor { get; set; }
+        public Proveedor? Proveedor { get; set; }
         // Relación con Siniestro
         public ICollection<Siniestro> Siniestros { get; set; } = new List<Siniestro>(); // Un taller puede tener varios siniestros asignados
     }

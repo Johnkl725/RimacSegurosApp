@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using BCrypt.Net;
 using Microsoft.AspNetCore.Authorization;
+using MiAplicacion.Models;
 
 namespace AplicaciónWeb.Controllers
 {
@@ -43,7 +44,24 @@ namespace AplicaciónWeb.Controllers
             return Json(new { success = true, data = usuarios });
         }
 
-
+        [HttpGet]
+        public IActionResult beneficiariosTotales()
+        {
+            int data = _usuarioLN.ObtenerBeneficiarios();
+            return Json(new { success = true, data = data });
+        }
+        [HttpGet]
+        public IActionResult polizasTotales()
+        {
+            int data = _usuarioLN.ObtenerPolizas();
+            return Json(new { success = true, data = data });
+        }
+        [HttpGet]
+        public IActionResult talleresTotales()
+        {
+            int data = _usuarioLN.ObtenerTalleres();
+            return Json(new { success = true, data = data });
+        }
 
         // GET: PersonalController/Details/5
         public ActionResult Details(int id)
@@ -172,24 +190,28 @@ namespace AplicaciónWeb.Controllers
         {
             try
             {
-                var eliminado = _usuarioLN.EliminarUsuario(id);
-                if (eliminado)
-                {
-                    TempData["Mensaje"] = "El usuario fue eliminado correctamente.";
-                    return RedirectToAction(nameof(MantenerUsuario));
-                }
-                else
-                {
-                    TempData["Error"] = "No se pudo eliminar el usuario.";
-                }
+                // Llamar a la capa de negocio para eliminar
+                _usuarioLN.EliminarUsuario(id);
+
+                // Si la eliminación fue exitosa, mostrar mensaje de éxito
+                TempData["Mensaje"] = "El usuario fue eliminado correctamente.";
+                return RedirectToAction(nameof(MantenerUsuario));
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Si no se encuentra el usuario, mostrar un mensaje de error específico
+                TempData["Error"] = ex.Message;
             }
             catch (Exception ex)
             {
+                // Si ocurre cualquier otro error, mostrar el mensaje de error genérico
                 TempData["Error"] = $"Error: {ex.Message}";
             }
 
+            // En cualquier caso de error, redirigir de vuelta a la vista de mantenimiento de usuarios
             return RedirectToAction(nameof(MantenerUsuario));
         }
+
 
     }
 }

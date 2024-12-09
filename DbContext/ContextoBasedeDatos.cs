@@ -250,7 +250,7 @@ namespace MiAplicacion.Data
     .HasOne<Usuario>() // Beneficiario está relacionado con Usuario
     .WithMany()
     .HasForeignKey(b => b.IdUsuario)
-    .OnDelete(DeleteBehavior.Restrict);
+    .OnDelete((DeleteBehavior.Cascade));
 
 
             // Configuración de Personal
@@ -261,6 +261,11 @@ namespace MiAplicacion.Data
                 entity.Property(p => p.Contraseña).HasColumnName("contraseña");
             });
 
+            modelBuilder.Entity<Personal>()
+           .HasOne<Usuario>()
+           .WithMany()
+           .HasForeignKey(p => p.IdUsuario)
+           .OnDelete(DeleteBehavior.Cascade);
             // Configuración de Administrador
             modelBuilder.Entity<Administrador>(entity =>
             {
@@ -268,6 +273,11 @@ namespace MiAplicacion.Data
                 entity.Property(a => a.IdUsuario).HasColumnName("id_usuario");
                 entity.Property(a => a.Contraseña).HasColumnName("contraseña");
             });
+            modelBuilder.Entity<Administrador>()
+            .HasOne<Usuario>()
+            .WithMany()
+            .HasForeignKey(a => a.IdUsuario)
+            .OnDelete(DeleteBehavior.Cascade);
             // Configuración para Reclamacion
             modelBuilder.Entity<Reclamacion>(entity =>
             {
