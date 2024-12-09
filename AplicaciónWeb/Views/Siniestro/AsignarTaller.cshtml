@@ -5,6 +5,23 @@
 
 <h2>Asignar Taller a Siniestro</h2>
 
+<!-- Bloque de mensajes -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show auto-dismiss" role="alert">
+        <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show auto-dismiss" role="alert">
+        <i class="fas fa-exclamation-triangle"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
 <table class="table">
     <thead>
         <tr>
@@ -17,19 +34,20 @@
     <tbody>
         @foreach (var siniestro in Model)
         {
-                <tr>
-                    <td>@siniestro.IdSiniestro</td>
-                    <td>@siniestro.FechaSiniestro?.ToString("yyyy-MM-dd")</td>
-                    <td>@siniestro.Tipo</td>
-                    <td>
-                        <button class="btn btn-primary btn-seleccionar" data-id="@siniestro.IdSiniestro" data-bs-toggle="modal" data-bs-target="#modalAsignarTaller">
-                            Seleccionar
-                        </button>
-                    </td>
-                </tr>
+            <tr>
+                <td>@siniestro.IdSiniestro</td>
+                <td>@siniestro.FechaSiniestro?.ToString("yyyy-MM-dd")</td>
+                <td>@siniestro.Tipo</td>
+                <td>
+                    <button class="btn btn-primary btn-seleccionar" data-id="@siniestro.IdSiniestro" data-bs-toggle="modal" data-bs-target="#modalAsignarTaller">
+                        Seleccionar
+                    </button>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
+
 
 <!-- Modal -->
 <div class="modal fade" id="modalAsignarTaller" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
@@ -60,6 +78,15 @@
                 });
             });
         });
+
+        // Ocultar automáticamente las alertas después de 2 segundos
+        setTimeout(() => {
+            document.querySelectorAll('.auto-dismiss').forEach(alert => {
+                alert.classList.remove('show'); // Remueve la clase para cerrar el alert
+                alert.classList.add('fade'); // Agrega animación fade
+                setTimeout(() => alert.remove(), 300); // Remueve el elemento después de la animación
+            });
+        }, 2000); /
     </script>
 }
 

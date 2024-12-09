@@ -115,7 +115,6 @@ namespace AplicaciónWeb.Controllers
         }
 
         [HttpPost]
-        [HttpPost]
         public async Task<IActionResult> ValidarPoliza([FromBody] int idPoliza)
         {
             await _polizaLN.ActualizarEstadoPolizaAsync(idPoliza, "Activo");
