@@ -1,8 +1,73 @@
 ﻿@{
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
-<div class="box">
-    <h1>Dashboard del Administrador</h1>
-    <p>Bienvenido al panel de control del administrador.</p>
+<style>
+    .my-card {
+        height: 18rem;
+        object-fit: cover;
+    }
+
+    .card-border {
+        border-color: #b71c1c;
+    }
+
+    .card-my-img {
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .contenedor {
+        height: 100%;
+    }
+
+    .bg-opacidad {
+        background-color: rgba(45, 45, 45, 0.6)
+    }
+
+    .btn-personalizado {
+        width: 4rem;
+        color: white;
+        background-color: #b71c1c;
+    }
+
+        .btn-personalizado:hover {
+            color: white;
+            background-color: #6C0000;
+            cursor: pointer;
+        }
+
+</style>
+
+<div class="d-flex flex-column contenedor">
+    <p class="fs-2">¡Bienvenido Administrador!</p>
+    <div class="d-flex flex-wrap justify-content-around w-100">
+        <div class="card border-4 rounded-0 my-card">
+            <img src="/img/ic_admi1.jpg" class="card-img rounded-0 card-my-img" alt="b1" style="width: 15rem;" />
+            <div class="card-img-overlay bg-opacidad">
+                <h5 class="card-title text-white">Gestionar Presupuesto</h5>
+                <p class="card-text text-white">Controlar el presupuesto es fundamental para garantizar la viabilidad de cada beneficiario..</p>
+
+            </div>
+        </div>
+
+        <div class="card border-4 rounded-0 my-card">
+            <img src="/img/ic_admi2.jpg" class="card-img rounded-0 card-my-img" alt="b1" style="width: 15rem;" />
+            <div class="card-img-overlay bg-opacidad">
+                <h5 class="card-title text-white">Gestionar Pagos de Indenmizacion</h5>
+                <p class="card-text text-white">Aqui podras verificar y controlar los pagos asignados a un siniestro vehicular.</p>
+
+            </div>
+        </div>
+
+        <div class="card border-4 rounded-0 my-card">
+            <img src="/img/ic_admi3.jpg" class="card-img rounded-0 card-my-img" alt="b1" style="width: 15rem;" />
+            <div class="card-img-overlay bg-opacidad h-100">
+                <h5 class="card-title text-white">Generar Reporte</h5>
+                <p class="card-text text-white">Genera de manera optima un resumen del siniestro administrado de manera detallada.</p>
+
+            </div>
+        </div>
+    </div>
 </div>
+
 
