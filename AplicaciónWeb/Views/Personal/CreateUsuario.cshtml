@@ -3,8 +3,8 @@
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
 
-<h1 class="text-center">Crear Usuario</h1>
-<h4 class="text-center">Usuario</h4>
+<h1 class="text-center text-danger">Crear Beneficiario</h1>
+<h4 class="text-center text-danger">Nuevo beneficiario</h4>
 <hr />
 <div class="d-flex justify-content-center">
     <div class="login-container col-md-8">
@@ -12,51 +12,51 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="Nombres" class="control-label">Nombres</label>
-                    <input type="text" id="Nombres" name="Nombres" class="form-control" />
+                    <label for="Nombres" class="control-label text-danger">Nombres</label>
+                    <input type="text" id="Nombres" name="Nombres" class="form-control border-danger" />
                     <span class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-md-6">
-                    <label for="Apellido1" class="control-label">Apellido Paterno</label>
-                    <input type="text" id="Apellido1" name="Apellido1" class="form-control" />
+                    <label for="Apellido1" class="control-label text-danger">Apellido Paterno</label>
+                    <input type="text" id="Apellido1" name="Apellido1" class="form-control border-danger" />
                     <span class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-md-6">
-                    <label for="Apellido2" class="control-label">Apellido Materno</label>
-                    <input type="text" id="Apellido2" name="Apellido2" class="form-control" />
+                    <label for="Apellido2" class="control-label text-danger">Apellido Materno</label>
+                    <input type="text" id="Apellido2" name="Apellido2" class="form-control border-danger" />
                     <span class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-md-6">
-                    <label for="Dni" class="control-label">DNI</label>
-                    <input type="text" id="Dni" name="Dni" class="form-control" />
+                    <label for="Dni" class="control-label text-danger">DNI</label>
+                    <input type="text" id="Dni" name="Dni" class="form-control border-danger" />
                     <span class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-md-6">
-                    <label for="Telefono" class="control-label">Teléfono</label>
-                    <input type="text" id="Telefono" name="Telefono" class="form-control" />
+                    <label for="Telefono" class="control-label text-danger">Teléfono</label>
+                    <input type="text" id="Telefono" name="Telefono" class="form-control border-danger" />
                     <span class="text-danger"></span>
                 </div>
 
                 <div class="form-group col-md-6">
-                    <label for="Contraseña">Contraseña</label>
-                    <input type="password" id="Contraseña" name="Contraseña" class="form-control" />
+                    <label for="Contraseña" class="text-danger">Contraseña</label>
+                    <input type="password" id="Contraseña" name="Contraseña" class="form-control border-danger" />
                     <span class="text-danger"></span>
                 </div>
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Crear Usuario" class="btn btn-primary btn-block" />
+                <input type="submit" value="Crear Beneficiario" class="btn btn-danger btn-block" />
             </div>
         </form>
     </div>
 </div>
 
 <div class="text-center mt-3">
-    <a asp-action="PersonalDashboard" asp-controller="Personal" class="btn btn-outline-secondary btn-sm">Volver al Dashboard</a>
+    <a asp-action="PersonalDashboard" asp-controller="Personal" class="btn btn-outline-danger btn-sm">Volver al Dashboard</a>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
@@ -93,4 +93,27 @@
     .text-center {
         text-align: center;
     }
+
+    .text-danger {
+        color: #b71c1c !important;
+    }
+
+    .border-danger {
+        border-color: #b71c1c !important;
+    }
+
+    .btn-danger {
+        background-color: #b71c1c;
+        border-color: #b71c1c;
+    }
+
+    .btn-outline-danger {
+        color: #b71c1c;
+        border-color: #b71c1c;
+    }
+
+        .btn-outline-danger:hover {
+            background-color: #b71c1c;
+            color: #fff;
+        }
 </style>

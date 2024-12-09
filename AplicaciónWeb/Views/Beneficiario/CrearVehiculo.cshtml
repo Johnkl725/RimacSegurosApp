@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
 }
 
-<h1 class="text-center">Registrar Vehículo</h1>
+<h1 class="text-center text-danger">Registrar Vehículo</h1>
 <hr />
 
 <div class="container">
@@ -15,47 +15,47 @@
                 <div class="form-row">
                     <!-- Placa -->
                     <div class="form-group col-md-6">
-                        <label asp-for="Placa" class="control-label">Placa del vehículo</label>
-                        <input asp-for="Placa" class="form-control" placeholder="Ejemplo: ABC123" />
+                        <label asp-for="Placa" class="control-label text-danger">Placa del vehículo</label>
+                        <input asp-for="Placa" class="form-control border-danger" placeholder="Ejemplo: ABC123" />
                         <span asp-validation-for="Placa" class="text-danger"></span>
                     </div>
 
                     <!-- Marca -->
                     <div class="form-group col-md-6">
-                        <label asp-for="Marca" class="control-label">Marca</label>
-                        <input asp-for="Marca" class="form-control" placeholder="Ejemplo: Toyota" />
+                        <label asp-for="Marca" class="control-label text-danger">Marca</label>
+                        <input asp-for="Marca" class="form-control border-danger" placeholder="Ejemplo: Toyota" />
                         <span asp-validation-for="Marca" class="text-danger"></span>
                     </div>
 
                     <!-- Modelo -->
                     <div class="form-group col-md-6">
-                        <label asp-for="Modelo" class="control-label">Modelo</label>
-                        <input asp-for="Modelo" class="form-control" placeholder="Ejemplo: 2020" />
+                        <label asp-for="Modelo" class="control-label text-danger">Modelo</label>
+                        <input asp-for="Modelo" class="form-control border-danger" placeholder="Ejemplo: 2020" />
                         <span asp-validation-for="Modelo" class="text-danger"></span>
                     </div>
 
                     <!-- Tipo -->
                     <div class="form-group col-md-6">
-                        <label asp-for="Tipo" class="control-label">Tipo de vehículo</label>
-                        <input asp-for="Tipo" class="form-control" placeholder="Ejemplo: Sedan" />
+                        <label asp-for="Tipo" class="control-label text-danger">Tipo de vehículo</label>
+                        <input asp-for="Tipo" class="form-control border-danger" placeholder="Ejemplo: Sedan" />
                         <span asp-validation-for="Tipo" class="text-danger"></span>
                     </div>
 
                     <!-- Tarjeta Vehicular -->
                     <div class="form-group col-md-6">
-                        <label asp-for="TarjetaVehiculo" class="control-label">Número de tarjeta vehicular</label>
-                        <input asp-for="TarjetaVehiculo" class="form-control" placeholder="Ejemplo: 123456789" />
+                        <label asp-for="TarjetaVehiculo" class="control-label text-danger">Número de tarjeta vehicular</label>
+                        <input asp-for="TarjetaVehiculo" class="form-control border-danger" placeholder="Ejemplo: 123456789" />
                         <span asp-validation-for="TarjetaVehiculo" class="text-danger"></span>
                     </div>
                 </div>
 
                 <!-- Botón de Submit -->
                 <div class="form-group text-center">
-                    <button type="submit" class="btn btn-success btn-lg">Registrar Vehículo</button>
+                    <button type="submit" class="btn btn-danger btn-lg">Registrar Vehículo</button>
                 </div>
 
                 <div class="text-center mt-3">
-                    <a asp-action="PersonalDashboard" asp-controller="Personal" class="btn btn-outline-secondary btn-sm">Volver al Dashboard</a>
+                    <a asp-action="PersonalDashboard" asp-controller="Personal" class="btn btn-outline-danger btn-sm">Volver al Dashboard</a>
                 </div>
             </form>
         </div>
@@ -92,4 +92,27 @@
     .btn-block {
         width: 100%;
     }
+
+    .text-danger {
+        color: #b71c1c !important;
+    }
+
+    .border-danger {
+        border-color: #b71c1c !important;
+    }
+
+    .btn-danger {
+        background-color: #b71c1c;
+        border-color: #b71c1c;
+    }
+
+    .btn-outline-danger {
+        color: #b71c1c;
+        border-color: #b71c1c;
+    }
+
+        .btn-outline-danger:hover {
+            background-color: #b71c1c;
+            color: #fff;
+        }
 </style>

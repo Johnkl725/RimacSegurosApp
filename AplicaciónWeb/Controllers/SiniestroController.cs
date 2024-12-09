@@ -234,14 +234,16 @@ namespace AplicaciónWeb.Controllers
                 return PartialView("_DetalleSiniestro", siniestro);
             }
 
+            // Incluimos capacidad y ciudad en el texto del taller
             ViewBag.Talleres = talleres.Select(t => new SelectListItem
             {
                 Value = t.Id.ToString(),
-                Text = t.Nombre
+                Text = $"{t.Nombre} - Capacidad: {t.Capacidad} - Ciudad: {t.Ciudad}"
             }).ToList();
 
             return PartialView("_DetalleSiniestro", siniestro);
         }
+
 
 
         // POST: Confirmar asignación de taller
@@ -266,8 +268,8 @@ namespace AplicaciónWeb.Controllers
 
                 siniestro.IdTaller = idTaller;
 
-                await _siniestroLN.ActualizarSiniestroAsync(siniestro); // Aquí se actualiza
-                TempData["SuccessMessage"] = "Taller asignado correctamente.";
+                await _siniestroLN.ActualizarSiniestroAsync(siniestro); // Actualización en la base de datos
+                TempData["SuccessMessage"] = "Taller asignado exitosamente."; // Mensaje de éxito
             }
             catch (Exception ex)
             {
@@ -276,6 +278,7 @@ namespace AplicaciónWeb.Controllers
 
             return RedirectToAction("AsignarTaller");
         }
+
 
     }
 }

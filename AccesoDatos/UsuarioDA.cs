@@ -202,10 +202,17 @@ namespace AccesoDatos
             .ToList();
         }
 
+        public int ObtenerBeneficiarios() {             
+            return _context.Beneficiarios.Count();
+        }
 
-
-
-
+        public int ObtenerPolizas() {
+            return _context.Polizas.Count();
+        }
+        public int ObtenerTalleres()
+            {
+            return _context.Talleres.Count();
+        }
         public string AuthenticateUser(string dni, string password)
         {
             // Paso 1: Obtener el ID del usuario
@@ -329,18 +336,18 @@ namespace AccesoDatos
             return true;
         }
 
-        public bool EliminarUsuario(int id)
+        public void EliminarUsuario(int id)
         {
             var usuario = _context.Usuarios.FirstOrDefault(u => u.Id == id);
             if (usuario == null)
             {
-                return false;
+                throw new InvalidOperationException("El usuario no existe.");
             }
 
             _context.Usuarios.Remove(usuario);
             _context.SaveChanges();
-            return true;
         }
+
 
 
 

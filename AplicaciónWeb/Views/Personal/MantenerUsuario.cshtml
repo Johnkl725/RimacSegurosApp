@@ -10,7 +10,7 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col">
-            <h2 class="text-primary mb-4"><i class="fas fa-users me-2"></i>Mantener Usuarios</h2>
+            <h2 class="text-danger mb-4"><i class="fas fa-users me-2"></i>Mantener Beneficiarios</h2>
 
             <!-- Campo de búsqueda -->
             <div class="input-group mb-3">
@@ -22,7 +22,7 @@
 
             <!-- Botón para agregar un nuevo beneficiario -->
             <div class="d-flex justify-content-end mb-3">
-                <a href="@Url.Action("CreateUsuario", "Personal")" class="btn btn-primary">
+                <a href="@Url.Action("CreateUsuario", "Personal")" class="btn btn-danger">
                     <i class="fas fa-user-plus me-2"></i>Agregar Beneficiario
                 </a>
             </div>
@@ -30,9 +30,8 @@
             <!-- Tabla de beneficiarios -->
             <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle">
-                    <thead class="table-dark">
+                    <thead class="table-danger">
                         <tr>
-                            <th scope="col">ID</th>
                             <th scope="col">Nombres</th>
                             <th scope="col">Apellido Paterno</th>
                             <th scope="col">Apellido Materno</th>
@@ -45,7 +44,6 @@
                         @foreach (var beneficiario in Model)
                         {
                             <tr>
-                                <td>@beneficiario.Id</td>
                                 <td>@beneficiario.Nombres</td>
                                 <td>@beneficiario.Apellido1</td>
                                 <td>@beneficiario.Apellido2</td>
@@ -112,23 +110,22 @@
                     // Construir la tabla con los resultados
                     result.data.forEach(usuario => {
                         const row = `
-                                <tr>
-                                    <td>${usuario.id}</td>
-                                    <td>${usuario.nombres}</td>
-                                    <td>${usuario.apellido1}</td>
-                                    <td>${usuario.apellido2}</td>
-                                    <td>${usuario.dni}</td>
-                                    <td>${usuario.telefono}</td>
-                                    <td>
-                                        <a href="/Personal/EditUsuario/${usuario.id}" class="btn btn-sm btn-warning">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <a href="/Personal/DeleteUsuario/${usuario.id}" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            `;
+                                    <tr>
+                                        <td>${usuario.nombres}</td>
+                                        <td>${usuario.apellido1}</td>
+                                        <td>${usuario.apellido2}</td>
+                                        <td>${usuario.dni}</td>
+                                        <td>${usuario.telefono}</td>
+                                        <td>
+                                            <a href="/Personal/EditUsuario/${usuario.id}" class="btn btn-sm btn-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="/Personal/DeleteUsuario/${usuario.id}" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                `;
                         resultTable.innerHTML += row;
                     });
                 } else {
