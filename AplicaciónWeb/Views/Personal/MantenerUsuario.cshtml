@@ -10,14 +10,11 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col">
-            <h2 class="text-primary mb-4"><i class="fas fa-users me-2"></i>Mantener Usuarios</h2>
+            <h2 class="text-danger mb-4"><i class="fas fa-users me-2"></i>Mantener Beneficiarios</h2>
 
             <!-- Campo de búsqueda -->
             <div class="input-group mb-3">
                 <input type="text" id="dniInput" class="form-control" placeholder="Buscar por DNI" />
-                <button type="button" id="searchButton" class="btn btn-primary">
-                    <i class="fas fa-search me-2"></i>Buscar
-                </button>
             </div>
 
             <!-- Contenedor para mensajes -->
@@ -25,7 +22,7 @@
 
             <!-- Botón para agregar un nuevo beneficiario -->
             <div class="d-flex justify-content-end mb-3">
-                <a href="@Url.Action("CreateUsuario", "Personal")" class="btn btn-primary">
+                <a href="@Url.Action("CreateUsuario", "Personal")" class="btn btn-danger">
                     <i class="fas fa-user-plus me-2"></i>Agregar Beneficiario
                 </a>
             </div>
@@ -33,9 +30,8 @@
             <!-- Tabla de beneficiarios -->
             <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle">
-                    <thead class="table-dark">
+                    <thead class="table-danger">
                         <tr>
-                            <th scope="col">ID</th>
                             <th scope="col">Nombres</th>
                             <th scope="col">Apellido Paterno</th>
                             <th scope="col">Apellido Materno</th>
@@ -48,7 +44,6 @@
                         @foreach (var beneficiario in Model)
                         {
                             <tr>
-                                <td>@beneficiario.Id</td>
                                 <td>@beneficiario.Nombres</td>
                                 <td>@beneficiario.Apellido1</td>
                                 <td>@beneficiario.Apellido2</td>
@@ -88,54 +83,58 @@
     </div>
 </div>
 
-<!-- Script para búsqueda AJAX -->
+<!-- Script para búsqueda dinámica por DNI -->
 <script>
-    document.getElementById('searchButton').addEventListener('click', async () => {
-        const dni = document.getElementById('dniInput').value;
+    document.getElementById('dniInput').addEventListener('input', () => {
+        const dni = document.getElementById('dniInput').value.trim();
         const resultTable = document.getElementById('resultTable');
         const messageContainer = document.getElementById('messageContainer');
 
-        // Limpiar mensajes y tabla
+        // Limpiar mensajes y tabla antes de la búsqueda
         resultTable.innerHTML = '';
         messageContainer.innerHTML = '';
 
-        if (!dni) {
-            messageContainer.innerHTML = '<p class="text-danger">Por favor, ingresa un DNI.</p>';
-            return;
+        if (dni.length === 0) {
+            return; // No realizar búsqueda si el campo está vacío
         }
 
-        try {
-            const response = await fetch(`/Personal/BuscarUsuarioPorDni?dni=${dni}`);
-            const result = await response.json();
+        // Utiliza setTimeout para evitar búsquedas repetitivas
+        if (this.timeout) clearTimeout(this.timeout);
 
-            if (result.success) {
-                // Construir la tabla con los resultados
-                result.data.forEach(usuario => {
-                    const row = `
-                        <tr>
-                            <td>${usuario.id}</td>
-                            <td>${usuario.nombres}</td>
-                            <td>${usuario.apellido1}</td>
-                            <td>${usuario.apellido2}</td>
-                            <td>${usuario.dni}</td>
-                            <td>${usuario.telefono}</td>
-                            <td>
-                                <a href="/Personal/EditUsuario/${usuario.id}" class="btn btn-sm btn-warning">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="/Personal/DeleteUsuario/${usuario.id}" class="btn btn-sm btn-danger">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    `;
-                    resultTable.innerHTML += row;
-                });
-            } else {
-                messageContainer.innerHTML = `<p class="text-warning">${result.message}</p>`;
+        this.timeout = setTimeout(async () => {
+            try {
+                const response = await fetch(`/Personal/BuscarUsuarioPorDni?dni=${dni}`);
+                const result = await response.json();
+
+                if (result.success && result.data.length > 0) {
+                    // Construir la tabla con los resultados
+                    result.data.forEach(usuario => {
+                        const row = `
+                                    <tr>
+                                        <td>${usuario.id}</td>
+                                        <td>${usuario.nombres}</td>
+                                        <td>${usuario.apellido1}</td>
+                                        <td>${usuario.apellido2}</td>
+                                        <td>${usuario.dni}</td>
+                                        <td>${usuario.telefono}</td>
+                                        <td>
+                                            <a href="/Personal/EditUsuario/${usuario.id}" class="btn btn-sm btn-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="/Personal/DeleteUsuario/${usuario.id}" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                `;
+                        resultTable.innerHTML += row;
+                    });
+                } else {
+                    messageContainer.innerHTML = `<p class="text-warning">${result.message || 'No se encontraron coincidencias.'}</p>`;
+                }
+            } catch (error) {
+                messageContainer.innerHTML = `<p class="text-danger">Error: ${error.message}</p>`;
             }
-        } catch (error) {
-            messageContainer.innerHTML = `<p class="text-danger">Error: ${error.message}</p>`;
-        }
+        }, 300); // Retraso de 300 ms para esperar a que el usuario termine de escribir
     });
 </script>
