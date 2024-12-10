@@ -44,10 +44,11 @@
         </div>
 
         <div class="form-group">
-            <label for="archivos" class="font-weight-bold">Subir Documentos</label>
-            <input type="file" name="archivos" multiple class="form-control" accept=".jpg,.jpeg,.png,.pdf" id="fileInput" />
+            <label for="archivos" class="font-weight-bold">Subir Documentos Justificativos</label>
+            <input type="file" name="archivos" multiple class="form-control" accept=".jpg,.jpeg,.png,.pdf" id="fileInput" required />
             <small class="form-text text-muted">
-                Puede subir hasta 5 documentos (JPEG, PNG, PDF) con un tamaño máximo de 5MB cada uno.
+                ⚠️Debe subir al menos un documento justificativo (JPEG, PNG, PDF) con un tamaño máximo de 5MB cada uno.
+                <strong>(Puede seleccionar hasta 5 documentos)</strong>
             </small>
         </div>
 
@@ -86,19 +87,25 @@
 
 <script>
     document.getElementById('fileInput').addEventListener('change', function (e) {
+        const maxFileCount = 5; // Máximo número de archivos permitidos
         const maxFileSize = 5 * 1024 * 1024; // 5MB en bytes
         const fileInput = document.getElementById('fileInput');
         const files = fileInput.files;
-        const validFiles = []; // Archivos que cumplen las condiciones
         let errorMessage = "";
 
-        // Validar cada archivo seleccionado
+        // Verificar la cantidad de archivos seleccionados
+        if (files.length > maxFileCount) {
+            errorMessage = `Solo puede subir un máximo de 5 archivos por reclamación. Actualmente ha seleccionado ${files.length}.`;
+            showAlert(errorMessage);
+            fileInput.value = ""; // Limpiar la selección de archivos
+            return;
+        }
+
+        // Validar el tamaño de cada archivo
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             if (file.size > maxFileSize) {
                 errorMessage += `El archivo "${file.name}" supera el tamaño máximo permitido de 5MB.<br>`;
-            } else {
-                validFiles.push(file); // Archivos válidos
             }
         }
 
@@ -107,6 +114,8 @@
             fileInput.value = ""; // Limpiar la selección de archivos
         }
     });
+
+
 
     function showAlert(message) {
         const alertContainer = document.getElementById('alertContainer');
@@ -121,23 +130,39 @@
     }
 </script>
 
+
+
+
+
 <style>
     .custom-alert {
         position: fixed;
-        top: 20%;
+        top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        z-index: 1000;
-        background: #f8d7da;
-        color: #842029;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        z-index: 1050;
+        background: linear-gradient(145deg, #f8d7da, #f1b0b7);
+        color: #721c24;
+        padding: 25px 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         width: 90%;
-        max-width: 400px;
-        font-family: Arial, sans-serif;
+        max-width: 420px;
+        font-family: 'Poppins', Arial, sans-serif;
         text-align: center;
-        border: 1px solid #f5c2c7;
+        border: 1px solid rgba(242, 183, 189, 0.8);
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -60%);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
     }
 
     .hidden {
@@ -150,26 +175,55 @@
 
     .alert-content span {
         display: block;
-        margin-bottom: 15px;
-        font-size: 1.1rem;
-        line-height: 1.5;
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+        font-weight: 500;
+        line-height: 1.6;
     }
 
     .close-alert {
-        background-color: #842029;
-        color: #fff;
+        background: linear-gradient(145deg, #d9534f, #c9302c);
+        color: white;
         border: none;
-        padding: 10px 20px;
+        padding: 12px 25px;
         font-size: 1rem;
-        border-radius: 5px;
+        border-radius: 8px;
         cursor: pointer;
-        transition: background-color 0.3s ease;
+        transition: all 0.3s ease-in-out;
+        font-family: 'Poppins', Arial, sans-serif;
+        text-transform: uppercase;
+        font-weight: 600;
     }
 
     .close-alert:hover {
-        background-color: #6a1a22;
+        background: linear-gradient(145deg, #c9302c, #d9534f);
+        box-shadow: 0 5px 15px rgba(217, 83, 79, 0.3);
+    }
+
+    .close-alert:focus {
+        outline: none;
+    }
+
+    .custom-alert .icon {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        color: #c9302c;
     }
 </style>
+
+<div id="alertContainer" class="custom-alert hidden">
+    <div class="alert-content">
+        <div class="icon">⚠️</div> <!-- Ícono decorativo -->
+        <span id="alertMessage">Este es un mensaje de alerta.</span>
+        <button class="close-alert" onclick="closeAlert()">Aceptar</button>
+    </div>
+</div>
+
+
+
+
+
+
 
 
 <style>
