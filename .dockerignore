@@ -1,0 +1,45 @@
+# Binarios y archivos de compilación
+**/bin/
+**/obj/
+**/out/
+
+# IDE y herramientas
+.vs/
+.vscode/
+*.user
+*.suo
+*.cache
+.idea/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Base de datos y backups
+database/backups/
+*.sql
+
+# Documentación y recursos
+README.md
+*.md
+!database/README.md
+
+# Logs
+*.log
+
+# Archivos temporales
+*.tmp
+*.temp
+*~
+
+# Paquetes NuGet
+*.nupkg
+
+# Test results
+TestResults/
+*.trx
+
+# Coverage reports
+*.coverage
+*.coveragexml

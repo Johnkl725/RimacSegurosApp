@@ -362,3 +362,10 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /maurisalvaeldia2.sql
+
+# Docker
+.env
+docker-compose.override.yml
+
+# Database backups (keep init.sql only)
+database/backups/

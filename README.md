@@ -1,4 +1,4 @@
-# 🛡️ Sistema de Gestión de Seguros - Rimac
+﻿# 🛡️ Sistema de Gestión de Seguros - Rimac
 
 Sistema integral de gestión de seguros vehiculares desarrollado con **ASP.NET Core MVC** que permite administrar pólizas, siniestros, reclamaciones, talleres y presupuestos de manera eficiente y profesional.
 
@@ -132,83 +132,182 @@ Beneficiario (1) ──── (N) Póliza (1) ──── (N) Siniestro
 
 ## 🚀 Instalación y Configuración
 
-### Prerrequisitos
+Hay dos formas de ejecutar la aplicación: usando Docker (recomendado y más rápido) o instalación manual con Visual Studio.
 
-1. **.NET 8 SDK** - [Descargar aquí](https://dotnet.microsoft.com/download/dotnet/8.0)
-2. **SQL Server 2019+** o **SQL Server Express**
-3. **Visual Studio 2022** (recomendado) o Visual Studio Code
-4. **Git** para clonar el repositorio
+---
 
-### Pasos de Instalación
+### 🐳 Opción 1: Ejecución con Docker (Recomendado)
 
-#### 1. Clonar el Repositorio
+La forma más rápida y sencilla de ejecutar la aplicación **sin necesidad de instalar SQL Server ni Visual Studio**.
+
+#### Prerrequisitos Docker
+
+1. **Docker Desktop** - [Descargar aquí](https://www.docker.com/products/docker-desktop)
+2. **Git** para clonar el repositorio
+
+#### Pasos Rápidos
+
+**1. Clonar el repositorio**
 
 ```bash
 git clone https://github.com/Johnkl725/RimacSegurosApp.git
 cd RimacSegurosApp
 ```
 
-#### 2. Configurar la Base de Datos
+**2. Configurar variables de entorno (opcional)**
+
+```bash
+# Windows
+copy .env.example .env
+
+# Linux/Mac
+cp .env.example .env
+
+# Editar .env con tus credenciales de Cloudinary (opcional)
+# Si no usas Cloudinary, puedes omitir este paso
+```
+
+**3. Iniciar la aplicación**
+
+```bash
+docker-compose up -d
+```
+
+**4. Esperar a que los contenedores inicien**
+
+```bash
+# Ver logs en tiempo real
+docker-compose logs -f webapp
+```
+
+Espera hasta ver el mensaje: **"Now listening on: http://+:8080"**
+
+**5. Acceder a la aplicación**
+
+Abrir el navegador en: **http://localhost:8080**
+
+#### Comandos Útiles Docker
+
+| Comando | Descripción |
+|---------|-------------|
+| `docker-compose up -d` | Iniciar aplicación en segundo plano |
+| `docker-compose down` | Detener y eliminar contenedores |
+| `docker-compose logs -f` | Ver logs en tiempo real |
+| `docker-compose ps` | Ver estado de contenedores |
+| `docker-compose restart webapp` | Reiniciar aplicación web |
+| `docker-compose down -v` | Detener y eliminar datos (reset completo) |
+| `docker-compose up --build` | Reconstruir y iniciar |
+
+#### Acceder a SQL Server desde Docker
+
+```bash
+# Conectar directamente al contenedor
+docker-compose exec sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd"
+```
+
+O conectar con herramientas externas (SSMS, Azure Data Studio, etc.):
+- **Host**: `localhost:1433`
+- **Usuario**: `sa`
+- **Password**: El configurado en `.env` (por defecto: `YourStrong!Passw0rd`)
+- **Base de datos**: `BDSeguros`
+
+#### Troubleshooting Docker
+
+**Puerto ya en uso**
+```bash
+# En docker-compose.yml, cambiar "8080:8080" por "8081:8080"
+docker-compose down
+docker-compose up -d
+```
+
+**Reconstruir desde cero**
+```bash
+docker-compose down -v
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+---
+
+### 💻 Opción 2: Instalación Manual (Visual Studio)
+
+Para desarrollo con Visual Studio o sin Docker.
+
+#### Prerrequisitos
+
+1. **.NET 8 SDK** - [Descargar aquí](https://dotnet.microsoft.com/download/dotnet/8.0)
+2. **SQL Server 2019+** o **SQL Server Express**
+3. **Visual Studio 2022** (recomendado) o Visual Studio Code
+4. **Git** para clonar el repositorio
+
+#### Pasos de Instalación
+
+**1. Clonar el Repositorio**
+
+```bash
+git clone https://github.com/Johnkl725/RimacSegurosApp.git
+cd RimacSegurosApp
+```
+
+**2. Configurar la Base de Datos**
 
 1. Abrir **SQL Server Management Studio (SSMS)**
-2. Ejecutar el script de base de datos más reciente:
-   - Ubicación: `7diciembre.sql` (o el archivo SQL más actual)
+2. Ejecutar el script de base de datos:
+   - Ubicación: `database/init.sql`
    - Este script creará la base de datos `BDSeguros` con todas las tablas y datos iniciales
 
-#### 3. Configurar Cadena de Conexión
+**3. Configurar Cadena de Conexión**
 
-Editar el archivo `AplicaciónWeb/appsettings.json`:
+Editar el archivo `AplicaciónWeb/appsettings.Development.json`:
 
 ```json
 {
   "ConnectionStrings": {
     "DefaultConnection": "Server=TU_SERVIDOR;Database=BDSeguros;Integrated Security=True;TrustServerCertificate=True;"
-  },
-  "Cloudinary": {
-    "CloudName": "TU_CLOUD_NAME",
-    "ApiKey": "TU_API_KEY",
-    "ApiSecret": "TU_API_SECRET"
   }
 }
 ```
 
-> **Nota**: Reemplaza `TU_SERVIDOR` con tu instancia de SQL Server (ej: `localhost\\SQLEXPRESS`)
+> **Nota**: Reemplaza `TU_SERVIDOR` con tu instancia de SQL Server (ej: `localhost\\SQLEXPRESS` o `DESKTOP-XXX\\MSSQLSERVER01`)
 
-#### 4. Configurar Cloudinary (Opcional)
+**4. Configurar Cloudinary (Opcional)**
 
 Para habilitar la carga de documentos:
 
 1. Crear cuenta gratuita en [Cloudinary](https://cloudinary.com/)
 2. Obtener credenciales del dashboard
-3. Actualizar la sección `Cloudinary` en `appsettings.json`
+3. Actualizar la sección `Cloudinary` en `appsettings.json` o `appsettings.Development.json`
 
-#### 5. Restaurar Dependencias
+**5. Restaurar Dependencias**
 
 ```bash
 dotnet restore
 ```
 
-#### 6. Compilar la Solución
+**6. Compilar la Solución**
 
 ```bash
 dotnet build
 ```
 
-#### 7. Ejecutar la Aplicación
+**7. Ejecutar la Aplicación**
 
+**Opción A**: Desde línea de comandos
 ```bash
 cd AplicaciónWeb
 dotnet run
 ```
 
-O desde **Visual Studio**:
+**Opción B**: Desde Visual Studio
 - Abrir `ProyectoRimacSeguros.sln`
 - Establecer `AplicaciónWeb` como proyecto de inicio
 - Presionar `F5` o seleccionar "Iniciar depuración"
 
-#### 8. Acceder a la Aplicación
+**8. Acceder a la Aplicación**
 
 Abrir el navegador en: `https://localhost:5001` o `http://localhost:5000`
+
+---
 
 ---
 
